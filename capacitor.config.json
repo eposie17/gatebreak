@@ -1,0 +1,12 @@
+{
+  "appId": "com.eposie17.muster",
+  "appName": "Muster",
+  "webDir": "www",
+  "backgroundColor": "#0b0d12",
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": false,
+    "backgroundColor": "#0b0d12",
+    "allowsLinkPreview": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "muster-ios",
+  "version": "0.12.0",
+  "private": true,
+  "description": "Muster wrapped as an iPhone and iPad app (Capacitor) for testing on a real phone and TestFlight",
+  "scripts": {
+    "sync": "cap sync ios",
+    "open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.5.3",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.5.3",
+    "@capacitor/preferences": "8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}

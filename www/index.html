@@ -1,0 +1,1704 @@
+<!doctype html><meta charset="utf-8">
+<title>Muster</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<style>
+html,body{height:100%;margin:0;background:#0b0d12;overflow:hidden;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#e8ecf2;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:manipulation}
+#wrap{position:fixed;top:env(safe-area-inset-top);right:env(safe-area-inset-right);bottom:env(safe-area-inset-bottom);left:env(safe-area-inset-left);display:flex;align-items:center;justify-content:center;background:#0b0d12}
+canvas{display:block;touch-action:none;background:#1a1d24}
+.ov{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(8,10,16,.95);text-align:center;padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));box-sizing:border-box;z-index:5;overflow-y:auto}
+.ov.on{display:flex}
+#start{justify-content:flex-start;padding-top:calc(28px + env(safe-area-inset-top));padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+#safe{position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+h1{font-size:44px;margin:0;letter-spacing:4px;color:#fff;font-weight:900}
+.tag{font-size:16px;color:#ffd166;margin-top:-6px;letter-spacing:1px}
+.sub{font-size:16px;line-height:1.5;color:#c3cad6;max-width:350px}
+.kinds{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;max-width:340px;text-align:left;font-size:15px;line-height:1.3;color:#c3cad6}
+.kinds b{color:#fff}
+.sw{width:18px;height:18px;display:inline-block;vertical-align:middle}
+.big{font-size:28px;font-weight:800;padding:16px 44px;border-radius:14px;background:#ffd166;color:#2a1d00;cursor:pointer;margin-top:4px}
+.mid{font-size:20px;font-weight:700;padding:12px 28px;border-radius:12px;background:#ffd166;color:#2a1d00;cursor:pointer}
+.row{display:flex;gap:8px;align-items:center;font-size:16px;flex-wrap:wrap;justify-content:center}
+.pre,.tog{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:44px;min-width:44px;padding:0 16px;border-radius:8px;background:#262b36;cursor:pointer;font-size:16px}
+.pre.sel{background:#ffd166;color:#2a1d00;font-weight:700}
+.tog.off{opacity:.45;text-decoration:line-through}
+#tall{font-size:14px;max-width:290px;text-align:center;line-height:1.25;padding:6px 14px}#tall.on{color:#2ee6a6;box-shadow:inset 0 0 0 2px #2ee6a6}#tall.off{opacity:.9;text-decoration:none;color:#c3cad6}
+.key{font-size:13px;color:#7f8899;max-width:340px;line-height:1.5}
+.ver{display:inline-block;font-size:12px;letter-spacing:1px;vertical-align:top;margin-top:8px;padding:2px 7px;border-radius:6px;background:#dfe6f0;color:#111;font-weight:800}
+.touch .notouch{display:none!important}
+</style>
+<div id="wrap"><canvas id="c"></canvas></div><div id="safe"></div>
+<div id="start" class="ov on">
+ <h1>MUSTER <span class="ver">proto 12</span></h1>
+ <div class="tag">the crowd is the build</div>
+ <div id="go" class="big">TAP TO START</div>
+ <div class="row"><span class="pre" id="thm">&minus;</span><span id="thv" style="min-width:110px;font-weight:800">Threat 0</span><span class="pre" id="thp">+</span></div>
+ <div class="key" id="thd" style="color:#ffb37a"></div>
+ <div class="row"><span id="dailyb" class="pre" style="font-weight:800;color:#ffd166">DAILY MUSTER</span><span id="tall" class="tog">Testing: all unlocked</span></div>
+ <div class="key" id="dailyd"></div>
+ <div class="row"><span id="tdmg" class="tog">New damage rules</span></div>
+ <div class="sub">Slide sideways to pick gates. Push up to dodge; let go and you slide back down. Everyone shoots on their own. Shoot a gate to pump its number.<br><b>Every gate adds one kind of soldier.</b> Strong kinds come in smaller numbers.<br>Take a kind's gate <b>three times</b> and the next row is its upgrade: two gold gates, pick one. Six times, and that upgrade gets its own pair. <b>Soldiers are expendable:</b> every hit takes the same share of each kind, however big your army (a brute takes a fifth). Shields soak area hits first. <b>Don't just dodge:</b> enemies that get past you fill the BREACH bar, and a full bar loses the run.<br><b>Building pays.</b> Every gate of a kind adds a pip: +10% damage, up to 10 pips. <b>FOCUS</b> adds your share of a kind on top, so an army that is all one kind does double damage with it.</div>
+ <div class="sub" style="font-size:14px"><b>RALLY</b>: the crowd plants and fires three times as fast for 2 s. <b>Auto Rally</b> fires it for you; turn it off below to tap the button yourself (or touch anywhere with a second finger). Fire boosts add together, up to four times the fire. Shoot open cages to free soldiers. Touch a supply drop to use it. <b>Pink stripes</b> mean danger: get out before they fill. After the Tank, the road forks: pick your way to the last boss.</div>
+ <div class="kinds" id="kinds"></div>
+ <div class="sub" style="font-size:14px;color:#ffd166">Hold enough of one kind plus its Officer and a gold FORGE gate appears. Walk through it to fuse them into one big unit. Some cards evolve when you reach the right upgrade.</div>
+ <div class="row"><span class="pre" data-g="1">Low</span><span class="pre sel" data-g="1.4">Normal</span><span class="pre" data-g="2">High</span><span style="color:#7f8899;font-size:14px">thumb speed</span></div>
+ <div class="row"><span id="tsound" class="tog">Sound</span><span id="thap" class="tog notouch">Haptics</span><span id="tshake" class="tog">Shake</span></div>
+ <div class="row"><span id="tside" class="pre">Rally: right</span><span id="tauto" class="pre">Auto Rally: off</span><span id="tcalm" class="pre">Calm effects: off</span><span id="tsaver" class="pre">Battery saver: off</span><span id="ttips" class="pre">Show tips again</span></div>
+ <div class="key notouch">Desktop: drag the mouse, or A/D and W/S. Space rally. P pause. 1-4 pick a card, 0 keep your hand. R replay this road, N new road.</div>
+</div>
+<div id="pause" class="ov">
+ <h1 style="font-size:36px">PAUSED</h1>
+ <div class="row"><span class="pre" data-g="1">Low</span><span class="pre" data-g="1.4">Normal</span><span class="pre" data-g="2">High</span></div>
+ <div class="row"><span id="tsound2" class="tog">Sound</span><span id="thap2" class="tog notouch">Haptics</span><span id="tshake2" class="tog">Shake</span></div>
+ <div class="row"><span id="tside2" class="pre">Rally: right</span><span id="tauto2" class="pre">Auto Rally: off</span><span id="tcalm2" class="pre">Calm effects: off</span><span id="tsaver2" class="pre">Battery saver: off</span></div>
+ <div id="resume" class="mid">RESUME</div>
+ <div id="quit" class="pre">Quit to title</div>
+</div>
+<script>
+'use strict';
+// ---------- constants ----------
+const W=390,H=844,RX0=15,RX1=375,RW=360,SCROLL=200,PITY0=458,PITY1=618,SOFTCAP=50,MAXDRAW=90;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let scale=1,offX=0,offY=0,dpr=1,GX=0,CT=0,CB=0,so=1,oX=0,oY=0; // CT/CB: road trimmed at the top and bottom on short screens; so/oX/oY: where the card and result screens sit // GX: width of the scenery on each side of the road on wide screens
+function insets(){const e=document.getElementById('safe');if(!e)return{t:0,r:0,b:0,l:0};const c=getComputedStyle(e),f=k=>parseFloat(c[k])||0;return{t:f('paddingTop'),r:f('paddingRight'),b:f('paddingBottom'),l:f('paddingLeft')};}
+function resize(){
+  const IN=insets(),vw=window.innerWidth-IN.l-IN.r,vh=window.innerHeight-IN.t-IN.b;
+  dpr=Math.min(window.devicePixelRatio||1,S.saver?1.5:2); // 3x pixels cost a lot on phones and look the same
+  // a short phone screen (iPhone SE, or any phone in Safari with its toolbars) first loses up to 60 px below the army and 40 px under the top bar, then shrinks
+  CT=0;CB=0;if(vw<=500&&vw/vh>W/H){const need=H-vh*W/vw;CB=Math.min(60,need);CT=Math.min(40,Math.max(0,need-CB));}
+  const VH=H-CT-CB;scale=Math.min(vw/W,vh/VH);
+  GX=Math.max(0,Math.floor((vw/scale-W)/2));
+  const cw=Math.floor((W+2*GX)*scale),ch=Math.floor(VH*scale);
+  cv.style.width=cw+'px';cv.style.height=ch+'px';cv.width=Math.round(cw*dpr);cv.height=Math.round(ch*dpr);
+  offX=IN.l+(vw-cw)/2;offY=IN.t+(vh-ch)/2;so=Math.min(cw/W,ch/H);oX=(cw-W*so)/2;oY=(ch-H*so)/2;placeRally();
+}
+window.addEventListener('resize',resize);
+
+// ---------- release switch ----------
+// false for test builds (everything can be unlocked with the testing switch); set true for the App Store build
+const RELEASE=false;
+
+// ---------- settings ----------
+const S={gain:1.4,sound:true,haptics:true,shake:true,rallyLeft:false,autoRally:true,calm:null,saver:false};
+try{Object.assign(S,JSON.parse(localStorage.getItem('mu_set')||'{}'));}catch(e){}
+if(!(S.gain>0.3&&S.gain<5))S.gain=1.4;
+if(typeof S.calm!=='boolean'){try{S.calm=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}catch(e){S.calm=false;}} // Calm starts on when the phone asks for less motion
+function saveS(){try{localStorage.setItem('mu_set',JSON.stringify(S));}catch(e){}backup('mu_set');}
+// inside the app: copy saves to the app's own storage, and bring them back if web storage was cleared
+function prefs(){try{const Cp=window.Capacitor;return Cp&&Cp.isNativePlatform&&Cp.isNativePlatform()&&Cp.Plugins&&Cp.Plugins.Preferences||null;}catch(e){return null;}}
+function backup(k){const P=prefs();if(!P)return;try{const v=localStorage.getItem(k);if(v!=null)P.set({key:k,value:v});}catch(e){}}
+(function restore(){const P=prefs();if(!P)return;let need=false;try{need=!localStorage.getItem('mu_prog');}catch(e){}if(!need)return;
+  Promise.all(['mu_prog','mu_set'].map(k=>P.get({key:k}).then(r=>[k,r&&r.value]))).then(rs=>{let got=false;for(const [k,v] of rs)if(v){try{localStorage.setItem(k,v);got=true;}catch(e){}}if(got)location.reload();}).catch(()=>{});})();
+const TOGS=[['tsound','sound'],['thap','haptics'],['tshake','shake'],['tsound2','sound'],['thap2','haptics'],['tshake2','shake']];
+const OPTS=[['tauto','autoRally','Auto Rally'],['tcalm','calm','Calm effects'],['tsaver','saver','Battery saver'],['tauto2','autoRally','Auto Rally'],['tcalm2','calm','Calm effects'],['tsaver2','saver','Battery saver']]; // off-by-default options say on or off in words
+function syncUI(){
+  document.querySelectorAll('.pre[data-g]').forEach(e=>e.classList.toggle('sel',Math.abs(parseFloat(e.dataset.g)-S.gain)<0.01));
+  for(const [id,k] of TOGS)document.getElementById(id).classList.toggle('off',!S[k]);
+  for(const id of ['tside','tside2'])document.getElementById(id).textContent='Rally: '+(S.rallyLeft?'left':'right');
+  for(const [id,k,n] of OPTS){const el=document.getElementById(id);el.textContent=n+': '+(S[k]?'on':'off');el.classList.toggle('sel',!!S[k]);}
+}
+document.querySelectorAll('.pre[data-g]').forEach(e=>e.addEventListener('click',()=>{S.gain=parseFloat(e.dataset.g);saveS();syncUI();}));
+for(const [id,k] of [...TOGS,...OPTS])document.getElementById(id).addEventListener('click',()=>{S[k]=!S[k];saveS();syncUI();resize();});
+for(const id of ['tside','tside2'])document.getElementById(id).addEventListener('click',()=>{S.rallyLeft=!S.rallyLeft;saveS();syncUI();placeRally();});
+document.getElementById('ttips').addEventListener('click',e=>{PROG.tips={};saveP();e.currentTarget.textContent='Tips will show again';});
+syncUI();
+
+// ---------- progress between runs (Threat, unlocks, Daily Muster) ----------
+const SAVEV=1; // raise when the save layout changes, and convert old saves in loadP
+const P0=()=>({ver:SAVEV,threat:0,max:0,kills:0,walls:0,unl:{},tips:{},testAll:!RELEASE,classic:false,daily:{date:'',played:false,score:0,best:0}});
+const PROG=P0();
+function loadP(){try{const s=JSON.parse(localStorage.getItem('mu_prog')||'{}'),D=P0();if(!s||typeof s!=='object')return;
+  for(const k in D)if(s[k]!=null&&typeof s[k]===typeof D[k]&&!Array.isArray(s[k]))PROG[k]=typeof D[k]==='object'?Object.assign(D[k],s[k]):s[k];
+  PROG.ver=SAVEV;if(RELEASE)PROG.testAll=false;PROG.threat=Math.min(10,Math.max(0,PROG.threat|0));PROG.max=Math.min(10,Math.max(0,PROG.max|0));}catch(e){}}
+loadP();
+function saveP(){try{localStorage.setItem('mu_prog',JSON.stringify(PROG));}catch(e){}backup('mu_prog');}
+// a tip shows once a run, and only in the first two runs where it comes up; now: 1 = next in line, 2 = straight away
+function tip(id,txt,now){if(!g)return;g.tipDone=g.tipDone||{};if(g.tipDone[id])return;g.tipDone[id]=1;const n=PROG.tips[id]||0;if(n>=2)return;PROG.tips[id]=n+1;saveP();
+  if(now===2)setMsg(txt,2.8);else{g.hintQ=g.hintQ||[];if(now)g.hintQ.unshift(txt);else g.hintQ.push(txt);}}
+// each Threat level adds one rule on top of the ones below it; winning a level unlocks the next
+const THREATS=['Normal road','Enemies move 15% faster','Elite enemies: more health, gold rims','Night falls on section 2','Red gates hit 50% harder','Gate Thieves come in pairs','Bosses have 30% more health','A Bomber joins every pack','You start with 3 Riflemen, not 5','Bosses enrage 7 s sooner','You can hold 3 cards, not 4'];
+function T(n){return !!g&&g.threat>=n;}
+function today(){const d=new Date();return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate();}
+function dailySeed(){let h=today()^0x5bd1e995;h=Math.imul(h^h>>>16,0x45d9f3b);h=Math.imul(h^h>>>16,0x45d9f3b);return (h^h>>>16)|0;}
+// ---------- rng ----------
+// gameplay luck comes from the run's own seeded stream, so the same seed and the same steering give the same run; sparks and sounds stay free
+function rand(){return g&&g.lr?g.lr():Math.random();}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+let seed=(Math.random()*1e9)|0,fromLink=false;
+{const m=location.hash.match(/seed=(\d+)/);if(m){seed=parseInt(m[1])|0;fromLink=true;}}
+function nextSeed(){if(fromLink){fromLink=false;return seed;}return (Math.random()*1e9)|0;}
+
+// ---------- audio ----------
+let AC=null,master=null;const lastT={};
+function audioInit(){if(AC)return;try{AC=new (window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=0.4;master.connect(AC.destination);}catch(e){}}
+function tone(f,dur,type,vol,f2){
+  if(!AC||!S.sound)return;try{if(AC.state!=='running')AC.resume();
+  const t=AC.currentTime,o=AC.createOscillator(),gn=AC.createGain();
+  o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  gn.gain.setValueAtTime(vol||0.2,t);gn.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(gn);gn.connect(master);o.start(t);o.stop(t+dur+0.02);}catch(e){}
+}
+function throttle(n,ms){const now=performance.now();if(now-(lastT[n]||0)<ms)return true;lastT[n]=now;return false;}
+function sfx(n,a){
+  switch(n){
+    case 'charge':if(throttle(n,30))return;tone(400+20*Math.min(a,40),0.04,'sine',0.1);break;
+    case 'cap':tone(880,0.12,'sine',0.22);break;
+    case 'pass':tone(659,0.08,'sine',0.2);setTimeout(()=>tone(880,0.08,'sine',0.15),70);break;
+    case 'loss':if(throttle(n,50))return;tone(110,0.08,'square',0.22);break;
+    case 'soak':if(throttle(n,50))return;tone(300,0.06,'triangle',0.2,200);break;
+    case 'cry':if(throttle(n,25))return;tone(300*(0.9+Math.random()*0.2),0.05,'sawtooth',0.04,120);break;
+    case 'shatter':tone(200,0.15,'square',0.15,60);break;
+    case 'shell':tone(60,0.3,'sine',0.45);tone(200,0.2,'sawtooth',0.1,40);break;
+    case 'warn':tone(220,0.1,'triangle',0.12);break;
+    case 'hum':tone(130,0.3,'sawtooth',0.06,260);break;
+    case 'rocket':if(throttle(n,90))return;tone(120,0.12,'sawtooth',0.14,60);break;
+    case 'blast':if(throttle(n,70))return;tone(90,0.03,'square',0.1);break;
+    case 'drone':tone(80,1.0,'sawtooth',0.08,320);break;
+    case 'hatch':tone(440,0.15,'triangle',0.15,880);break;
+    case 'card':tone(523,0.08,'sine',0.2);setTimeout(()=>tone(659,0.08,'sine',0.2),70);setTimeout(()=>tone(784,0.12,'sine',0.2),140);break;
+    case 'forge':for(let i=0;i<8;i++)setTimeout(()=>tone(300+i*80,0.15,'triangle',0.14),i*50);setTimeout(()=>tone(70,0.5,'sine',0.5),420);break;
+    case 'cheer':for(let i=0;i<6;i++)setTimeout(()=>tone(400+i*90,0.18,'triangle',0.12),i*60);break;
+    case 'token':tone(900,0.05,'sine',0.12,1300);break;
+  }
+}
+// VIBRATION. Inside the iPhone app the Haptics plugin drives the phone's own buzzes; in a browser it falls back to navigator.vibrate.
+// A number is one buzz (up to 12 ms light, up to 30 medium, longer heavy); a list is buzz, gap, buzz, ... and plays each buzz in turn.
+let HAP=null,hapLast=0;
+function hapInit(){if(HAP!==null)return HAP;HAP=false;try{const Cp=window.Capacitor;if(Cp&&Cp.isNativePlatform&&Cp.isNativePlatform())HAP=(Cp.Plugins&&Cp.Plugins.Haptics)||false;}catch(e){HAP=false;}return HAP;}
+function hapOne(ms){const h=hapInit();if(!h)return;try{h.impact({style:ms<=12?'LIGHT':ms<=30?'MEDIUM':'HEAVY'});}catch(e){}}
+function vib(p){try{if(!S.haptics)return;if(hapInit()){const now=performance.now();if(typeof p==='number'){if(now-hapLast<45)return;hapLast=now;hapOne(p);return;}
+  hapLast=now;let t=0;for(let i=0;i<p.length;i+=2){const ms=p[i];setTimeout(()=>hapOne(ms),t);t+=p[i]+(p[i+1]||0);}return;}
+  if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+
+// ---------- soldier kinds ----------
+// Each kind carries one of Posi's guns. rate = shots per soldier per second, dmg per bullet (per pellet), blast = damage counts as a blast
+// (full damage on plated enemies and walls). mul = how much smaller its gate numbers print versus Riflemen.
+const KINDS={
+  shield:{name:'SHIELDS',one:'Shield',col:'#60a5fa',shape:'shield',gun:'none',mul:0.5,blocks:3,job:'stop chargers',desc:'No gun. Front row. Whatever runs into a Shield bounces off and dies. A Shield takes 3 cracks: small enemies crack it once, armour and chargers twice, a brute breaks it.'},
+  shot:{name:'SHOTGUNS',one:'Shotgunner',col:'#fb923c',shape:'diamond',gun:'Shotgun',mul:0.6,rate:0.8,dmg:2.3,pellets:5,range:430,falloff:true,job:'swarms up close',desc:'Shotgun. 5 pellets. Brutal inside 140 px, fading after that.'},
+  heavy:{name:'HEAVIES',one:'Heavy',col:'#facc15',shape:'square',gun:'Minigun',mul:0.7,rate:6,moveRate:2.5,dmg:1.55,job:'hordes, stand still',desc:'Minigun. Fastest fire, but only when you hold still.'},
+  rifle:{name:'RIFLEMEN',one:'Rifleman',col:'#4ade80',shape:'circle',gun:'Pistol',mul:1,rate:1,dmg:2.6,job:'all-round',desc:'Pistol. All-round. Big numbers, weak vs armour.'},
+  gren:{name:'GRENADIERS',one:'Grenadier',col:'#f472b6',shape:'triangle',gun:'Grenade launcher',mul:0.4,rate:0.6,dmg:6,splash:4,splashR:42,blast:true,job:'armour and walls',desc:'Grenade launcher. Small blasts that crack armour and walls.'},
+  tesla:{name:'ENGINEERS',gate:'ENGINEERS',one:'Engineer',col:'#22d3ee',shape:'hex',gun:'Tesla coil',mul:0.52,rate:0.9,dmg:2.6,chain:4,jump:70,reach:200,job:'crowds of enemies',desc:'Short-range lightning that jumps from enemy to enemy, four in a chain. At rank 3 they build bigger Tesla Coils, or switch to Drones that hunt the road edges.'},
+  // proto 8: six new kinds from Posi's ideas. Cowboys fire in cylinders (cyl shots, gap s apart, then reload s); their rate is the average and only marks them as a gun.
+  boomer:{name:'BOOMERANGS',gate:'BOOMERANGS',one:'Boomeranger',col:'#a3e635',shape:'chevron',gun:'Boomerang',mul:1.0,rate:0.85,dmg:5.2,range:420,boom:true,job:'lines of enemies',desc:'Boomerangs fly out, then come back. They hit everything on the way out and again on the way back.'},
+  cowboy:{name:'COWBOYS',gate:'COWBOYS',one:'Cowboy',col:'#d6a35c',shape:'star',gun:'Revolver',mul:0.6,rate:2.2,cyl:6,gap:0.12,reload:2,dmg:5.75,job:'bursts of damage',desc:'Revolver. Six fast shots, then a long reload.'},
+  knight:{name:'KNIGHTS',gate:'KNIGHTS',one:'Knight',col:'#e5e7eb',shape:'plus',gun:'Sword',mul:0.6,rate:1.1,dmg:5,melee:true,reach:120,hits:1,ap:true,job:'up close, armour',desc:'Melee. A strong stab at the nearest enemy in reach; stabs find the gaps in armour. Against a boss, push up to get in reach.'},
+  wild:{name:'WILDCARDS',gate:'WILDCARDS',one:'Wildcard',col:'#818cf8',shape:'card',gun:'Playing cards',mul:0.75,rate:1.25,dmg:7,cards:true,job:'a bit of everything',desc:'Throws a random card: an Ace hits hard, a Bomb explodes, a Bouncer hops between 3 enemies, a Spade goes through 3.'},
+  silent:{name:'SILENTS',gate:'SILENTS',one:'Silent',col:'#2dd4bf',shape:'ring',gun:'Quiet pistol',mul:0.8,rate:1,dmg:5.6,dodge:0.45,job:'staying alive',desc:'Quiet pistols: slow and light. Each Silent dodges 45% of the hits that would take them.'},
+  bers:{name:'BERSERKERS',gate:'BERSERKERS',one:'Berserker',col:'#fb7185',shape:'axe',gun:'Axe',mul:0.5,rate:0.8,dmg:11.5,melee:true,reach:120,hits:3,sweep:true,job:'crowds up close',desc:'Melee. A sweeping axe that hits up to 3 enemies in reach. Against a boss, push up to get in reach.'},
+  eng:{name:'ENGINEERS',gate:'ENGINEERS',one:'Engineer',col:'#cbd5e1',shape:'plus',gun:'Sentries',mul:0.5,eng:true,job:'sentry guns',desc:'No gun of their own. They tow sentry guns beside the crowd that aim at anything in range, even from the side.'},
+  drone:{name:'DRONE OPERATORS',gate:'DRONES',one:'Drone Operator',col:'#a78bfa',shape:'ring',gun:'Drones',mul:0.5,drone:true,job:'the road edges',desc:'Drones fly out over walls and hunt enemies at the road edges first: mortars, turrets, priests.'},
+  banner:{name:'BANNERMEN',gate:'BANNERMEN',one:'Bannerman',col:'#d6a35c',shape:'flag',gun:'none',mul:0.5,per:0.04,cap:0.6,job:'everyone fires faster',desc:'No gun. Each Bannerman makes everyone fire 4% faster, up to +60%.'}
+};
+// Branches: take a kind's gate RANKUP times and the next row offers two upgrade gates for it. Walking through one converts every soldier of that kind.
+// Each gate of a kind also adds a rank pip: +8% damage per pip for that kind, up to 6 pips.
+const RANKUP=3,RANKUP2=6; // rank 3: pick one of two upgrades; rank 6: that upgrade gets its own pair
+const BRANCH={
+  rifle:{ar:{name:'ASSAULT RIFLES',gate:'ASSAULT',one:'Assault Rifle',rate:2.0,dmg:2.0,desc:'Twice the fire; each hit is lighter.',next:{
+           burst:{name:'BURST FIRE',gate:'BURST',rate:0.8,dmg:2.0,burst:3,desc:'Three-round bursts that sweep left to right.'},
+           incend:{name:'INCENDIARY',gate:'INCENDIARY',burnHit:true,ap:true,desc:'Every shot sets its target on fire and punches through armour.'}}},
+         sniper:{name:'SNIPERS',gate:'SNIPERS',one:'Sniper',rate:0.4,dmg:13.5,pierce:2,desc:'Slow, huge shots that pass through three enemies.',next:{
+           rail:{name:'RAILGUNS',gate:'RAILGUNS',rate:0.26,dmg:23,pierce:99,desc:'One shot pierces the whole column. Slower firing, more damage.'},
+           spot:{name:'SPOTTERS',gate:'SPOTTERS',mark:true,desc:'A hit marks the target: everyone does +50% to it for 3 s.'}}}},
+  gren:{rocket:{name:'ROCKET LAUNCHERS',gate:'ROCKETS',one:'Rocket Launcher',rate:0.36,dmg:8,splash:7,splashR:42,desc:'Bigger, harder blasts. Armour and walls melt.',next:{
+           cluster:{name:'CLUSTER ROCKETS',gate:'CLUSTERS',cluster:3,desc:'Each rocket splits into three smaller blasts.'},
+           buster:{name:'BUNKER BUSTERS',gate:'BUSTERS',rate:0.3,dmg:11,splash:8,splashR:50,wallMul:4,desc:'Slow, enormous shots. Walls and armour in one hit.'}}},
+        flame:{name:'FLAMETHROWERS',gate:'FLAMES',one:'Flamethrower',rate:6,dmg:1.75,range:270,flame:true,blast:false,splash:0,desc:'A cone of fire that burns. Ignores armour, weak on walls.',next:{
+           napalm:{name:'NAPALM',gate:'NAPALM',flame:false,blast:true,fireBlast:true,rate:0.7,dmg:8,splash:7,splashR:70,range:0,desc:'Big fiery explosions. Everything inside burns.'},
+           dragon:{name:"DRAGON'S BREATH",gate:'DRAGON',range:380,spread:34,dmg:2.3,desc:'A longer, wider cone of fire.'}}}},
+  heavy:{chain:{name:'CHAIN GUNS',gate:'CHAIN GUNS',one:'Chain Gun',rate:8,moveRate:3,dmg:1.75,pierce:1,desc:'Faster still, and rounds pass through one enemy.',next:{
+           twin:{name:'TWIN BARRELS',gate:'TWIN',rate:13,desc:'Nearly two-thirds more shots.'},
+           supp:{name:'SUPPRESSORS',gate:'SUPPRESS',slow:true,rate:13,dmg:1.1,pierce:2,desc:'Enemies you hit move at half speed. Lighter rounds, but more of them, and they pierce.'}}},
+         cannon:{name:'AUTOCANNONS',gate:'CANNONS',one:'Autocannon',rate:1.5,moveRate:0.5,dmg:4,splash:2,splashR:40,blast:true,desc:'Explosive rounds. Devastating planted, near useless on the move.',next:{
+           flak:{name:'FLAK CANNONS',gate:'FLAK',rate:2.2,dmg:2.5,splash:2,splashR:50,flak:true,desc:'Air bursts: double damage to ants and chargers.'},
+           siege:{name:'SIEGE GUNS',gate:'SIEGE',rate:0.6,dmg:11,splash:6,splashR:65,wallMul:4,desc:'Slow, huge blasts. Walls crumble.'}}}},
+  shot:{auto:{name:'AUTO-SHOTGUNS',gate:'AUTO-SHOT',one:'Auto-Shotgun',rate:1.6,desc:'Fires twice as fast.',next:{
+           drum:{name:'DRUM MAGS',gate:'DRUM MAGS',rate:1.85,pellets:7,spread:8,range:360,desc:'Faster still, wider spread, shorter range.'},
+           dshot:{name:'DRAGON SHOT',gate:'DRAGON SHOT',burnHit:true,range:470,desc:'Pellets set enemies on fire. Shoots further.'}}},
+        slug:{name:'SLUG GUNS',gate:'SLUGS',one:'Slug Gun',rate:1.0,dmg:12.5,pellets:1,range:480,falloff:true,ap:true,desc:'One heavy armour-piercing slug, long range. Armour, chargers and brutes.',next:{
+           breach:{name:'BREACHERS',gate:'BREACHERS',knock:80,desc:'Slugs knock enemies back.'},
+           punch:{name:'PUNCHERS',gate:'PUNCHERS',pierce:99,desc:'Slugs go through everything in a line.'}}}},
+  tesla:{coil:{name:'TESLA COILS',gate:'COILS',one:'Coil Engineer',chain:6,dmg:4.3,desc:'Bigger coils: lightning jumps through six enemies and hits harder.',next:{
+           storm:{name:'STORM COILS',gate:'STORM',fork:true,reach:300,jump:90,desc:'Every jump splits in two, and the bolts reach further.'},
+           emp:{name:'EMP COILS',gate:'EMP',stun:0.8,emp:true,desc:'Every zap stuns for most of a second; turrets and mortars stop firing.'}}},
+         drone:{name:'DRONES',gate:'DRONES',one:'Drone Engineer',drone:true,desc:'No more lightning: drones fly out over walls and hunt enemies at the road edges first.',next:{
+           kami:{name:'KAMIKAZE DRONES',gate:'KAMIKAZE',kami:true,desc:'Drones dive in and explode, then a new one launches.'},
+           repair:{name:'REPAIR DRONES',gate:'REPAIR',repair:true,desc:'Drones shoot at half power and bring a fallen soldier back every 5 s.'}}}},
+  eng:{nests:{name:'SENTRY NESTS',gate:'NESTS',one:'Nest Engineer',maxS:6,per:4,desc:'More sentries, and they last longer.',next:{
+           flame:{name:'FLAME SENTRIES',gate:'FLAME SENTRY',sFlame:true,desc:'Sentries spray short cones of fire.'},
+           rail:{name:'RAIL SENTRIES',gate:'RAIL SENTRY',sRail:true,desc:'Slow sentry shots that pierce everything in a line.'}}},
+       mines:{name:'MINELAYERS',gate:'MINES',one:'Minelayer',mines:true,desc:'No sentries: they throw mines into the path of what is coming.',next:{
+           clay:{name:'CLAYMORES',gate:'CLAYMORES',clay:true,desc:'Bigger mines that blast forward.'},
+           spider:{name:'SPIDER MINES',gate:'SPIDERS',spider:true,desc:'Mines crawl toward the nearest enemy.'}}}},
+  drone:{kami:{name:'KAMIKAZE DRONES',gate:'KAMIKAZE',one:'Kamikaze Pilot',kami:true,desc:'Drones dive in and explode, then a new one launches.',next:{
+           swarm:{name:'SWARM',gate:'SWARM',swarm:true,desc:'Twice as many drones, each half as strong: smaller blasts over more targets.'},
+           bomb:{name:'BUNKER BOMBS',gate:'BUNKER BOMBS',bomb:true,desc:'Huge blasts that go for walls too.'}}},
+         repair:{name:'REPAIR DRONES',gate:'REPAIR',one:'Repair Pilot',repair:true,desc:'Drones shoot at half power and bring fallen soldiers back, one every 5 s.',next:{
+           medevac:{name:'MEDEVAC',gate:'MEDEVAC',medevac:true,desc:'Bring the fallen back faster, two at a time.'},
+           shdrone:{name:'SHIELD DRONES',gate:'SHIELD DRONES',shdrone:true,desc:'Drones fly into turret shots to stop them.'}}}},
+  banner:{drums:{name:'WAR DRUMS',gate:'WAR DRUMS',one:'Drummer',per:0.06,cap:0.8,desc:'+6% fire rate each, up to +80%.',next:{
+           hymn:{name:'BATTLE HYMN',gate:'HYMN',cap:1.2,desc:'The cap rises to +120%.'},
+           quick:{name:'QUICKSTEP',gate:'QUICKSTEP',quick:true,desc:'Heavies fire full speed on the move, and Rally recharges in 10 s.'}}},
+          horns:{name:'RALLY HORNS',gate:'HORNS',one:'Hornblower',revive:0.25,desc:'A quarter of fallen soldiers get back up.',next:{
+           std:{name:'THE STANDARD',gate:'STANDARD',revive:0.4,desc:'Two in five of the fallen get back up.'},
+           call:{name:'CALL TO ARMS',gate:'CALL TO ARMS',call:true,desc:'Every 6 s, one soldier of your biggest kind joins per 4 Bannermen.'}}}},
+  boomer:{rico:{name:'RICOCHETS',gate:'RICOCHET',one:'Ricochet Thrower',boom:false,rico:3,angle:30,range:700,desc:'Thrown at an angle: they bounce off the road edges up to 3 times instead of coming back.',next:{}},
+          spin:{name:'BACKSPIN',gate:'BACKSPIN',one:'Backspinner',spins:3,dmg:6.6,desc:'When one hits an enemy it bounces on to the next enemy beside or behind it, up to 3 times, then comes back.',next:{}}},
+  cowboy:{dual:{name:'DUAL WIELD',gate:'DUAL WIELD',one:'Gunslinger',cyl:12,gap:0.07,reload:2.2,dmg:4.9,desc:'Two revolvers: twelve shots before each reload.',next:{}},
+          lasso:{name:'LASSOS',gate:'LASSOS',one:'Wrangler',lasso:true,desc:'At every reload each Cowboy lassos an enemy: it can\'t move for 2 s and takes a heavy hit.',next:{}}},
+  knight:{charge:{name:'CHARGE',gate:'CHARGE',one:'Charging Knight',reach:260,dmg:5.6,dash:true,desc:'Knights dash up the road to strike, so they reach much further.',next:{}},
+          guard:{name:'GUARD',gate:'GUARD',one:'Guard',parry:0.5,desc:'Knights block: each one parries half of the hits that would take them.',next:{}}},
+  wild:{quick:{name:'QUICK HANDS',gate:'QUICK HANDS',one:'Card Sharp',rate:2,desc:'Throws cards much faster.',next:{}},
+        stakes:{name:'HIGH STAKES',gate:'HIGH STAKES',one:'High Roller',dmg:14,joker:true,desc:'Every card hits twice as hard, but a Joker joins the deck and does nothing.',next:{}}},
+  silent:{shadow:{name:'SHADOWSTEP',gate:'SHADOWSTEP',one:'Shadow',dodge:0.6,strike:20,desc:'Silents dodge 60% of hits, and every dodge strikes back at the nearest enemy.',next:{}},
+          cover:{name:'COVER',gate:'COVER',one:'Lookout',cover:true,desc:'Everyone else can dodge too: 3% per Silent, up to 30%.',next:{}}},
+  bers:{toss:{name:'THROWING AXES',gate:'THROW AXES',one:'Axe Thrower',melee:false,axe:true,range:380,pierce:2,rate:1.1,dmg:15.5,desc:'They throw their axes: spinning blades that fly up the road and cut through 3 enemies.',next:{}},
+        great:{name:'GREATAXES',gate:'GREATAXES',one:'Greataxe',reach:140,hits:5,dmg:15.5,rate:0.7,desc:'Bigger, slower swings that hit up to 5 enemies in a wider arc.',next:{}}},
+  shield:{bounce:{name:'BOUNCING SHIELDS',gate:'BOUNCING',one:'Bouncing Shield',bounce:true,desc:'Enemy shots bounce off and fly back at them.',next:{}},
+          wave:{name:'WAVE SHIELDS',gate:'WAVE',one:'Wave Shield',wave:true,desc:'Every 4 s a shove pushes enemies back and stings them.',next:{}}}
+};
+function KP(k){const b=g&&g.branch[k];if(!b)return KINDS[k];const B=BRANCH[k][b],b2=g.branch2[k];return Object.assign({},KINDS[k],B,b2?B.next[b2]:{});}
+function leaf(k){const b=g&&g.branch[k];if(!b)return null;const b2=g.branch2[k];return b2?BRANCH[k][b].next[b2]:BRANCH[k][b];}
+function kname(k){const L=leaf(k);return L?L.name:KINDS[k].name;}
+function kgate(k){const L=leaf(k);return L?L.gate:KINDS[k].gate||KINDS[k].name;} // short label for gates
+// proto 7: building pays. Each gate of a kind adds a pip (+10% damage, up to 10 pips), and FOCUS adds that kind's share of
+// your gun soldiers on top: a crowd that is all one kind does double damage with it. Shields don't count toward the share.
+const TUNE={rankP:0.10,rankMax:10,focus:1.0,boostCap:3,areaCap:0.22,hp1:[1.0,1.4],hp2:[2.6,4.7],bossHP:{1:5.5,2:7,3:11,4:9},enrage:21,lead:4,
+  share:true,breach:true,breachMax:14,breachDrain:0.25,
+  // % of every kind one hit takes (expendable crowd); elites add `elite`
+  bite:{grunt:12.5,plated:12.5,ant:4.7,charger:23,brute:31,thief:7,riot:14.5,priest:12.5,blob:16.5,flyer:8.5,elite:6,turret:9.5,mortar:23,bomber:23,tank:25,hatchBar:21,hatchBlast:21,acid:23,siege:7},
+  // how much of the BREACH bar one enemy fills when it gets past the crowd (elites count double)
+  breachVal:{grunt:1,plated:1,ant:0.5,brute:3,riot:1.5,blob:1.5,flyer:1,bomber:1,charger:1.5}};
+function fusedOf(k){let n=0;for(const id in g.fused)if(PROMOS[id].kind===k)n+=g.fused[id];return n;}
+// share by strength, not head count: a Heavy counts for more than a Rifleman, the same way gates print fewer of them
+function gunShare(k){if(!KINDS[k].rate)return 0;let t=0;for(const q of ALLK)if(KINDS[q].rate)t+=(g.K[q]+fusedOf(q))/KINDS[q].mul;return t>0?(g.K[k]+fusedOf(k))/KINDS[k].mul/t:0;}
+function focusMul(k){return 1+TUNE.focus*gunShare(k);}
+function rankMul(k){return (1+TUNE.rankP*Math.min(g.rank[k],TUNE.rankMax))*focusMul(k);}
+function topKind(){let b=null;for(const k of ALLK)if(g.K[k]>0&&(!b||g.K[k]>g.K[b]))b=k;return b;}
+function topGun(){let b=null;for(const k of ALLK)if(KINDS[k].rate&&g.K[k]>0&&(!b||g.K[k]>g.K[b]))b=k;return b;}
+// enemies toughen as each section goes on (section 1 starts soft)
+function hpScale(){const a=g.sec>=2?TUNE.hp2:TUNE.hp1,len=g.script.length?g.script[g.script.length-1][0]:60,k=g.phase==='road'?Math.min(1,g.st/len):1;return a[0]+(a[1]-a[0])*k;}
+// an area hit takes at most about a third of the crowd, nearest the centre first
+function areaCap(list,x,y){const cap=Math.max(2,Math.ceil(TUNE.areaCap*regN()));if(list.length<=cap)return list;return list.sort((a,b)=>figDist(a,x,y)-figDist(b,x,y)).slice(0,cap);}
+const ALLK=['rifle','gren','heavy','shot','shield','tesla','boomer','cowboy','knight','wild','silent','bers','eng','drone','banner']; // every kind, in display order
+// Riflemen, Grenadiers and Shields to start; the rest unlock by challenges (or all at once with the testing switch, and always in the Daily Muster)
+const UNLOCKS=[
+  {id:'heavy',what:'Heavies',how:'500 kills in total',prog:()=>Math.min(PROG.kills,500)+'/500',test:r=>PROG.kills>=500},
+  {id:'shot',what:'Shotgunners',how:'Beat the Tank',test:r=>r.tank},
+  {id:'tesla',what:'Engineers',how:'Kill 150 ants in one run',test:r=>r.ants>=150},
+  {id:'drums',what:'War Drums card',how:'Win with 100 soldiers',test:r=>r.win&&r.home>=100},
+  {id:'medic',what:'Field Medic card',how:'Win a run',test:r=>r.win},
+  {id:'hot',what:'Hot Rounds card',how:'50 burning kills in one run',test:r=>r.fire>=50}];
+function baseUnlocked(id){return PROG.testAll||['rifle','gren','shield'].includes(id)||!!PROG.unl[id]||!UNLOCKS.some(u=>u.id===id);}
+function kindUnlocked(k){return (g&&(g.dailyRun||g.practice))||baseUnlocked(k);}
+function cardUnlocked(c){const C=CARDS[c];if(C.officer)return kindUnlocked(C.officer);return (g&&(g.dailyRun||g.practice))||baseUnlocked(c);}
+// proto 7: six kinds. Tesla Troopers and Drone Operators are now one kind, Engineers; Bannermen became the War Drums card; towed sentries and mines are gone
+const RETIRED=['eng','drone','banner'];
+function playable(k){return !RETIRED.includes(k);}
+function unlockedK(){return ALLK.filter(k=>playable(k)&&kindUnlocked(k));}
+// Each road recruits from a roster of five kinds: Riflemen and Grenadiers plus three others you have unlocked. The fork adds one more.
+function makeRoster(){const base=['rifle','gren','shield'].filter(kindUnlocked),rest=unlockedK().filter(k=>!base.includes(k));for(let i=rest.length-1;i>0;i--){const j=Math.floor(g.rnd()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]];}return base.concat(rest.slice(0,5-base.length));}
+function rosterK(){return unlockedK().filter(k=>g.roster.includes(k)||g.K[k]>0);}
+function kobj(v){const o={};for(const k of ALLK)o[k]=v;return o;}
+const FRONT=['shield','knight','bers','shot','heavy','tesla','silent','boomer','cowboy','wild','rifle','drone','gren','eng','banner']; // front row (top) to back row
+function renderStart(){
+  const el=document.getElementById('kinds');let h='';for(const k of ALLK){if(!playable(k))continue;const K=KINDS[k],U=UNLOCKS.find(u=>u.id===k),lock=!baseUnlocked(k);
+    h+='<span style="opacity:'+(lock?0.35:1)+'">'+swatch(K)+'</span><span style="opacity:'+(lock?0.6:1)+'"><b>'+K.one+'</b>: '+(lock?'<i>Locked.</i> '+U.how+(U.prog?' ('+U.prog()+')':''):K.desc)+'</span>';}
+  for(const U of UNLOCKS)if(!KINDS[U.id]&&!baseUnlocked(U.id))h+='<span></span><span style="opacity:0.6"><b>'+U.what+'</b>: <i>Locked.</i> '+U.how+'</span>';
+  el.innerHTML=h;const top=PROG.testAll?10:PROG.max;PROG.threat=Math.min(PROG.threat,top);
+  document.getElementById('thv').textContent='Threat '+PROG.threat;document.getElementById('thd').textContent=PROG.threat?('Adds: '+THREATS[PROG.threat]+(PROG.threat>1?', plus every level below':'')):'Normal road. Win it to unlock Threat 1.';
+  {const t=document.getElementById('tall');t.classList.toggle('off',!PROG.testAll);t.classList.toggle('on',!!PROG.testAll);t.textContent=PROG.testAll?'Testing ON: everything unlocked. Tap to turn off':'Testing OFF: unlock things as you play. Tap to turn on';}
+  {const t=document.getElementById('tdmg');t.classList.toggle('off',!!PROG.classic);t.classList.toggle('on',!PROG.classic);t.textContent=PROG.classic?'Old rules: hits take whoever they land on. Tap for the new rules':'New rules: hits take a share of everyone, BREACH bar on. Tap for the old rules';}
+  const D=PROG.daily,played=D.date===today()&&D.played;document.getElementById('dailyd').textContent=played?'Today\'s Daily Muster: '+D.score+' points. Play again for practice; only the first try counts.':'Today\'s road, the same for everyone. Everything unlocked. One scored try.'+(D.best?' Best ever: '+D.best:'');}
+renderStart();
+function swatch(K){const c=K.col;const p={circle:'<circle cx="9" cy="9" r="7"/>',triangle:'<polygon points="9,1 17,16 1,16"/>',square:'<rect x="2" y="2" width="14" height="14"/>',diamond:'<polygon points="9,1 17,9 9,17 1,9"/>',shield:'<path d="M2 2h14v7c0 4-4 7-7 8-3-1-7-4-7-8z"/>',hex:'<polygon points="9,1 16,5 16,13 9,17 2,13 2,5"/>',plus:'<path d="M7 1h4v6h6v4h-6v6h-4v-6h-6v-4h6z"/>',ring:'<circle cx="9" cy="9" r="5.5" fill="none" stroke="'+c+'" stroke-width="4"/>',flag:'<path d="M2 1h3v16h-3zM5 2l11 4-11 4z"/>',chevron:'<polygon points="1,15 9,2 17,15 12,15 9,9 6,15"/>',star:'<polygon points="9,1 11,7 17,7 12,11 14,17 9,13 4,17 6,11 1,7 7,7"/>',card:'<rect x="4" y="1" width="10" height="16" rx="1.5"/>',axe:'<polygon points="1,2 9,7 17,2 17,16 9,11 1,16"/>'}[K.shape];return '<svg class="sw" viewBox="0 0 18 18" fill="'+c+'">'+p+'</svg>';}
+
+// ---------- officers, cards and promotions ----------
+const CARDS={
+  sapper:{name:'Sapper Chief',officer:'gren',col:'#f472b6',desc:'Grenadier splash +20 px and +50% damage to walls. Flamethrowers burn a second longer.',promo:'battery'},
+  gunchief:{name:'Gun Chief',officer:'heavy',col:'#facc15',desc:'Heavies spin up twice as fast and keep half their fire rate while moving.',promo:'nest'},
+  drill:{name:'Drill Sergeant',officer:'shield',col:'#60a5fa',desc:'Shields take 4 cracks before they break, not 3.',promo:'bulwark'},
+  breach:{name:'Breach Captain',officer:'shot',col:'#fb923c',desc:'Shotguns fire one more pellet and reach 30% further.',promo:'wall'},
+  line:{name:'Line Sergeant',officer:'rifle',col:'#4ade80',desc:'Riflemen fire 10% faster.',promo:'firing'},
+  hacker:{name:'Gate Hacker',col:'#2ee6a6',desc:'Gates pump twice as fast and cap at 2.5x the printed number.'},
+  quarter:{name:'Quartermaster',col:'#c9f27a',desc:'Every kind gate prints +1 more.'},
+  hot:{name:'Hot Rounds',col:'#ff7a2a',desc:'Bullets set enemies on fire: 2 dmg/s for 3 s. Fire ignores armour.'},
+  medic:{name:'Field Medic',col:'#ff9ecb',desc:'Every 8 s, +2 Riflemen.'},
+  chief:{name:'Chief Engineer',officer:'tesla',col:'#22d3ee',desc:'Lightning jumps to one more enemy. Drones hit 30% harder.',promo:'tower'},
+  drums:{name:'War Drums',col:'#d6a35c',desc:'Every kind fires 25% faster.'}
+};
+const PROMOS={
+  battery:{name:'MORTAR BATTERY',kind:'gren',need:12,officer:'sapper',notBranch:'flame',col:'#f472b6',desc:'Every second it lobs two big shells at the nearest enemies, even ones at the road edge. Walls take triple.'},
+  nest:{name:'GATLING NEST',kind:'heavy',need:10,officer:'gunchief',col:'#facc15',desc:'Fires 20 heavy rounds a second that pass through, even while moving.'},
+  inferno:{name:'INFERNO ENGINE',kind:'gren',need:12,officer:'sapper',branch:'flame',col:'#fb7185',desc:'Every 1.5 s it rolls a wide wall of fire far up the road. Everything it touches burns.'},
+  wall:{name:'WALL OF LEAD',kind:'shot',need:10,officer:'breach',col:'#fb923c',desc:'A wide line that fires a sweeping fan of twelve heavy pellets every 0.8 s.'},
+  firing:{name:'FIRING LINE',kind:'rifle',need:12,officer:'line',col:'#4ade80',desc:'Every second, one volley: twelve heavy shots across the whole road, each passing through three enemies.'},
+  bulwark:{name:'BULWARK',kind:'shield',need:8,officer:'drill',col:'#60a5fa',hidden:true,hint:'Shields, and the right sergeant...',desc:'One big wall up front with 5 plates per Shield. Any hit costs one plate instead of soldiers; ants bounce off.'},
+  tower:{name:'TESLA TOWER',kind:'tesla',need:10,officer:'chief',notBranch:'drone',col:'#22d3ee',desc:'Every 1.2 s a huge bolt jumps through ten enemies and stuns them. With nothing close, it strikes the boss.'},
+  hive:{name:'DRONE HIVE',kind:'tesla',need:10,officer:'chief',branch:'drone',col:'#a78bfa',desc:'Every second it launches two heavy drones that dive on the nearest targets, even at the road edge.'}
+};
+function maxCards(){return g&&g.threat>=10?3:4;}
+// the promotion an Officer leads to right now (Sapper Chief: Mortar Battery or Inferno Engine, Chief Engineer: Tesla Tower or Drone Hive)
+function promoOf(id){return Object.keys(PROMOS).find(q=>{const Q=PROMOS[q];return Q.officer===id&&!(Q.branch&&g.branch[Q.kind]!==Q.branch)&&!(Q.notBranch&&g.branch[Q.kind]===Q.notBranch);})||CARDS[id].promo;}
+
+// ---------- run state ----------
+let g=null,mode='start';
+let hitstop=0,shakeA=0,shakeT=0,timescale=1,tsT=0;
+function newRun(sd,o){o=o||{};
+  g={seed:sd,dailyRun:!!o.daily,practice:!!o.practice,threat:o.daily||o.practice?0:PROG.threat,antKills:0,fireKills:0,wallsBroken:0,hadShield:false,tankDown:false,newUnl:[],rnd:mulberry32(sd),lr:mulberry32(sd^0x2f6b3a1d),t:0,st:0,sec:1,phase:'road',
+    K:Object.assign(kobj(0),{rifle:5}),fused:{},promosMade:[],rank:kobj(0),branch:kobj(null),branch2:kobj(null),shieldDmg:0,bulPlates:0,waveT:3,wallT:1.5,lineT:1.2,infT:1.5,waves:[],nextFire:{},
+    cx:195,tx:195,cy:PITY1,ty:PITY1,vx:0,vy:0,mgRate:2,retT:-1,retY0:PITY1,keyY:false,
+    cards:[],bullets:[],gates:[],walls:[],enemies:[],shots:[],tokens:[],parts:[],pops:[],rags:[],mortars:[],
+    script:[],si:0,scrollV:0,kills:0,bosses:0,boss:null,draft:null,over:false,overT:0,deathBy:null,
+    cFlash:0,cCol:'#fff',medicT:0,phaseT:0,hudMsg:null,hudMsgT:0,figS:1.5,disp:5,
+    lost:kobj(0),hitsThisBoss:0,emit:{},batteryT:1,forgeFx:null,pickLog:[],
+    trucksKilled:0,route:null,fork:null,night:false,gateBonus:1,muds:[],bridge:null,seen:{},corpses:[],zaps:[],sentries:[],sentT:0.5,mines:[],mineT:1,drones:[],fallen:[],repT:5,callT:6,drops:[],odT:0,apT:0,rallyT:0,rallyCD:0,lastTap:0,evo:[],trainT:12,swapCD:0,share:TUNE.share&&!PROG.classic,breachOn:TUNE.breach&&!PROG.classic,breach:0,breachPeak:0,breachFl:0};
+  if(T(8))g.K.rifle=3;
+  g.roster=makeRoster();
+  g.script=buildSection(1,g.rnd);
+}
+function has(c){return g.cards.includes(c);}
+function regN(){let n=0;for(const k in g.K)n+=g.K[k];return n;}
+function fusedN(){let n=0;for(const k in g.fused)n+=g.fused[k];return n;}
+function totalN(){return regN()+fusedN();}
+function promoReady(id){const P=PROMOS[id];if(P.branch&&g.branch[P.kind]!==P.branch)return false;if(P.notBranch&&g.branch[P.kind]===P.notBranch)return false;return !(id in g.fused)&&!g.promosMade.includes(id)&&has(P.officer)&&g.K[P.kind]>=P.need;}
+
+// ---------- formation ----------
+// Up to 60 figures are drawn. Each kind gets figures in proportion to its count (at least 1). Kinds fill rows front to back.
+// Fused units sit in their own row at the very back (Bulwark at the very front).
+let F=null;
+function formation(){
+  const N=regN(),D=Math.min(N,MAXDRAW),sp=12*Math.min(1.25,g.figS/1.2+0.1);
+  const list=[]; // one figure per soldier; past 90 the extras stand undrawn in the back ranks
+  if(N>0)for(const k of FRONT){const c=g.K[k];if(c<=0)continue;const d=N<=D?c:Math.max(1,Math.round(c*D/N));for(let i=0;i<d;i++)list.push(k);}
+  const C=Math.min(8,Math.max(3,Math.ceil(Math.sqrt(1.6*Math.max(list.length,1))))),rowH=10*g.figS/1.2+2;
+  const rows=Math.max(1,Math.ceil((list.length+1)/C)); // +1: the captain stands in the back row
+  const big=Object.keys(g.fused).filter(k=>k!=='bulwark');
+  const bul=('bulwark' in g.fused)?22:0,bigH=big.length?34:0;
+  const w=Math.max(40,sp*(C-1)+14),h=bul+rows*rowH+bigH+6;
+  const y1=g.cy,y0=y1-h;
+  const pos=[];
+  for(let i=0;i<list.length;i++){const r=Math.floor(i/C),c=i%C,inRow=Math.min(C,list.length-r*C);
+    pos.push({k:list[i],x:g.cx+(c-(inRow-1)/2)*sp,y:y0+bul+r*rowH+rowH/2+2});}
+  const capR=Math.floor(list.length/C),capC=list.length%C,inRowCap=Math.min(C,list.length+1-capR*C);
+  const cap={x:g.cx+(capC-(inRowCap-1)/2)*sp,y:y0+bul+capR*rowH+rowH/2+2};
+  const bigs=big.map((k,i)=>({k,x:g.cx+(i-(big.length-1)/2)*40,y:y1-bigH/2}));
+  F={C,sp,rowH,w,h,x0:g.cx-w/2,x1:g.cx+w/2,y0,y1,pos,cap,bigs,bul,backY:y1-bigH-rowH/2};
+  return F;
+}
+
+// ---------- spawners ----------
+function kindPrinted(kind,v){return Math.max(1,Math.ceil(v*KINDS[kind].mul*(g.gateBonus||1)))+(has('quarter')?1:0);}
+// a gate row: defs are {k:'kind',kind,v} {k:'minus',v} or {k:'pick',v} (a random kind, never one already in the row)
+function spawnGateRow(defs,mir){
+  tip('gate','GATES: slide into one to add that kind of soldier');
+  const used=new Set(defs.filter(d=>d.kind).map(d=>d.kind));
+  defs=defs.map(d=>{if(d.k!=='pick')return d;const pool=rosterK().filter(k=>!used.has(k)),tk=topKind(),wt=pool.map(k=>k===tk?TUNE.lead:g.K[k]>0?2:1);let r=g.rnd()*wt.reduce((a,b)=>a+b,0),kind=pool[pool.length-1];for(let j=0;j<pool.length;j++){r-=wt[j];if(r<0){kind=pool[j];break;}}used.add(kind);return{k:'kind',kind,v:d.v};});
+  // a kind at rank 3 with no branch yet turns this row into its upgrade row: one gate per branch, both add that kind
+  // a kind at rank 3 with no branch yet turns this row into its upgrade row: two gates, one per upgrade, both add that kind
+  let upgradeRow=false;
+  {const rk=ALLK.find(k=>(g.rank[k]>=RANKUP&&!g.branch[k])||(g.rank[k]>=RANKUP2&&g.branch[k]&&!g.branch2[k]&&Object.keys(BRANCH[k][g.branch[k]].next).length));
+    if(rk){const v=Math.max(3,...defs.filter(d=>d.k==='kind').map(d=>d.v)),tier=g.branch[rk]?2:1,opts=tier===1?BRANCH[rk]:BRANCH[rk][g.branch[rk]].next;defs=Object.keys(opts).map(o=>({k:'kind',kind:rk,v,branch:o,tier}));upgradeRow=true;tip('upgrade','UPGRADE: two gold gates. Take one to change how '+KINDS[rk].name+' fight',1);}}
+  // a ready promotion takes one slot of the row (never on an upgrade row)
+  for(const id in PROMOS){if(!upgradeRow&&promoReady(id)&&defs.length>=2){let idx=defs.findIndex(d=>d.k==='minus');if(idx<0)idx=Math.floor(g.rnd()*defs.length);defs[idx]={k:'forge',promo:id,v:defs[idx].v||5};break;}}
+  // a swap gate: half of one big kind becomes another kind at equal strength. It takes a red gate's slot, or a random one.
+  g.swapCD++;
+  if(!upgradeRow&&!defs.some(d=>d.k==='forge')&&defs.length>=2&&g.swapCD>=3){const big=rosterK().filter(k=>g.K[k]>=8);
+    if(big.length&&g.rnd()<0.45){const from=big[Math.floor(g.rnd()*big.length)],to=rosterK().filter(k=>k!==from&&!defs.some(d=>d.kind===k));
+      if(to.length){let idx=defs.findIndex(d=>d.k==='minus');if(idx<0)idx=Math.floor(g.rnd()*defs.length);defs[idx]={k:'swap',from,to:to[Math.floor(g.rnd()*to.length)]};g.swapCD=0;}}}
+  const n=defs.length,gw=RW/n,row={y:-220,h:72,gates:[],done:false};
+  defs.forEach((d,i)=>{const idx=mir?(n-1-i):i,x0=RX0+gw*idx;
+    const gt={x0,x1:x0+gw,k:d.k,kind:d.kind||null,branch:d.branch||null,tier:d.tier||0,promo:d.promo||null,printed:d.k==='kind'?kindPrinted(d.kind,d.v):d.k==='forge'?kindPrinted(PROMOS[d.promo].kind,d.v):Math.ceil((d.v||0)*(d.k==='minus'&&g.evo.includes('code')?0.5:1)*(d.k==='minus'&&T(4)?1.5:1)),charge:d.k==='kind'&&g.evo.includes('code')?0.5:0,pop:0,capped:false,zeroed:false,gold:0,from:d.from||null,to:d.to||null};
+    row.gates.push(gt);});
+  row.gates.sort((a,b)=>a.x0-b.x0);g.gates.push(row);
+}
+function gateVal(gt){
+  if(gt.k==='kind')return gt.printed+Math.floor(gt.printed*(has('hacker')?1.5:1)*gt.charge);
+  if(gt.k==='minus')return Math.min(0,-gt.printed+Math.floor(gt.printed*gt.charge));
+  return 0;
+}
+function softGain(n){return totalN()>SOFTCAP?Math.max(1,Math.floor(n/2)):n;}
+function spawnMud(x0,x1,h){g.muds.push({x0,x1,y:-h-20,h});}
+function spawnBridge(){g.bridge={x0:115,x1:275,y:-760,h:740};}
+function onBridge(){const b=g.bridge;return b&&F&&F.y1>b.y&&F.y0<b.y+b.h;}
+function inMud(){return g.muds.some(m=>g.cx>m.x0&&g.cx<m.x1&&F.y1>m.y&&F.y0<m.y+m.h);}
+function spawnWall(K,x0,x1,mir){if(mir){const a=W-x1,b=W-x0;x0=a;x1=b;}g.walls.push({x0,x1,y:-220,h:40,K,pool:0,flash:0});}
+const EBASE={grunt:{hp:[6,11],cost:3,w:16},plated:{hp:[14,28],cost:5,w:18},ant:{hp:[1,1],cost:1,w:8},charger:{hp:[26,40],cost:6,w:14},brute:{hp:[80,110],cost:10,w:28},turret:{hp:[25,40],cost:0,w:22},mortar:{hp:[30,45],cost:0,w:26},truck:{hp:[150,300],cost:0,w:58},
+  thief:{hp:[7,12],cost:2,w:14},bomber:{hp:[5,9],cost:0,w:14},riot:{hp:[18,30],cost:4,w:18},priest:{hp:[30,45],cost:3,w:20},blob:{hp:[20,32],cost:5,w:24},flyer:{hp:[6,10],cost:2,w:16}};
+// the first time a new enemy shows up in a run, the banner says how to beat it
+const EHINT={mortar:'MORTAR: shells land on the pink stripes. Step out',turret:'TURRET: it shoots at you. Shields block it',charger:'CHARGER: it dashes down its line. Step aside',brute:'BRUTE: hits very hard if it reaches you. Kill it for +5',thief:'GATE THIEF: it turns your best gate red. Shoot it first',bomber:'BOMBER: kill it early. Shields soak the blast',riot:'RIOT SHIELDS: hit them from the side',priest:'FIELD PRIEST: it raises the dead. Reach it fast',blob:'SPLITTER: bursts into ants',flyer:'FLYERS: they fly over walls and Shields'};
+function enemy(type,x,y,o){
+  const B=EBASE[type],i=Math.min(g.sec,2)-1;
+  const hs=type==='truck'?1:hpScale(),e={type,x,y,hp:B.hp[i]*hs,maxhp:B.hp[i]*hs,cost:B.cost,w:B.w,h:B.w,burn:0,burnT:0,flash:0,age:0,dead:false,bx:x,lane:Math.max(-120,Math.min(120,x-195))};
+  if(type==='truck'){e.h=34;e.vx=78*(o&&o.dir||1);}
+  if(type==='mortar'){e.fireT=1.2;}
+  if(EHINT[type]&&!g.seen[type]){g.seen[type]=1;tip('e.'+type,EHINT[type]);}
+  if(T(2)&&['grunt','plated','charger','riot','thief'].includes(type)&&!(o&&o.raised)&&rand()<0.15){e.elite=true;e.hp*=2.5;e.maxhp*=2.5;e.cost+=2;e.w+=4;e.h+=4;}
+  if(T(5)&&type==='thief'&&!(o&&o.pair))enemy('thief',W-x,y-24,{pair:true});
+  Object.assign(e,o||{});g.enemies.push(e);return e;
+}
+function pack(type,n,x,mir,gap){if(mir)x=W-x;gap=gap||24;const span=(n-1)*gap;x=Math.max(RX0+20+span/2,Math.min(RX1-20-span/2,x));for(let i=0;i<n;i++)enemy(type,x-span/2+i*gap,-20-(i%2)*12);if(T(7)&&type!=='bomber')enemy('bomber',x,-70);}
+function swarm(n,x,mir){if(mir)x=W-x;for(let i=0;i<n;i++)enemy('ant',Math.max(RX0+8,Math.min(RX1-8,x+(g.rnd()-0.5)*140)),-20-g.rnd()*160);}
+function truck(){const d=g.rnd()<0.5?1:-1;enemy('truck',d>0?-40:W+40,210,{dir:d});setMsg('SUPPLY TRUCK: shoot it for a crate',2);}
+function buildSection(sec,rnd,route){
+  const E=[],M=()=>rnd()<0.5,P=(v)=>({k:'pick',v});
+  if(sec===1){ // about 62 s. Old foes only, plus two new ones: the Gate Thief (20 s) and the Splitter (48 s)
+    E.push([1.4,()=>spawnGateRow([{k:'kind',kind:'rifle',v:3},{k:'kind',kind:'gren',v:3}],M())]);
+    E.push([4.6,()=>pack('grunt',3,195,M())]);
+    E.push([6.6,()=>spawnGateRow([P(3),P(3)],M())]);
+    E.push([8.0,()=>spawnCage(M()?100:290)]);
+    E.push([9.4,()=>pack('plated',2,M()?110:280,false)]);
+    E.push([12.0,()=>spawnGateRow([P(3),P(3),{k:'minus',v:4}],M())]);
+    E.push([13.6,()=>enemy('mortar',M()?RX0+16:RX1-16,-30)]);
+    E.push([14.6,()=>spawnDrop()]);
+    E.push([15.8,()=>swarm(12,195,M())]);
+    E.push([18.0,()=>spawnGateRow([P(4),P(4)],M())]);
+    E.push([20.0,()=>enemy('thief',M()?110:280,-30)]);
+    E.push([20.4,()=>pack('grunt',3,M()?100:290,false)]);
+    E.push([22.0,()=>{const m=M();spawnWall(14,RX0,195,m);}]);
+    E.push([24.0,()=>spawnGateRow([P(4),P(4)],M())]);
+    E.push([26.0,()=>enemy('charger',M()?120:270,-20)]);
+    E.push([27.4,truck]);
+    E.push([30.0,()=>spawnGateRow([P(4),P(5),{k:'minus',v:5}],M())]);
+    E.push([32.0,()=>pack('plated',2,M()?150:240,false)]);
+    E.push([33.6,()=>enemy('brute',M()?120:270,-30)]);
+    E.push([35.0,()=>spawnCage(M()?100:290)]);
+    E.push([36.4,()=>spawnGateRow([P(5),P(5)],M())]);
+    E.push([38.4,()=>{enemy('charger',110,-20);enemy('charger',280,-40);}]);
+    E.push([39.6,()=>spawnDrop()]);
+    E.push([40.4,()=>swarm(16,M()?120:270,false)]);
+    E.push([42.6,()=>spawnGateRow([P(5),P(5)],M())]);
+    E.push([44.4,()=>{const m=M();spawnWall(22,195,RX1,m);}]);
+    E.push([45.8,()=>pack('plated',3,195,false)]);
+    E.push([47.8,()=>enemy('blob',195,-30)]);
+    E.push([49.0,()=>spawnGateRow([P(6),P(6)],M())]);
+    E.push([51.0,()=>pack('grunt',4,195,false)]);
+    E.push([52.4,()=>enemy('turret',M()?RX0+16:RX1-16,-30)]);
+    E.push([54.0,()=>spawnGateRow([P(6),P(6),{k:'minus',v:6}],M())]);
+    E.push([55.8,()=>{swarm(14,M()?120:270,false);enemy('blob',M()?130:260,-40);}]);
+    E.push([58.6,()=>spawnGateRow([P(6),P(7)],M())]);
+    E.push([60.0,()=>{pack('plated',3,195,false);enemy('charger',M()?110:280,-40);}]);
+    E.push([62.0,()=>{g.phase='clear';g.phaseT=0;}]);
+  }else if(route==='swamp'){
+    const O=1.9;
+    E.push([1.0,()=>setMsg('SECTION 2: THE SWAMP (night)',1.8)]);
+    E.push([O+0.2,()=>spawnGateRow([P(5),P(5)],M())]);
+    E.push([O+1.2,()=>{const m=M();spawnMud(m?RX0:RX1-220,m?RX0+220:RX1,260);}]);
+    E.push([O+2.4,()=>swarm(12,195,false)]);
+    E.push([O+3.8,()=>enemy('blob',195,-30)]);
+    E.push([O+4.6,()=>spawnCage(M()?100:290)]);
+    E.push([O+5.6,()=>spawnGateRow([P(5),P(5),{k:'minus',v:6}],M())]);
+    E.push([O+7.0,()=>{for(let i=0;i<3;i++)enemy('flyer',100+i*95,-30-i*24);}]);
+    E.push([O+8.2,()=>{swarm(10,110,false);setMsg('HORDE!',1.4);}]);
+    E.push([O+8.9,()=>swarm(10,195,false)]);
+    E.push([O+9.6,()=>{swarm(10,280,false);enemy('blob',130,-30);enemy('blob',260,-50);}]);
+    E.push([O+11.6,()=>spawnGateRow([P(6),P(6)],M())]);
+    E.push([O+12.4,()=>{const m=M();spawnMud(m?195:RX0,m?RX1:195,240);}]);
+    E.push([O+13.0,()=>spawnDrop()]);
+    E.push([O+13.4,()=>enemy('thief',M()?110:280,-30)]);
+    E.push([O+14.6,()=>{for(let i=0;i<4;i++)enemy('flyer',80+i*76,-30-i*20);}]);
+    E.push([O+16.6,()=>spawnGateRow([P(6),P(6)],M())]);
+    E.push([O+18.0,()=>{enemy('blob',130,-30);enemy('blob',260,-30);}]);
+    E.push([O+19.0,()=>swarm(16,M()?120:270,false)]);
+    E.push([O+20.0,()=>spawnCage(M()?100:290)]);
+    E.push([O+21.6,()=>spawnGateRow([P(6),P(7),{k:'minus',v:6}],M())]);
+    E.push([O+22.4,()=>spawnMud(125,265,220)]);
+    E.push([O+23.2,()=>{for(let i=0;i<3;i++)enemy('flyer',100+i*95,-30-i*24);enemy('bomber',195,-60);}]);
+    E.push([O+25.0,()=>{swarm(20,195,false);enemy('blob',M()?120:270,-40);}]);
+    E.push([O+26.4,()=>spawnDrop()]);
+    E.push([O+27.6,()=>spawnGateRow([P(7),P(7)],M())]);
+    E.push([O+29.0,()=>{for(let i=0;i<4;i++)enemy('flyer',80+i*76,-30-i*20);}]);
+    E.push([O+30.2,()=>{enemy('blob',110,-30);enemy('blob',195,-60);enemy('blob',280,-30);}]);
+    E.push([O+31.4,()=>{enemy('bomber',140,-20);enemy('bomber',250,-50);}]);
+    E.push([O+33.6,()=>spawnGateRow([P(7),P(7)],M())]);
+    lastPush(E,O,'swamp',M,P);
+  }else if(route==='fortress'){
+    const O=1.9;
+    E.push([1.0,()=>setMsg('SECTION 2: THE FORTRESS',1.6)]);
+    E.push([O+0.2,()=>spawnGateRow([P(5),P(5)],M())]);
+    E.push([O+1.6,()=>{const m=M();spawnWall(26,RX0,215,m);}]);
+    E.push([O+3.0,()=>pack('riot',3,195,false)]);
+    E.push([O+3.6,()=>enemy('priest',M()?120:270,-30)]);
+    E.push([O+4.6,()=>spawnCage(M()?100:290)]);
+    E.push([O+5.6,()=>spawnGateRow([P(5),P(5),{k:'minus',v:6}],M())]);
+    E.push([O+6.4,()=>{enemy('turret',RX0+16,-30);enemy('turret',RX1-16,-60);}]);
+    E.push([O+7.6,()=>pack('plated',4,195,false)]);
+    E.push([O+9.0,()=>{spawnBridge();setMsg('BRIDGE: get to the middle',1.8);}]);
+    E.push([O+10.0,()=>swarm(10,195,false)]);
+    E.push([O+11.0,()=>enemy('charger',195,-20)]);
+    E.push([O+12.2,()=>pack('riot',2,195,false)]);
+    E.push([O+13.8,()=>spawnDrop(195)]);
+    E.push([O+15.4,()=>spawnGateRow([P(6),P(6)],M())]);
+    E.push([O+16.6,()=>{const m=M();spawnWall(30,175,RX1,m);}]);
+    E.push([O+17.6,()=>enemy('turret',M()?RX0+16:RX1-16,-30)]);
+    E.push([O+18.6,()=>enemy('brute',195,-30)]);
+    E.push([O+19.6,()=>enemy('priest',M()?120:270,-30)]);
+    E.push([O+20.4,()=>spawnCage(M()?100:290)]);
+    E.push([O+21.6,()=>spawnGateRow([P(6),P(7),{k:'minus',v:6}],M())]);
+    E.push([O+23.0,()=>pack('riot',3,M()?150:240,false)]);
+    E.push([O+24.2,()=>{const m=M();spawnWall(30,RX0,215,m);}]);
+    E.push([O+25.0,()=>pack('plated',5,195,false)]);
+    E.push([O+26.4,()=>{enemy('turret',RX0+16,-30);enemy('turret',RX1-16,-60);}]);
+    E.push([O+27.6,()=>spawnGateRow([P(7),P(7)],M())]);
+    E.push([O+28.6,()=>{enemy('charger',100,-20);enemy('charger',195,-50);enemy('charger',290,-20);}]);
+    E.push([O+30.0,()=>enemy('thief',M()?110:280,-30)]);
+    E.push([O+30.6,()=>{pack('riot',2,M()?140:250,false);pack('grunt',4,195,false);}]);
+    E.push([O+31.8,()=>spawnDrop()]);
+    E.push([O+33.6,()=>spawnGateRow([P(7),P(7)],M())]);
+    lastPush(E,O,'fortress',M,P);
+  }else{
+    const O=1.9;
+    E.push([1.0,()=>setMsg('SECTION 2: THE FACTORY',1.6)]);
+    E.push([O+0.2,()=>spawnGateRow([P(5),P(5)],M())]);
+    E.push([O+2.0,()=>enemy('mortar',M()?RX0+16:RX1-16,-30)]);
+    E.push([O+3.0,()=>pack('plated',4,M()?110:280,false)]);
+    E.push([O+5.6,()=>spawnGateRow([P(5),P(5),{k:'minus',v:6}],M())]);
+    E.push([O+7.0,()=>{swarm(10,100,false);setMsg('HORDE!',1.4);}]); // the horde comes in four waves on the game clock (pausing holds them)
+    for(let i=1;i<4;i++)E.push([O+7.0+i*0.7,()=>swarm(10,100+i*60,false)]);
+    E.push([O+10.0,truck]);
+    E.push([O+11.6,()=>spawnGateRow([P(6),P(6)],M())]);
+    E.push([O+13.0,()=>{enemy('charger',120,-20);enemy('charger',270,-40);}]);
+    E.push([O+14.5,()=>{const m=M();spawnWall(30,RX0,240,m);}]);
+    E.push([O+15.0,()=>enemy('turret',M()?RX0+16:RX1-16,-30)]);
+    E.push([O+16.6,()=>spawnGateRow([P(6),P(6)],M())]);
+    E.push([O+18.0,()=>enemy('brute',195,-30)]);
+    E.push([O+19.0,()=>pack('plated',4,195,false)]);
+    E.push([O+21.6,()=>spawnGateRow([P(6),P(7),{k:'minus',v:6}],M())]);
+    E.push([O+23.5,()=>{enemy('charger',100,-20);enemy('charger',195,-50);enemy('charger',290,-20);}]);
+    E.push([O+25.0,()=>swarm(20,195,false)]);
+    E.push([O+27.6,()=>spawnGateRow([P(7),P(7)],M())]);
+    E.push([O+29.0,()=>enemy('mortar',M()?RX0+16:RX1-16,-30)]);
+    E.push([O+30.0,()=>pack('plated',5,195,false)]);
+    E.push([O+33.6,()=>spawnGateRow([P(7),P(7)],M())]);
+    E.push([O+4.4,()=>spawnCage(M()?100:290)]);
+    E.push([O+6.2,()=>spawnDrop()]);
+    E.push([O+18.8,()=>spawnCage(M()?100:290)]);
+    E.push([O+20.4,()=>spawnDrop()]);
+    E.push([O+28.2,()=>spawnCage(M()?100:290)]);
+    E.push([O+32.0,()=>spawnDrop()]);
+    E.push([O+3.4,()=>enemy('priest',M()?120:270,-30)]);
+    E.push([O+9.0,()=>enemy('bomber',195,-20)]);
+    E.push([O+13.2,()=>enemy('thief',M()?110:280,-30)]);
+    E.push([O+13.8,()=>{for(let i=0;i<3;i++)enemy('flyer',100+i*95,-30-i*24);}]);
+    E.push([O+26.2,()=>pack('riot',3,195,false)]);
+    E.push([O+31.0,()=>enemy('blob',M()?130:260,-30)]);
+    lastPush(E,O,'factory',M,P);
+  }
+  E.sort((a,b)=>a[0]-b[0]);return E;
+}
+
+// the last push: the second half of every road throws everything at you, getting tougher as it goes
+function lastPush(E,O,route,M,P){
+  const R=route;
+  E.push([O+37.0,()=>setMsg('LAST PUSH: hold the line',2)]);
+  E.push([O+38.4,()=>spawnGateRow([P(7),P(7)],M())]);
+  E.push([O+40.0,()=>{if(R==='factory'){pack('plated',5,195,false);enemy('mortar',M()?RX0+16:RX1-16,-30);}else if(R==='swamp'){swarm(20,195,false);enemy('blob',120,-30);enemy('blob',270,-50);}else{pack('riot',3,195,false);}}]);
+  E.push([O+41.6,()=>{if(R==='fortress'){const m=M();spawnWall(32,RX0,215,m);}else{enemy('charger',110,-20);enemy('charger',280,-40);}}]);
+  E.push([O+43.2,()=>spawnCage(M()?100:290)]);
+  E.push([O+44.4,()=>spawnGateRow([P(7),P(8),{k:'minus',v:7}],M())]);
+  E.push([O+46.0,()=>{enemy('brute',M()?120:270,-30);enemy('thief',M()?110:280,-50);}]);
+  E.push([O+47.6,()=>swarm(18,M()?120:270,false)]);
+  E.push([O+49.0,()=>spawnDrop()]);
+  E.push([O+50.4,()=>spawnGateRow([P(8),P(8)],M())]);
+  E.push([O+52.0,()=>{if(R==='factory'){setMsg('HORDE!',1.4);swarm(12,100,false);swarm(12,290,false);}else if(R==='swamp'){for(let i=0;i<5;i++)enemy('flyer',70+i*62,-30-i*20);enemy('bomber',195,-60);}else{enemy('turret',RX0+16,-30);enemy('turret',RX1-16,-60);enemy('priest',M()?120:270,-40);}}]);
+  E.push([O+52.8,()=>{if(R==='factory')swarm(12,195,false);}]);
+  E.push([O+54.6,()=>pack('plated',5,195,false)]);
+  E.push([O+56.4,()=>spawnGateRow([P(8),P(8)],M())]);
+  E.push([O+58.0,()=>{enemy('brute',110,-30);enemy('brute',280,-60);}]);
+  E.push([O+59.6,()=>{if(R==='swamp'){const m=M();spawnMud(m?RX0:RX1-220,m?RX0+220:RX1,260);}else{const m=M();spawnWall(34,RX0,215,m);}}]);
+  E.push([O+61.0,()=>spawnCage(M()?100:290)]);
+  E.push([O+62.4,()=>spawnGateRow([P(8),P(9),{k:'minus',v:8}],M())]);
+  E.push([O+64.0,()=>{enemy('charger',100,-20);enemy('charger',195,-50);enemy('charger',290,-20);swarm(20,195,false);}]);
+  E.push([O+65.4,()=>spawnDrop()]);
+  E.push([O+66.0,()=>pack('plated',6,195,false)]);
+  E.push([O+68.4,()=>spawnGateRow([P(9),P(9)],M())]);
+  E.push([O+70.0,()=>{enemy('bomber',140,-20);enemy('bomber',250,-50);pack('grunt',5,195,false);if(R!=='swamp')pack('riot',2,M()?140:250,false);}]);
+  E.push([O+73.0,()=>{g.phase='clear';g.phaseT=0;}]);
+}
+// ---------- juice helpers ----------
+let shakeLast=0;
+function doShake(a,t){if(!S.shake)return;if(S.calm){a*=0.5;if(a<3)return;}const now=performance.now();if(a<6&&now-shakeLast<500)return;shakeLast=now;shakeA=Math.max(shakeA,a);shakeT=Math.max(shakeT,t);}
+function pop(x,y,txt,col,size){size=size||16;const hw=String(txt).length*size*0.32+6;x=Math.max(hw,Math.min(W-hw,x));g.pops.push({x,y,txt,col:col||'#fff',size,t:0,vy:-40});}
+function burst(x,y,col,n,sp){if(g&&g.parts.length>600)return;const nn=S.calm?Math.ceil((n||6)/2):(n||6);for(let i=0;i<nn;i++){const a=Math.random()*Math.PI*2,v=(sp||90)*(0.5+Math.random());g.parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:0,life:0.35+Math.random()*0.25,col,r:2+Math.random()*2});}}
+function rags(k,n,x,y){for(let i=0;i<Math.min(n,10);i++)g.rags.push({k,x:x+(Math.random()-0.5)*40,y,vx:(Math.random()-0.5)*220,vy:-200-Math.random()*200,rot:Math.random()*6,vr:(Math.random()-0.5)*20,t:0});}
+function setMsg(s,t){g.hudMsg=s;g.hudMsgT=t||1.6;}
+function addKind(kind,n,why){
+  if(n<=0||g.over)return;n=softGain(n);g.K[kind]+=n;g.cFlash=0.3;g.cCol=KINDS[kind].col;
+  if(!g.capSaid&&totalN()>SOFTCAP){g.capSaid=true;(g.hintQ=g.hintQ||[]).push('OVER '+SOFTCAP+' SOLDIERS: every gain is halved');}
+  formation();pop(g.cx,F.y0-24,'+'+n+' '+kname(kind),KINDS[kind].col,20);
+}
+// ---------- losses: whatever area is hit is who goes down ----------
+function figDist(p,x,y){return Math.hypot(p.x-x,p.y-y);}
+// remove the given figures (nearest first). A Shield that is hit dies and covers the next soak-1 figures in the list.
+// Bulwark: a non-ant hit costs one plate instead. Spiked Shields: ants die on the spikes; a soaked hit blasts back.
+function killFigs(list,why,o){
+  o=o||{};if(g.over)return;
+  if('bulwark' in g.fused&&list.length){if(o.ant){burst(g.cx,F.y0,'#60a5fa',3);return;}g.bulPlates--;g.fused.bulwark=Math.ceil(g.bulPlates/5);sfx('soak');pop(g.cx,F.y0-20,'BLOCKED','#60a5fa',16);if(g.fused.bulwark<=0){delete g.fused.bulwark;setMsg('BULWARK BROKEN',1.4);}return;}
+  if(list.length&&(g.K.silent>0||g.K.knight>0)){let dodged=0,parried=0;
+    list=list.filter(p=>{const c=dodgeOf(p.k);if(c>0&&rand()<c){if(p.k==='knight')parried++;else dodged++;return false;}return true;});
+    if(dodged||parried){const m=dodged+parried;pop(o.at?o.at.x:g.cx,(o.at?Math.min(o.at.y,F.y0):F.y0)-46,(dodged>=parried?'DODGE':'PARRY')+(m>1?' x'+m:''),dodged>=parried?'#2dd4bf':'#e5e7eb',15);
+      if(dodged&&g.K.silent>0&&KP('silent').strike)shadowStrike(dodged);
+      if(!list.length&&!(o.bigs||[]).length){formation();return;}}}
+  const out={};let n=0,shields=0;
+  // An area hit (mortar, Tank shell, turret shot, Twin Hatch) lands on the Shields first: every soldier it would take costs one
+  // crack, a Shield breaks after `blocks` cracks, and only what the Shields could not cover falls.
+  if(o.area&&g.K.shield>0){
+    const blocks=KINDS.shield.blocks+(has('drill')?1:0),shFigs=F.pos.filter(p=>p.k==='shield');
+    let need=list.filter(p=>p.k!=='shield').length+(o.bigs||[]).length*2,saved=0,broke=0;
+    while(need>0&&g.K.shield>0){const take=Math.min(blocks-g.shieldDmg,need);g.shieldDmg+=take;need-=take;saved+=take;
+      if(g.shieldDmg>=blocks){g.shieldDmg=0;broke++;const sh=shFigs.shift();g.K.shield--;g.lost.shield++;shields++;
+        g.rags.push({k:'shield',x:sh?sh.x:g.cx,y:sh?sh.y:F.y0,vx:(Math.random()-0.5)*220,vy:-200-Math.random()*200,rot:Math.random()*6,vr:(Math.random()-0.5)*20,t:0});}}
+    if(saved){sfx('soak');burst(o.at?o.at.x:g.cx,o.at?o.at.y:F.y0,'#60a5fa',8,140);
+      if(broke){out.shield=broke;n+=broke;setMsg(broke>1?broke+' SHIELDS BROKE':'A SHIELD BROKE',1);}
+      else pop(o.at?o.at.x:g.cx,(o.at?Math.min(o.at.y,F.y0):F.y0)-26,'SHIELDS TOOK IT','#60a5fa',17);}
+    const rest=list.filter(p=>p.k!=='shield');
+    if(need<=0){o.bigs=[];list=[];}else{const bl=Math.max(0,need-rest.length);list=rest.slice(0,Math.min(rest.length,need));o.bigs=(o.bigs||[]).slice(0,Math.ceil(bl/2));}
+    if(!list.length&&!o.bigs.length&&!broke){doShake(2,0.1);formation();return;}
+  }
+  for(const p of list){
+    if(p.k==='shield'){shields++;g.shieldDmg=0;}
+    g.K[p.k]--;g.lost[p.k]++;out[p.k]=(out[p.k]||0)+1;n++;
+    g.rags.push({k:p.k,x:p.x,y:p.y,vx:(Math.random()-0.5)*220,vy:-200-Math.random()*200,rot:Math.random()*6,vr:(Math.random()-0.5)*20,t:0});
+  }
+  for(const b of (o.bigs||[])){const id=b.k,t=Math.min(g.fused[id],o.share?rround(g.fused[id]*o.share):Math.max(2,Math.ceil(g.fused[id]*0.15)));g.fused[id]-=t;g.lost[PROMOS[id].kind]+=t;n+=t;out[PROMOS[id].kind]=(out[PROMOS[id].kind]||0)+t;
+    for(let i=0;i<t;i++)g.rags.push({k:PROMOS[id].kind,x:b.x+(Math.random()-0.5)*30,y:b.y,vx:(Math.random()-0.5)*220,vy:-200-Math.random()*200,rot:Math.random()*6,vr:(Math.random()-0.5)*20,t:0});
+    if(g.fused[id]<=0){delete g.fused[id];pop(g.cx,F.y1,PROMOS[id].name+' LOST','#ff3b3b',18);}}
+  noteFallen(out);showLoss(out,n,shields,why,o.at);
+}
+// remember who fell (repair drones bring them back); with Rally Horns some get straight back up
+function noteFallen(out){const rv=g.K.banner>0?KP('banner').revive||0:0;
+  for(const k in out)for(let i=0;i<out[k];i++){if(!(rv&&rand()<rv)){g.fallen.push(k);continue;}g.tokens.push({x:g.cx+(rand()-0.5)*F.w,y:F.y1+4,v:1,t:-1.2,k,up:true});}
+  if(g.fallen.length>20)g.fallen.splice(0,g.fallen.length-20);}
+// the nearest `cost` soldiers to a point: a contact hit, a wall, a red gate. A Shield among them steps in first.
+function hitPoint(x,y,cost,why,ant,contact,bite){
+  if(g.over)return;
+  const sh=g.share&&bite,near=F.pos.slice().sort((a,b)=>figDist(a,x,y)-figDist(b,x,y));
+  const list=sh?shareList(bite,x,y):near.slice(0,Math.ceil(cost));
+  if(!list.length&&!(sh&&fusedN())){lastStand(why);return;}
+  if(sh){cost=list.length;if(!(contact&&near[0]&&near[0].k==='shield'&&!('bulwark' in g.fused))){killFigs(list,why,{ant,at:{x,y},area:!contact,share:bite,bigs:contact?[]:F.bigs.filter(q=>q.k in g.fused)});return;}list[0]=near[0];}
+  // a contact hit on a Shield is BLOCKED: nobody falls, the Shield takes a crack, and it breaks after `blocks` cracks
+  if(contact&&list[0].k==='shield'&&!('bulwark' in g.fused)){const sh=list[0],blocks=KINDS.shield.blocks+(has('drill')?1:0);g.shieldDmg+=Math.ceil(cost/3);sfx('soak');burst(sh.x,sh.y,'#60a5fa',5,120);
+    if(g.shieldDmg>=blocks){g.shieldDmg=0;killFigs([sh],why,{at:{x,y}});setMsg('A SHIELD BROKE',1);}else pop(sh.x,sh.y-22,'BLOCK','#60a5fa',15);return;}
+  killFigs(list,why,{ant,at:{x,y},area:!contact});
+}
+// a turret shot reaching the crowd: a Shield in its path blocks it (or bounces it back, with Bouncing Shields); otherwise the two nearest fall
+function turretHit(s){
+  if(g.over)return;const list=F.pos.slice().sort((a,b)=>figDist(a,s.x,s.y)-figDist(b,s.x,s.y));
+  if(list.length&&list[0].k==='shield'){const sh=list[0];
+    if(KP('shield').bounce){g.bullets.push({x:sh.x,y:sh.y-8,vx:-s.vx*1.6,vy:-Math.abs(s.vy)*2.4-200,dmg:12,col:'#60a5fa',k:'bounce',range:0,travel:0,pierce:1});pop(sh.x,sh.y-22,'BOUNCED','#60a5fa',15);sfx('hatch');return;}
+    hitPoint(s.x,s.y,2,s.siege?'a Siege Tower shot':'a turret shot',false,true,biteOf(s.siege?'a Siege Tower shot':'a turret shot'));return;}
+  burst(s.x,s.y,'#ff5c5c',5);hitPoint(s.x,s.y,2,s.siege?'a Siege Tower shot':'a turret shot',false,false,biteOf(s.siege?'a Siege Tower shot':'a turret shot'));
+}
+// everything standing inside a rectangle or a circle
+function hitRect(x0,y0,x1,y1,why){if(g.over)return;const list=areaCap(F.pos.filter(p=>p.x>=x0&&p.x<=x1&&p.y>=y0&&p.y<=y1),(x0+x1)/2,(y0+y1)/2),bigs=F.bigs.filter(b=>b.k in g.fused&&b.x>=x0-12&&b.x<=x1+12&&b.y>=y0-12&&b.y<=y1+12);
+  if(!list.length&&!bigs.length){if(totalN()===0&&g.cx>=x0&&g.cx<=x1&&F.y1>=y0&&F.y0<=y1)lastStand(why);else pop(g.cx,F.y0-40,'DODGED','#2ee6a6',16);return;}if(g.share){shareHit((x0+x1)/2,(y0+y1)/2,biteOf(why),why);return;}killFigs(list,why,{bigs,at:{x:(x0+x1)/2,y:(y0+y1)/2},area:true});}
+function hitCircle(x,y,r,why){if(g.over)return;const list=areaCap(F.pos.filter(p=>figDist(p,x,y)<=r),x,y),bigs=F.bigs.filter(b=>b.k in g.fused&&figDist(b,x,y)<=r+12);
+  if(!list.length&&!bigs.length){if(totalN()===0&&figDist(F.cap,x,y)<=r)lastStand(why);else pop(g.cx,F.y0-40,'DODGED','#2ee6a6',16);return;}if(g.share){shareHit(x,y,biteOf(why),why);return;}killFigs(list,why,{bigs,at:{x,y},area:true});}
+// expendable crowd: a hit takes the same share of every kind (at least one soldier), wherever it lands
+function rround(v){const f=Math.floor(v);return f+(rand()<v-f?1:0);}
+const WHYB={'a turret shot':'turret','a mortar shell':'mortar','a bomber':'bomber','a Tank shell':'tank','a Siege Tower shot':'siege','a Twin Hatch bar':'hatchBar','a Twin Hatch blast':'hatchBlast','Hive Queen acid':'acid'};
+function biteOf(why,e){const B=TUNE.bite;return(e?(B[e.type]||6)+(e.elite?B.elite:0):(B[WHYB[why]]||8))/100;}
+function shareList(b,x,y){const list=[];
+  for(const k in g.K){const c=g.K[k];if(c<=0)continue;const n=Math.min(c,rround(c*b));if(!n)continue;
+    const ps=F.pos.filter(p=>p.k===k).sort((a,q)=>figDist(a,x,y)-figDist(q,x,y));
+    for(let i=0;i<n;i++){const p=ps[i%Math.max(1,ps.length)]||{x:g.cx,y:F.y0};list.push({k,x:p.x,y:p.y});}}
+  if(!list.length&&regN()>0){let best=null;for(const p of F.pos)if(!best||figDist(p,x,y)<figDist(best,x,y))best=p;if(best)list.push({k:best.k,x:best.x,y:best.y});}
+  return list;}
+function shareHit(x,y,b,why,o){if(g.over)return;const bigs=F.bigs.filter(q=>q.k in g.fused);
+  if(!F.pos.length&&!bigs.length){lastStand(why);return;}
+  killFigs(shareList(b,x,y),why,Object.assign({bigs,at:{x,y},area:true,share:b},o||{}));}
+// enemies that get past the crowd fill the BREACH bar; it drains slowly, and a full bar loses the run
+function breachBy(e){const v=TUNE.breachVal[e.type];if(!v||!g.breachOn||g.over||e.lunge)return;const a=v*(e.elite?2:1);
+  g.breach+=a;g.breachPeak=Math.max(g.breachPeak,g.breach);g.breachFl=0.5;g.pastBy=g.pastBy||{};g.pastBy[e.type]=(g.pastBy[e.type]||0)+a;
+  if(!g.seen.breach){g.seen.breach=1;tip('breach','BREACH: enemies that get past you fill the bar. Full bar, run over',1);}
+  pop(e.x,Math.min(H-70,F.y1+16),'GOT PAST','#ff5c5c',13);
+  if(g.breach>=TUNE.breachMax){g.over=true;g.deathBy='too many enemies getting past';timescale=0.3;tsT=0.5;hitstop=0.16;doShake(8,0.3);sfx('loss');vib(80);}}
+function lastStand(why){if(totalN()===0&&!g.over){g.over=true;g.deathBy=why;timescale=0.3;tsT=0.5;hitstop=0.16;doShake(8,0.3);sfx('loss');vib(80);}}
+function showLoss(out,n,shields,why,at){
+  if(n===0)return;
+  g.lossBy=g.lossBy||{};g.lossBy[why]=(g.lossBy[why]||0)+n;if(n>=3)tip('share','HITS take a share of every kind: the bigger your army, the more each hit costs');
+  g.hitsThisBoss++;
+  const big=n>=8;hitstop=Math.max(hitstop,big?0.12:0.06);if(big)doShake(7,0.22);g.cFlash=0.4;g.cCol='#ff3b3b'; // only big losses shake: small hits shook the screen all game
+  let col='#ff3b3b',label='-'+n;const ks=Object.keys(out);
+  if(ks.length===1){label='-'+out[ks[0]]+' '+kname(ks[0]);col=KINDS[ks[0]].col;}
+  pop(at?at.x:g.cx,(at?Math.min(at.y,F.y0):F.y0)-26,label,col,big?24:19);sfx('loss');vib(30);
+  formation();
+  if(totalN()===0)setMsg('LAST STAND: the captain stands alone',2.4);
+}
+
+// ---------- input ----------
+const keys={};let drag=null,lastTouch=null;
+function setTouch(t){if(t===lastTouch)return;lastTouch=t;document.documentElement.classList.toggle('touch',t);}
+try{setTouch(!!(window.matchMedia&&window.matchMedia('(hover: none) and (pointer: coarse)').matches));}catch(e){setTouch(false);}
+window.addEventListener('pointerdown',e=>setTouch(e.pointerType==='touch'),true);
+function toL(e){const x=e.clientX-offX,y=e.clientY-offY;if(mode==='draft'||mode==='fork'||mode==='results')return{x:(x-oX)/so,y:(y-oY)/so}; // card and result screens are never trimmed
+  return{x:x/scale-GX,y:y/scale+CT};}
+const ptrs=new Set(); // fingers on the screen right now
+window.addEventListener('pointerdown',e=>ptrs.add(e.pointerId),true);for(const ev of['pointerup','pointercancel'])window.addEventListener(ev,e=>ptrs.delete(e.pointerId),true);
+function startReturn(){if(!g)return;if(g.ty<PITY1-0.5||g.cy<PITY1-0.5){g.retT=0;g.retY0=g.cy;}}
+cv.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();const p=toL(e);
+  if(mode==='play'&&g&&Math.hypot(p.x-RALLYB.x,p.y-RALLYB.y)<RALLYB.r){rally();return;} // a second thumb can Rally without letting go of the steering
+  if(mode==='play'&&g&&drag&&drag.id!==e.pointerId&&ptrs.has(drag.id)){rally();return;} // a second finger anywhere is a Rally too; the first keeps steering
+  drag={sx:p.x,sy:p.y,px:p.x,py:p.y,ax:p.x,ay:p.y,ox:g?g.tx:195,oy:g?g.ty:PITY1,t0:performance.now(),id:e.pointerId,axis:null,m:mode};
+  try{cv.setPointerCapture(e.pointerId);}catch(x){}});
+cv.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const p=toL(e);drag.px=p.x;drag.py=p.y;
+  if(g&&Math.hypot(p.x-drag.sx,p.y-drag.sy)>6)g.lastTap=0; // a steering nudge is never half of a double-tap
+  if(mode!=='play'||!g)return;
+  if(!drag.axis){const dx=p.x-drag.sx,dy=p.y-drag.sy;if(Math.hypot(dx,dy)<12)return;
+    drag.axis=Math.abs(dx)>=Math.abs(dy)?'x':'y';
+    if(drag.axis==='x'){drag.ax=drag.sx;drag.ox=g.tx;}else{drag.ay=drag.sy;drag.oy=g.retT>=0?g.cy:g.ty;g.retT=-1;}}
+  if(drag.axis==='x'){const lo=RX0+F.w/2,hi=RX1-F.w/2;let t=drag.ox+(p.x-drag.ax)*S.gain;
+    if(t<lo||t>hi){t=Math.max(lo,Math.min(hi,t));drag.ox=t;drag.ax=p.x;}g.tx=t;}
+  else{let t=drag.oy+(p.y-drag.ay)*S.gain;if(t<PITY0||t>PITY1){t=Math.max(PITY0,Math.min(PITY1,t));drag.oy=t;drag.ay=p.y;}g.ty=t;}
+});
+function endDrag(e){if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const p=toL(e);const dt=performance.now()-drag.t0,d=Math.hypot(p.x-drag.sx,p.y-drag.sy);
+  if(mode==='play'&&g&&g.retT<0)startReturn();
+  if(mode==='play'?(dt<300&&d<6):(d<14&&drag.m===mode))handleTap(p,drag);drag=null;}
+window.addEventListener('resize',()=>{if(drag&&mode==='play'&&g&&g.retT<0)startReturn();drag=null;});
+window.addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
+cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',()=>{if(drag&&mode==='play'&&g&&g.retT<0)startReturn();drag=null;});
+for(const ev of['touchstart','touchmove','touchend'])cv.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+window.addEventListener('keydown',e=>{setTouch(false);
+  const k=e.key.toLowerCase();keys[k]=true;if(mode==='play'&&k.startsWith('arrow'))e.preventDefault();
+  if(k==='p'){if(mode==='play')pause();else if(mode==='pause')resume();}
+  if(mode==='draft'&&['1','2','3','4'].includes(k))pickCard(parseInt(k)-1);if(mode==='draft'&&k==='0'&&draftFull())pickCard(-2);
+  if(mode==='fork'&&['1','2'].includes(k))pickRoute(parseInt(k)-1);
+  if(k==='r'&&(mode==='results'||mode==='play'))startRun(g?g.seed:seed,{practice:!!g&&(g.dailyRun||g.practice)});
+  if(k==='n'&&(mode==='results'||mode==='play'))startRun((Math.random()*1e9)|0);
+  if(k===' '&&mode==='start')startRun(nextSeed());
+  if(k===' '&&mode==='play'){e.preventDefault();rally();}
+  if(k==='escape'&&mode==='pause')resume();});
+window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
+function handleTap(p,dr){
+  if(mode==='play'){if(p.x>W-64&&p.y-CT<64){pause();return;}return;} // Rally fires on touch-down (see pointerdown), never from a double-tap
+  if(mode==='draft'){if(g.draft.t<0.4)return;if(draftFull()&&inRect(p,SKIPR)&&(!dr||inRect({x:dr.sx,y:dr.sy},SKIPR))){pickCard(-2);return;}const i=draftHit(p);if(i>=0&&(!dr||draftHit({x:dr.sx,y:dr.sy})===i))pickCard(i);return;}
+  if(mode==='fork'){if(g.fork.t<0.4)return;const i=forkHit(p);if(i>=0&&(!dr||forkHit({x:dr.sx,y:dr.sy})===i))pickRoute(i);return;}
+  if(mode==='results'){if(g.resT<0.8)return;const b=resultButton(p),pr=g.dailyRun||g.practice;if(b===1)startRun(g.seed,{practice:pr});else if(b===2)startRun((Math.random()*1e9)|0);else if(b===3){mode='start';renderStart();show('start',true);}}
+}
+const RALLYB={x:W-62,y:H-90,r:46}; // the Rally button: lifted off the corner, and out in the side scenery on wide screens
+function placeRally(){RALLYB.x=S.rallyLeft?62-GX:W-62+GX;RALLYB.y=CB>20?H-CB-56:H-90;}
+resize();
+const RBTN=[{x:30,y:H-100,w:160,h:66},{x:200,y:H-100,w:160,h:66},{x:W-96,y:22,w:80,h:40}];
+function resultButton(p){for(let i=0;i<3;i++){const r=RBTN[i];if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h)return i+1;}return 0;}
+function show(id,on){document.getElementById(id).classList.toggle('on',on);}
+function pause(){if(mode!=='play')return;mode='pause';syncUI();show('pause',true);}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});window.addEventListener('pagehide',pause);document.addEventListener('pause',pause);
+function resume(){if(mode!=='pause')return;mode='play';show('pause',false);last=performance.now();drag=null;if(g&&g.retT<0)startReturn();}
+document.getElementById('resume').addEventListener('click',resume);
+document.getElementById('quit').addEventListener('click',()=>{show('pause',false);mode='start';renderStart();show('start',true);});
+document.getElementById('go').addEventListener('click',()=>{audioInit();startRun(nextSeed());});
+document.getElementById('thm').addEventListener('click',()=>{PROG.threat=Math.max(0,PROG.threat-1);saveP();renderStart();});
+document.getElementById('thp').addEventListener('click',()=>{PROG.threat=Math.min(PROG.testAll?10:PROG.max,PROG.threat+1);saveP();renderStart();});
+document.getElementById('tall').addEventListener('click',()=>{if(RELEASE)return;PROG.testAll=!PROG.testAll;saveP();renderStart();});if(RELEASE)document.getElementById('tall').style.display='none';
+document.getElementById('tdmg').addEventListener('click',()=>{PROG.classic=!PROG.classic;saveP();renderStart();});
+document.getElementById('dailyb').addEventListener('click',()=>{audioInit();loadP();const D=PROG.daily,played=D.date===today()&&D.played;startRun(dailySeed(),played?{practice:true}:{daily:true});});
+function startRun(sd,o){o=o||{};if(!o.daily&&!o.practice)seed=sd;newRun(sd,o);
+  if(o.daily){PROG.daily={date:today(),played:true,score:0,best:PROG.daily.best||0};saveP();}formation();setMsg('SECTION 1: OUTSKIRTS',2);mode='play';show('start',false);show('pause',false);hitstop=0;shakeA=0;timescale=1;tsT=0;acc=0;last=performance.now();drag=null;}
+
+// ---------- firing ----------
+// Each kind fires rate x count shots a second, spread over at most 14 emitters (24 for Heavies); one shot carries the weight of several.
+// proto 7: fire boosts add together, capped at +300% (four times the fire). Rally +200%, Overdrive +100%, War Drums +25%, Line Sergeant +10% (Riflemen)
+function boostAdd(k){return (g.odT>0?1:0)+(g.rallyT>0?2:0)+(has('drums')?0.25:0)+(k==='rifle'&&has('line')?0.1:0);}
+function boostMul(k){return 1+Math.min(TUNE.boostCap,boostAdd(k));}
+// a boost starting: shots already booked come sooner, so the boost pays from its first moment
+function speedUp(fn){const b0={},s0=boostMul();for(const k in g.nextFire)b0[k]=boostMul(k);fn();
+  for(const k in g.nextFire){const m=boostMul(k)/b0[k];if(m===1)continue;const nf=g.nextFire[k];for(let j=0;j<nf.length;j++)if(nf[j]>g.t)nf[j]=g.t+(nf[j]-g.t)/m;}
+  const ms=boostMul()/s0;if(ms!==1)for(const s of g.sentries||[])if(s.nf>0)s.nf/=ms;}
+function kindRate(k){if(k==='heavy')return g.mgRate*boostMul(k);const K=KP(k);if(K.cyl)return K.cyl/(K.cyl*K.gap+K.reload)*boostMul(k);return (K.rate||0)*boostMul(k);}
+function squadDps(){let d=0;for(const k in g.K){const K=KP(k);if(!K.rate)continue;d+=g.K[k]*kindRate(k)*(K.dmg*(K.pellets||1)+(K.splash||0))*rankMul(k);}
+  d+=(g.K.eng*7.2*rankMul('eng')+g.K.drone*7.2*rankMul('drone'))*boostMul();
+  if('nest' in g.fused)d+=20*4*rankMul('heavy');if('firing' in g.fused)d+=12*8/3*rankMul('rifle');if('wall' in g.fused)d+=12*10/0.8/2*rankMul('shot');return Math.max(d,6);}
+function fireShot(k,K,x,y,w){
+  if(K.chain){zap(K,x,y,w);return;}
+  if(K.melee){melee(k,K,x,w);return;}
+  if(K.boom){g.bullets.push({x,y,vx:0,vy:-650,dmg:K.dmg*w,col:K.col,k,range:0,travel:0,boom:true,out:K.range||300,spins:K.spins||0,ap:g.apT>0,spin:rand()*6});return;}
+  if(K.rico){const s=(g.ricoSide=-(g.ricoSide||1)),a=(K.angle||30)*s*Math.PI/180;g.bullets.push({x,y,vx:650*Math.sin(a),vy:-650*Math.cos(a),dmg:K.dmg*w,col:K.col,k,range:K.range||700,travel:0,rico:K.rico,ap:g.apT>0,spin:0});return;}
+  if(K.axe){g.bullets.push({x,y,vx:(rand()-0.5)*40,vy:-760,dmg:K.dmg*w,col:K.col,k,range:K.range||360,travel:0,pierce:(K.pierce||0)+(g.apT>0?1:0),axe:true,spin:rand()*6,ap:g.apT>0});return;}
+  if(K.cards){ // Wildcards: Ace, Bomb, Bouncer, Spade (and with High Stakes a Joker that does nothing)
+    const r=Math.floor(rand()*(K.joker?5:4)),d=K.dmg*w,c={x,y,vx:(rand()-0.5)*80,vy:-900,col:'#f8fafc',k,range:0,travel:0,card:r,ap:g.apT>0};
+    if(r===1)Object.assign(c,{dmg:d*0.4,splash:d*0.6,sr:38,blast:true,col:'#f87171'});else if(r===2)Object.assign(c,{dmg:d*0.7,hop:2,col:'#60a5fa'});
+    else if(r===3)Object.assign(c,{dmg:d*0.7,pierce:2,col:'#a5b4fc'});else if(r===4)Object.assign(c,{dmg:0,col:'#64748b'});else c.dmg=d;
+    g.bullets.push(c);return;}
+  const wm=K.wallMul||1,pc=(K.pierce||0)+(g.apT>0?1:0),extra={burnHit:!!K.burnHit,mark:!!K.mark,slow:!!K.slow,knock:K.knock||0,flak:!!K.flak,cluster:K.cluster||0,fireBlast:!!K.fireBlast,ap:!!K.ap||g.apT>0,wm};
+  if(K.flame){const a=((rand()-0.5)*(K.spread||22))*Math.PI/180;g.bullets.push(Object.assign({x,y,vx:600*Math.sin(a),vy:-600*Math.cos(a),dmg:K.dmg*w,range:K.range,travel:0,col:rand()<0.5?'#ff7a2a':K.col,k,fire:true},extra));}
+  else if(K.pellets){const pel=K.pellets+(has('breach')?1:0),range=K.range*(has('breach')?1.3:1),step=K.spread||4;
+    for(let i=0;i<pel;i++){const a=((i-(pel-1)/2)*step)*Math.PI/180;g.bullets.push(Object.assign({x,y,vx:900*Math.sin(a),vy:-900*Math.cos(a),dmg:K.dmg*w,range,falloff:!!K.falloff,travel:0,col:K.col,k,pierce:pc},extra));}}
+  else if(K.blast){const sr=K.splashR+(has('sapper')?20:0);g.bullets.push(Object.assign({x,y,vx:0,vy:-520,dmg:K.dmg*w,splash:K.splash*w,sr,blast:true,col:K.col,k,range:0,travel:0},extra));}
+  else if(K.burst){const nb=K.burst+(g.evo.includes('roll')?2:0);for(let i=0;i<nb;i++){const a=((i-(nb-1)/2)*7)*Math.PI/180;g.bullets.push(Object.assign({x:x+(i-(nb-1)/2)*4,y,vx:1000*Math.sin(a),vy:-1000*Math.cos(a),dmg:K.dmg*w,col:K.col,k,range:0,travel:0,pierce:pc,delay:i*0.07},extra));}} // the burst sweeps left to right
+  else g.bullets.push(Object.assign({x,y,vx:0,vy:-1000,dmg:K.dmg*w,col:K.col,k,range:0,travel:0,pierce:pc},extra));
+}
+function updateFire(dt){
+  const byKind={};for(const p of F.pos)(byKind[p.k]=byKind[p.k]||[]).push(p);
+  // Every soldier keeps their own steady beat (one shot per 1/rate seconds), started at a random moment, so the line never fires all at once
+  // or in a sweep. At most 20 figures of a kind shoot, spread through the block; each shot carries the weight of the soldiers it stands for.
+  for(const k of ALLK){if(!KINDS[k].rate)continue;
+    const n=g.K[k],figs=byKind[k];if(n<=0||!figs)continue;const K=KP(k);if(K.drone)continue;const per=1/Math.max(0.01,kindRate(k));
+    const S=Math.min(figs.length,20),w=n/S*rankMul(k),nf=g.nextFire[k]=g.nextFire[k]||[];if(nf.length>S)nf.length=S;
+    if(K.cyl){const bm=boostMul(k),cy=(g.cyl=g.cyl||{})[k]=(g.cyl[k]||[]);
+      for(let j=0;j<S;j++){const P=figs[Math.floor(j*figs.length/S)];
+        if(nf[j]===undefined){nf[j]=g.t+rand()*K.reload/bm;cy[j]=0;}
+        if(g.t>=nf[j]){fireShot(k,K,P.x,P.y-6,w);cy[j]=(cy[j]||0)+1;if(cy[j]>=K.cyl){cy[j]=0;nf[j]+=K.reload/bm;if(K.lasso)lasso(P,w);}else nf[j]+=K.gap/bm;if(nf[j]<g.t)nf[j]=g.t+K.gap/bm;}}
+      continue;}
+    for(let j=0;j<S;j++){const P=figs[Math.floor(j*figs.length/S)];
+      if(nf[j]===undefined)nf[j]=g.t+rand()*per;
+      if(g.t>=nf[j]){nf[j]+=per;if(nf[j]<g.t)nf[j]=g.t+rand()*per;fireShot(k,K,P.x,P.y-6,w);}}
+  }
+  if(KP('shield').wave&&g.K.shield>0){g.waveT-=dt;if(g.waveT<=0){g.waveT=4;let hit=0;
+    for(const e of g.enemies){if(e.dead||e.type==='mortar'||e.type==='turret'||e.type==='truck')continue;if(e.y>F.y0-150&&e.y<F.y0+20&&Math.abs(e.x-g.cx)<F.w/2+60){e.y=Math.max(-30,e.y-90);damageEnemy(e,4,true);hit++;}}
+    g.parts.push({x:g.cx,y:F.y0,ring:150,t:0,life:0.35,col:'#60a5fa'});sfx('hum');if(hit)pop(g.cx,F.y0-40,'WAVE','#60a5fa',15);}}
+  if('wall' in g.fused){g.wallT-=dt;if(g.wallT<=0){g.wallT=0.8;const b=F.bigs.find(b=>b.k==='wall');if(b){for(let i=0;i<12;i++){const a=((i-5.5)*10)*Math.PI/180;g.bullets.push({x:b.x+(i-5.5)*5,y:b.y-14,vx:900*Math.sin(a),vy:-900*Math.cos(a),dmg:10*rankMul('shot'),range:430,falloff:true,travel:0,col:'#fb923c',k:'wall',delay:i*0.015});}sfx('blast');}}}
+  if('firing' in g.fused){g.lineT-=dt;if(g.lineT<=0){g.lineT=1.0;const b=F.bigs.find(b=>b.k==='firing');if(b){for(let i=0;i<12;i++){g.bullets.push({x:RX0+16+i*(RW-32)/11,y:b.y-14,vx:0,vy:-1000,dmg:8*rankMul('rifle'),col:'#4ade80',k:'firing',range:0,travel:0,pierce:3,big:true});}sfx('blast');burst(b.x,b.y-10,'#4ade80',6,120);}}}
+  if('inferno' in g.fused){g.infT-=dt;if(g.infT<=0){g.infT=1.5;const b=F.bigs.find(b=>b.k==='inferno');if(b){g.waves.push({x:b.x,y0:F.y0-6,t:0,dur:0.8,hit:new Set(),dmg:18*rankMul('gren')});sfx('rocket');}}}
+  if('nest' in g.fused){const b=F.bigs.find(b=>b.k==='nest');if(b){g.emit.nest=(g.emit.nest||0)+20*dt;while(g.emit.nest>=1){g.emit.nest-=1;g.bullets.push({x:b.x+(rand()-0.5)*10,y:b.y-16,vx:(rand()-0.5)*60,vy:-1100,dmg:4*rankMul('heavy'),col:'#facc15',k:'nest',pierce:2,range:0,travel:0,big:true});}}}
+  if('tower' in g.fused){g.towerT=(g.towerT==null?1.2:g.towerT)-dt;if(g.towerT<=0){g.towerT=1.2;const b=F.bigs.find(b=>b.k==='tower');if(b){zap({chain:10,dmg:25*rankMul('tesla'),reach:440,jump:110,decay:0.92,stun:0.6,bossMul:4,tower:true,col:'#7df3ff'},b.x,b.y-16,1);sfx('hum');}}}
+  if('hive' in g.fused){g.hiveT=(g.hiveT==null?1:g.hiveT)-dt;if(g.hiveT<=0){g.hiveT=1;const b=F.bigs.find(b=>b.k==='hive');if(b){g.shells=g.shells||[];for(const tg of batteryTargets(2))g.shells.push({x0:b.x,y0:b.y,x1:tg.x,y1:tg.y,t:0,dur:0.45,r:70,dmg:32*rankMul('tesla'),wm:2,big:true,tgt:tg.e||null,tw:tg.w||null,col:'#a78bfa'});sfx('blast');}}}
+  updateEng(dt);updateDrones(dt);
+  if('battery' in g.fused){g.batteryT-=dt;if(g.batteryT<=0){g.batteryT=1.0;const b=F.bigs.find(b=>b.k==='battery');if(b){g.shells=g.shells||[];for(const tg of batteryTargets(2))g.shells.push({x0:b.x,y0:b.y,x1:tg.x,y1:tg.y,t:0,dur:0.6,r:90,dmg:40*rankMul('gren'),wm:3,big:true,tgt:tg.e||null,tw:tg.w||null});sfx('rocket');}}}
+}
+// Knights and Berserkers: a strike at the nearest enemies within reach of the front of the crowd. With nothing there they hit the boss
+// (in reach when you push up), a wall, or the gate they stand under.
+function meleeBoss(K){const bs=g.boss;if(!bs||!bs.ready||bs.dead)return false;return F.y0-(bs.y+bs.h/2)<=(K.reach||110)+(g.cy<(PITY0+PITY1)/2?180:0);}
+function melee(k,K,x,w){const R=K.reach||110,y0=F.y0,d=K.dmg*w,list=[];
+  for(const e of g.enemies){if(e.dead||e.y>y0+12||e.y<y0-R-40)continue;const dd=Math.hypot(e.x-x,(e.y-y0)*0.8);if(dd<=R+e.w/2)list.push([dd,e]);}
+  if(list.length){list.sort((a,b)=>a[0]-b[0]);for(const [,e] of list.slice(0,K.hits||1)){damageEnemy(e,d,false,!!K.ap);g.parts.push({beam:true,x,y:y0,x2:e.x,y2:e.y,t:0,life:K.dash?0.2:0.12,col:K.col});}
+    if(K.sweep)g.parts.push({x,y:y0-10,ring:Math.min(R,70)*0.6,t:0,life:0.15,col:K.col});return;}
+  if(meleeBoss(K)){const bs=g.boss;bossDamage(bs,d,x);g.parts.push({beam:true,x,y:y0,x2:x+(bs.x-x)*0.2,y2:bs.y+bs.h/2,t:0,life:0.12,col:K.col});return;}
+  for(const wl of g.walls){if(wl.dead)continue;if(x>=wl.x0-10&&x<=wl.x1+10&&wl.y+wl.h>=y0-R&&wl.y<=y0){wallDamage(wl,d*0.5);g.parts.push({beam:true,x,y:y0,x2:x,y2:wl.y+wl.h,t:0,life:0.1,col:K.col});return;}}
+  for(const row of g.gates){if(row.done)continue;if(row.y+row.h>=y0-R&&row.y<=y0){const gt=row.gates.find(q=>x>=q.x0&&x<q.x1);if(gt){chargeGate(gt,d);return;}}}}
+// Lassos: at each reload a Cowboy ropes the nearest enemy: it can't move for 1.5 s and takes a little damage
+function lasso(P,w){let tg=null,bd=380;for(const e of g.enemies){if(e.dead||e.type==='truck'||e.y>F.y0||(e.roped||0)>g.t)continue;const d=Math.hypot(e.x-P.x,e.y-P.y);if(d<bd){bd=d;tg=e;}}
+  if(!tg)return;tg.stun=Math.max(tg.stun||0,2);tg.roped=g.t+2;damageEnemy(tg,KP('cowboy').dmg*w*1.5);g.parts.push({beam:true,x:P.x,y:P.y-6,x2:tg.x,y2:tg.y,t:0,life:0.35,col:'#d6a35c'});}
+// Silents dodge; with Cover everyone else can too; Guard Knights parry
+function dodgeOf(k){const S=g.K.silent>0?KP('silent'):null,sd=S?S.dodge||0:0,cd=S&&S.cover?Math.min(0.3,0.03*g.K.silent):0;
+  if(k==='silent')return sd;if(k==='knight'&&g.K.knight>0&&KP('knight').parry)return Math.max(KP('knight').parry,cd);return cd;}
+function shadowStrike(n){const S=KP('silent');for(let i=0;i<Math.min(n,6);i++){let tg=null,bd=1e9;for(const e of g.enemies){if(e.dead||e.y>F.y0+10||e.type==='truck')continue;const d=Math.hypot(e.x-g.cx,e.y-F.y0);if(d<bd){bd=d;tg=e;}}
+  if(!tg){const bs=g.boss;if(bs&&bs.ready&&!bs.dead){bossDamage(bs,S.strike*rankMul('silent'),g.cx);g.parts.push({beam:true,x:g.cx,y:F.y0,x2:bs.x,y2:bs.y+bs.h/2,t:0,life:0.2,col:'#2dd4bf'});continue;}return;}damageEnemy(tg,S.strike*rankMul('silent'),false,true);g.parts.push({beam:true,x:g.cx,y:F.y0,x2:tg.x,y2:tg.y,t:0,life:0.2,col:'#2dd4bf'});}}
+// a bouncing card or a Backspin boomerang hops to the nearest enemy close by (Backspin: only one further up the road)
+function hopTarget(b,e,behind){let best=null,bd=170;for(const o of g.enemies){if(o.dead||o===e||(b.hit&&b.hit.has(o)))continue;if(behind&&o.y>e.y+30)continue;const d=Math.hypot(o.x-e.x,o.y-e.y);if(d<bd){bd=d;best=o;}}return best;}
+function boomBack(b){b.back=true;b.hit=null;b.spins=0;}
+// Tesla: the bolt goes to the nearest enemy within reach, then jumps to the next nearest, losing a little each jump.
+// With nothing in reach it arcs into the gate ahead, or the boss.
+function zap(K,x,y,w){
+  const reach=K.reach||230,jump=K.jump||70,decay=K.decay==null?0.85:K.decay,segs=[];let n=(K.chain||4)+(!K.tower&&has('chief')?1:0),dmg=K.dmg*w,first=null,bd=reach;
+  for(const e of g.enemies){if(e.dead||e.y>y+10)continue;const d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;first=e;}}
+  if(!first){let row=null;for(const r of g.gates){if(r.done||r.y+r.h>y-20||r.y+r.h<40)continue;if(!row||r.y>row.y)row=r;}
+    if(row){const gt=row.gates.find(q=>x>=q.x0&&x<q.x1);if(gt){chargeGate(gt,dmg);segs.push([x,y,x,row.y+row.h]);}}
+    else{const bs=g.boss;if(bs&&bs.ready&&!bs.dead){bossDamage(bs,dmg*(K.bossMul||1),x);segs.push([x,y,bs.x+(x-195)*0.3,bs.y+bs.h/2]);}}
+    if(segs.length)g.zaps.push({segs:jag(segs),t:0,col:K.col});return;}
+  if(K.fork)n=Math.round(n*1.6); // forked bolts reach more enemies; each step down the tree still loses power
+  const hit=new Set(),q=[{e:first,px:x,py:y,d:0}];
+  while(q.length&&n>0){const {e,px,py,d}=q.shift();if(hit.has(e)||e.dead)continue;hit.add(e);n--;segs.push([px,py,e.x,e.y]);
+    damageEnemy(e,dmg*Math.pow(decay,d)*(e.type==='flyer'?1.5:1));if(K.stun&&!e.dead)e.stun=Math.max(e.stun||0,K.stun);if(K.emp&&(e.type==='turret'||e.type==='mortar'||e.type==='priest'))e.stun=2.5;
+    const next=g.enemies.filter(o=>!o.dead&&!hit.has(o)&&!q.some(z=>z.e===o)&&Math.hypot(o.x-e.x,o.y-e.y)<=jump).sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,K.fork?2:1);
+    for(const o of next)q.push({e:o,px:e.x,py:e.y,d:d+1});}
+  g.zaps.push({segs:jag(segs),t:0,col:K.col});}
+function jag(segs){return segs.map(([x0,y0,x1,y1])=>{const pts=[[x0,y0]];for(let i=1;i<4;i++){const k=i/4;pts.push([x0+(x1-x0)*k+(Math.random()-0.5)*14,y0+(y1-y0)*k+(Math.random()-0.5)*14]);}pts.push([x1,y1]);return pts;});}
+// Engineers: sentries ride beside the crowd and aim at the nearest enemy in range. Minelayers throw mines into enemies' paths instead.
+function updateEng(dt){
+  const n=g.K.eng,K=KP('eng');if(n<=0){g.sentries.length=0;return;}
+  if(K.mines){g.sentries.length=0;g.mineT-=dt*boostMul();
+    if(g.mineT<=0){g.mineT=1.0;let best=null,bd=1e9;for(const e of g.enemies){if(e.dead||e.y<-10||e.y>F.y0-60||e.type==='truck')continue;const d=F.y0-e.y;if(d<bd&&d<420){bd=d;best=e;}}
+      const x=best?best.x+(rand()-0.5)*20:g.cx+(rand()-0.5)*F.w,y=best?Math.min(F.y0-70,best.y+40+rand()*30):F.y0-190;
+      const bs=g.boss,atB=!best&&bs&&bs.ready&&!bs.dead,mx=atB?Math.max(bs.x-bs.w/2+12,Math.min(bs.x+bs.w/2-12,g.cx+(rand()-0.5)*60)):x,my=atB?bs.y+bs.h/2+12:y; // with nothing else close, lob them at the boss
+      g.mines.push({x:Math.max(RX0+8,Math.min(RX1-8,mx)),y:my,sx:g.cx,sy:F.y0,t:0,dmg:7.5*n*rankMul('eng')*(K.clay?1.5:1),r:K.clay?62:48});}}
+  else{
+    const life=K.maxS?12:10,want=Math.min(K.maxS||4,Math.ceil(n/(K.per||5)));
+    g.sentries=g.sentries.filter(s=>s.life>0);for(const s of g.sentries)s.life-=dt;
+    if(!g.sentries.length){g.sentT-=dt;if(g.sentT<=0){g.sentT=1.5;for(let i=0;i<want;i++)g.sentries.push({side:i%2?1:-1,slot:Math.floor(i/2),life,nf:rand()*0.3,x:g.cx,y:F.y1});sfx('hatch');}}
+    const N=Math.max(1,g.sentries.length),rate=(K.sFlame?8:K.sRail?0.8:3)*boostMul(),dmg=n*7.2*rankMul('eng')/(N*(K.sFlame?8:K.sRail?0.8:3));
+    for(const s of g.sentries){const tx=s.side<0?F.x0-14-s.slot*18:F.x1+14+s.slot*18;s.x=Math.max(RX0+8,Math.min(RX1-8,tx));s.y=F.y1-8-s.slot*16;
+      s.nf-=dt;if(s.nf>0)continue;s.nf+=1/rate;if(s.nf<0)s.nf=0;
+      let tg=null,bd=K.sFlame?270:420;for(const e of g.enemies){if(e.dead||e.y>s.y)continue;const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<bd){bd=d;tg=e;}}
+      let vx=0,vy=-1;if(tg){const dx=tg.x-s.x,dy=tg.y-s.y,L=Math.hypot(dx,dy)||1;vx=dx/L;vy=dy/L;}
+      if(K.sFlame){const a=(rand()-0.5)*0.35,c=Math.cos(a),si=Math.sin(a);g.bullets.push({x:s.x,y:s.y-8,vx:600*(vx*c-vy*si),vy:600*(vx*si+vy*c),dmg,range:270,travel:0,col:rand()<0.5?'#ff7a2a':'#cbd5e1',k:'eng',fire:true});}
+      else g.bullets.push({x:s.x,y:s.y-8,vx:1000*vx,vy:1000*vy,dmg,col:'#e2e8f0',k:'eng',range:0,travel:0,pierce:K.sRail?99:0,big:!!K.sRail,ap:!!K.sRail});}}
+}
+function updateMines(dt,scroll){const K=g.K.eng>0?KP('eng'):{};
+  for(let i=g.mines.length-1;i>=0;i--){const m=g.mines[i];m.t+=dt;m.y+=scroll*dt;if(m.t<0.35)continue; // still in the air
+    if(K.spider){let tg=null,bd=170;for(const e of g.enemies){if(e.dead||e.type==='truck')continue;const d=Math.hypot(e.x-m.x,e.y-m.y);if(d<bd){bd=d;tg=e;}}if(tg){const dx=tg.x-m.x,dy=tg.y-m.y,L=Math.hypot(dx,dy)||1;m.x+=dx/L*130*dt;m.y+=dy/L*130*dt;}}
+    const bs=g.boss;let boom=(bs&&bs.ready&&!bs.dead&&Math.abs(m.x-bs.x)<bs.w/2+10&&m.y<bs.y+bs.h/2+40)||g.enemies.some(e=>!e.dead&&e.type!=='truck'&&Math.hypot(e.x-m.x,e.y-m.y)<e.w/2+10)||g.walls.some(w=>!w.dead&&m.x>w.x0&&m.x<w.x1&&m.y>w.y&&m.y<w.y+w.h+6);
+    if(boom){g.mines.splice(i,1);blastAt(m.x,K.clay?m.y-24:m.y,m.r,m.dmg,1,'#cbd5e1');sfx('blast');continue;}
+    if(m.y>F.y0-10||m.t>6)g.mines.splice(i,1);}}
+// Drones: each one hunts a target, edge enemies first, and fires a short laser. Kamikaze drones explode on it instead.
+function droneTarget(d,K){let best=null,bs=-1e9;
+  for(const e of g.enemies){if(e.dead||e.y<0||e.y>F.y0||e.type==='truck')continue;let s=Math.abs(e.x-195)*1.5-Math.hypot(e.x-d.x,e.y-d.y)*0.4;
+    if(e.type==='mortar'||e.type==='turret'||e.type==='priest')s+=300;for(const o of g.drones)if(o!==d&&o.tg===e)s-=160;if(s>bs){bs=s;best=e;}}
+  if(K.bomb)for(const w of g.walls){if(w.dead||w.cage||w.y+w.h<F.y0-380||w.y>F.y0)continue;if(F.x1>w.x0-20&&F.x0<w.x1+20)return{wall:w,x:Math.max(w.x0+20,Math.min(w.x1-20,g.cx)),y:w.y+w.h/2};}
+  if(!best){const b=g.boss;if(b&&b.ready&&!b.dead)return{boss:b,x:b.x+(rand()-0.5)*b.w*0.6,y:b.y+b.h/2};}
+  return best;}
+function updateDrones(dt){
+  const K=KP('tesla'),n=K.drone?g.K.tesla:0,want=n>0?Math.min(K.swarm?12:6,Math.ceil(n/(K.swarm?2:4))):0;
+  while(g.drones.length<want)g.drones.push({x:g.cx,y:F.y0,tg:null,cd:0,bcd:0,ang:rand()*6});if(g.drones.length>want)g.drones.length=want;
+  if(!want)return;const dps=n*4.2*rankMul('tesla')*boostMul('tesla')*(has('chief')?1.3:1)/want*(K.repair?0.5:1);
+  for(const d of g.drones){d.las=null;if(d.bcd>0)d.bcd-=dt;
+    if(d.cd>0){d.cd-=dt;d.x=g.cx;d.y=F.y0;continue;}
+    if(K.shdrone&&d.bcd<=0){let s0=null,sd=1e9;for(const s of g.shots){const dd=Math.hypot(s.x-g.cx,s.y-F.y0);if(dd<260&&dd<sd){sd=dd;s0=s;}}
+      if(s0){const dx=s0.x-d.x,dy=s0.y-d.y,L=Math.hypot(dx,dy)||1,sp=Math.min(L,640*dt);d.x+=dx/L*sp;d.y+=dy/L*sp;if(L<16){g.shots.splice(g.shots.indexOf(s0),1);d.bcd=2;burst(d.x,d.y,'#a78bfa',6,120);pop(d.x,d.y-14,'BLOCKED','#a78bfa',13);}continue;}}
+    d.rt=(d.rt||0)-dt;if(d.tg&&(d.tg.boss||d.tg.wall)&&d.rt<=0){d.rt=0.5;d.tg=null;}
+    const t=d.tg;if(!t||(t.dead)||(t.wall&&t.wall.dead)||(t.boss&&t.boss.dead)||(!t.wall&&!t.boss&&t.y>F.y0))d.tg=droneTarget(d,K);
+    const T=d.tg;let tx,ty;if(T){tx=T.wall?T.x:T.boss?T.x:T.x;ty=T.wall?T.wall.y+T.wall.h/2:T.boss?T.boss.y+T.boss.h/2+(K.kami?0:30):T.y-(K.kami?0:40);}
+    else{d.ang+=dt*2;tx=g.cx+Math.cos(d.ang)*40;ty=F.y0-60+Math.sin(d.ang)*14;}
+    const dx=tx-d.x,dy=ty-d.y,L=Math.hypot(dx,dy),sp=Math.min(L,(K.kami?480:420)*dt);if(L>0){d.x+=dx/L*sp;d.y+=dy/L*sp;}
+    if(!T){const row=g.gates.filter(r=>!r.done&&r.y+r.h<d.y).sort((a,b)=>b.y-a.y)[0];if(row){const gt=row.gates.find(q=>d.x>=q.x0&&d.x<q.x1);if(gt)chargeGate(gt,dps*dt);}continue;}
+    if(L<(K.kami?14:34)){
+      if(K.kami){blastAt(d.x,d.y,K.bomb?62:40,dps*2.2*(K.bomb?1.4:1),K.bomb?4:1,'#a78bfa');sfx('blast');d.cd=1.5;d.tg=null;}
+      else{if(T.boss)bossDamage(T.boss,dps*dt,d.x);else if(T.wall)wallDamage(T.wall,dps*dt*0.5);else damageEnemy(T,dps*dt*(T.type==='flyer'?1.5:1));d.las=T;}}}
+  if(K.repair){g.repT-=dt;if(g.repT<=0){g.repT=K.medevac?3:5;const c=K.medevac?2:1,got={};for(let i=0;i<c&&g.fallen.length;i++){const k=g.fallen.pop();got[k]=(got[k]||0)+1;}
+    for(const k in got){g.K[k]+=got[k];formation();pop(g.cx,F.y0-24,'+'+got[k]+' '+kname(k)+' BACK','#a78bfa',15);}}}
+}
+// the two nearest targets above the crowd (enemies anywhere across the road, walls, then the boss)
+function batteryTargets(n){
+  const c=[];
+  for(const e of g.enemies){if(e.dead||e.y<-10||e.y>F.y0)continue;c.push({d:F.y0-e.y,x:e.x,y:e.y,e});}
+  for(const w of g.walls){if(w.dead||w.y<-30||w.y>F.y0)continue;c.push({d:F.y0-w.y,x:Math.max(w.x0+20,Math.min(w.x1-20,g.cx)),y:w.y+w.h/2,w});}
+  c.sort((a,b)=>a.d-b.d);const out=c.slice(0,n);const b=g.boss;
+  if(b&&b.ready&&!b.dead){const lp=b.kind===3?b.ports.filter(p=>p.hp>0):[];let i=0;while(out.length<n){const p=lp[i++%Math.max(1,lp.length)];out.push({x:p?b.x+p.dx:b.x,y:b.y});}}
+  if(!out.length)out.push({x:g.cx,y:F.y0-260});
+  return out;}
+function batteryTarget(){
+  let best=null,bd=1e9;
+  for(const e of g.enemies){if(e.dead||e.y<-10||e.y>F.y0)continue;const d=F.y0-e.y;if(d<bd){bd=d;best={x:e.x,y:e.y};}}
+  for(const w of g.walls){if(w.dead||w.y<-30||w.y>F.y0)continue;const d=F.y0-w.y;if(d<bd){bd=d;best={x:Math.max(w.x0+20,Math.min(w.x1-20,g.cx)),y:w.y+w.h/2};}}
+  const b=g.boss;if(!best&&b&&b.ready&&!b.dead)best={x:b.x,y:b.y};
+  if(!best)best={x:g.cx,y:F.y0-260};
+  return best;
+}
+function blastAt(x,y,R,dmg,wallMul,col,o){o=o||{};
+  for(const e of g.enemies){if(e.dead)continue;if(Math.hypot(e.x-x,e.y-y)<=R+e.w/2){damageEnemy(e,dmg*(o.flak&&(e.type==='ant'||e.type==='charger'||e.type==='flyer')?2:1),true);if(o.fire&&!e.dead)e.burn=3;}}
+  for(const w of g.walls){if(w.dead)continue;if(x>w.x0-R&&x<w.x1+R&&y>w.y-R&&y<w.y+w.h+R)wallDamage(w,dmg*wallMul);}
+  const bs=g.boss;if(bs&&bs.ready&&!bs.dead){const dx=Math.max(0,Math.abs(x-bs.x)-bs.w/2),dy=Math.max(0,Math.abs(y-bs.y)-bs.h/2);if(Math.hypot(dx,dy)<=R)bossDamage(bs,dmg,x);}
+  g.parts.push({x,y,ring:R,t:0,life:0.22,col:col||'#ff9a3c'});burst(x,y,col||'#ff9a3c',6,110);
+}
+function pelletMul(b){const close=140;return b.travel<=close?1:Math.max(0.2,1-0.8*(b.travel-close)/Math.max(1,b.range-close));}
+function damageEnemy(e,d,blast,ap){
+  if(e.type==='plated'&&!blast&&!ap)d*=0.35;if(e.mark>0)d*=1.5;
+  e.hp-=d;e.flash=0.04;if(has('hot')&&!blast){e.burn=3;}
+  if(e.hp<=0)kill(e);
+}
+const RAISE={grunt:'grunt',thief:'grunt',plated:'plated',charger:'charger',brute:'brute',riot:'riot'};
+function kill(e){
+  if(e.dead)return;e.dead=true;g.kills++;if(e.type==='ant')g.antKills++;if(e.burn>0||e.fireHit)g.fireKills++;
+  const col={brute:'#ff9a3c',plated:'#9aa3b5',ant:'#c084fc',charger:'#ff5c8a',mortar:'#c0c6d0',truck:'#ffd166',thief:'#ff6b6b',bomber:'#ff7a2a',riot:'#cbd5e1',priest:'#f0abfc',blob:'#c084fc',flyer:'#f43f5e'}[e.type]||'#ff5c5c';
+  burst(e.x,e.y,col,e.type==='ant'?3:e.type==='truck'?20:7);sfx('cry');
+  if(e.type==='brute'&&!e.raised)g.tokens.push({x:e.x,y:e.y,v:5,t:0});
+  if(e.burn>0&&g.evo.includes('wp'))blastAt(e.x,e.y,40,8*rankMul('rifle'),1,'#fff3c4',{fire:true}); // White Phosphorus
+  // the fallen lie on the road for 4 s: a Field Priest can raise them
+  if(!e.raised&&RAISE[e.type]){g.corpses.push({type:RAISE[e.type],x:e.x,y:e.y,t:0});if(g.corpses.length>16)g.corpses.shift();}
+  if(e.type==='blob'){for(let j=0;j<6;j++){const a=j*Math.PI/3;enemy('ant',Math.max(RX0+8,Math.min(RX1-8,e.x+Math.cos(a)*14)),e.y+Math.sin(a)*10);}}
+  if(e.type==='bomber'){const x=e.x,y=e.y;sfx('shell');blastAt(x,y,40,10,1,'#ff7a2a');if(F&&F.pos.some(p=>figDist(p,x,y)<=40))hitCircle(x,y,40,'a bomber');}
+  if(e.type==='truck'){g.trucksKilled++;doShake(5,0.25);sfx('cheer');g.pendingCrate=g.pendingCrate?{n:g.pendingCrate.n+1,of:3,why:'SUPPLY CRATES'}:{n:1,of:3,why:'SUPPLY CRATE'};}
+}
+function wallDamage(w,d){w.pool+=d;w.flash=0.05;while(w.pool>=6&&w.K>0){w.pool-=6;w.K--;}if(w.K<=0&&!w.dead){w.dead=true;if(!w.cage)g.wallsBroken++;burst((w.x0+w.x1)/2,w.y+20,'#8a93a6',14,160);sfx('shatter');if(w.cage)freeCage(w);}}
+// Twin Hatch and Hive Queen take double while open and little otherwise. Siege Tower: a hit on a gun port hurts the port; the core takes a quarter until every port is gone.
+function bossDamage(bs,d,x){let m=1;if(bs.kind===2)m=bs.hatch>0?2:0.5;else if(bs.kind===4)m=bs.lay>0?2:0.4;
+  else if(bs.kind===3){const live=bs.ports.filter(p=>p.hp>0);if(live.length){const px=x==null?bs.x:x,p=live.find(p=>Math.abs(px-(bs.x+p.dx))<=32);
+    if(p){p.hp-=d;p.flash=0.03;bs.acc+=d;if(p.hp<=0){p.hp=0;burst(bs.x+p.dx,bs.y+bs.h/2-18,'#ff7a2a',16,180);sfx('shatter');doShake(4,0.2);setMsg(live.length>1?'GUN PORT DOWN':'CORE EXPOSED: full damage',1.6);}return;}m=0.25;}}
+  d*=m;bs.hp-=d;bs.flash=0.03;bs.acc+=d;}
+function gatePumpMul(){return (has('hacker')?2:1)*(g.cy<(PITY0+PITY1)/2?1.25:1);}
+function chargeGate(gt,d){
+  if(gt.k!=='kind'&&gt.k!=='minus')return;
+  const before=gateVal(gt);gt.charge=Math.min(1,gt.charge+d*gatePumpMul()/(squadDps()*2.2));
+  const after=gateVal(gt);if(after!==before){sfx('charge',Math.abs(after));gt.pop=0.08;}
+  if(gt.k==='kind'&&gt.charge>=1&&!gt.capped){gt.capped=true;gt.gold=0.5;sfx('cap');}
+  if(gt.k==='minus'&&after===0&&!gt.zeroed){gt.zeroed=true;gt.gold=0.5;pop((gt.x0+gt.x1)/2,Math.max(70,gt.row.y-12),'DEFUSED','#2ee6a6',16);}
+}
+// Riot Shields turn their shield to face the crowd's middle: straight-up bullets bounce off unless the crowd stands off to one side.
+// Fire, armour-piercing rounds, blasts, big fusion rounds, heavy piercing shots and angled pellets get through.
+function riotBlocks(b,e){return !b.fire&&!b.ap&&!b.big&&!(b.pierce>=3)&&Math.abs(b.vx)<80&&Math.abs(g.cx-e.x)<Math.max(16,F.w*0.25);}
+function updateBullets(dt){
+  const bs=g.boss;
+  for(let i=g.bullets.length-1;i>=0;i--){const b=g.bullets[i];if(b.delay>0){b.delay-=dt;continue;}
+    if(b.boom){if(!b.back&&(b.travel>=b.out||b.y<24))boomBack(b);if(b.back){const dx=g.cx-b.x,dy=F.y0-b.y,L=Math.hypot(dx,dy)||1;if(L<26||b.y>F.y1){g.bullets.splice(i,1);continue;}b.vx=dx/L*720;b.vy=dy/L*720;}}
+    if(b.rico!=null&&((b.x<RX0+4&&b.vx<0)||(b.x>RX1-4&&b.vx>0))&&b.rico>0){b.vx=-b.vx;b.rico--;b.hit=null;}
+    const ox=b.x,oy=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.travel+=Math.hypot(b.vx,b.vy)*dt;
+    let gone=b.y<-30||b.x<-10||b.x>W+10||(b.range&&b.travel>b.range);
+    if(!gone){ // gates are pumped by the bullets that fly through them
+      for(const row of g.gates){if(row.done)continue;if(b.y<=row.y+row.h&&oy>=row.y){for(const gt of row.gates){if(b.x>=gt.x0&&b.x<gt.x1&&(gt.k==='kind'||gt.k==='minus')&&!(b.pumped&&b.pumped.has(row))){chargeGate(gt,(b.k==='rifle'&&b.pierce>=50&&g.evo.includes('over'))?1e9:b.dmg+(b.splash||0));(b.pumped=b.pumped||new Set()).add(row);break;}}}}}
+    if(!gone)for(const w of g.walls){if(w.dead)continue;if(b.x>=w.x0&&b.x<=w.x1&&b.y<=w.y+w.h&&b.y>=w.y-10){if(b.boom){if(!(b.hitW&&b.hitW.has(w))){wallDamage(w,b.dmg*0.5);(b.hitW=b.hitW||new Set()).add(w);}if(!b.back)boomBack(b);break;}if(b.blast)blastAt(b.x,w.y+w.h,b.sr,b.splash+b.dmg,(b.wm||1)*(has('sapper')?1.5:1),b.col,{fire:b.fireBlast,flak:b.flak});else wallDamage(w,b.dmg*(b.fire?0.35:0.5)*(b.wm||1)*(b.falloff&&b.range?pelletMul(b):1));gone=true;break;}}
+    if(!gone)for(const e of g.enemies){if(e.dead||(b.hit&&b.hit.has(e)))continue;if(Math.abs(b.x-e.x)<e.w/2+3&&Math.abs(b.y-e.y)<e.h/2+6){
+      if(b.blast){damageEnemy(e,b.dmg,true);blastAt(b.x,b.y,b.sr,b.splash,1,b.col,{fire:b.fireBlast,flak:b.flak});if(b.cluster)for(let c=0;c<b.cluster;c++){const a=rand()*Math.PI*2,r=30+rand()*25;g.shells=g.shells||[];g.shells.push({x0:b.x,y0:b.y,x1:b.x+Math.cos(a)*r,y1:b.y+Math.sin(a)*r,t:0,dur:0.15+c*0.06,r:32,dmg:b.splash*0.25,wm:1,col:b.col});}gone=true;}
+      else{if(e.type==='riot'&&riotBlocks(b,e)){if(Math.random()<0.3)burst(b.x,b.y,'#cbd5e1',2,80);if(b.boom&&!b.back){boomBack(b);(b.hit=new Set()).add(e);}else gone=true;break;}
+        let dm=b.dmg;if(b.falloff&&b.range)dm*=pelletMul(b);if(b.fire||b.burnHit)e.fireHit=true;damageEnemy(e,dm,!!b.fire,!!b.ap);if((b.fire||b.burnHit)&&!e.dead)e.burn=has('sapper')?4:3;if(b.mark&&!e.dead)e.mark=3;if(b.slow&&!e.dead)e.slow=1;if(b.knock&&!e.dead)e.y=Math.max(-30,e.y-b.knock);
+        if(b.hop>0||b.spins>0){(b.hit=b.hit||new Set()).add(e);const nx=hopTarget(b,e,b.spins>0);if(nx){const sp=Math.hypot(b.vx,b.vy)||700,dx=nx.x-b.x,dy=nx.y-b.y,L=Math.hypot(dx,dy)||1;b.vx=dx/L*sp;b.vy=dy/L*sp;if(b.spins>0){b.spins--;b.out+=90;}else b.hop--;break;}}
+        if(b.boom||b.rico!=null){(b.hit=b.hit||new Set()).add(e);} // boomerangs and ricochets go through everything, hitting each enemy once a leg
+        else if(e.dead&&-e.hp>0.5){b.dmg=-e.hp;(b.hit=b.hit||new Set()).add(e);} // overkill carries on to the next enemy
+        else if(b.pierce>0){b.pierce--;(b.hit=b.hit||new Set()).add(e);}else gone=true;}break;}}
+    if(!gone&&b.boom&&bs&&bs.ready&&!bs.dead&&Math.abs(b.x-bs.x)<bs.w/2&&Math.abs(b.y-bs.y)<bs.h/2){if(!b.back){bossDamage(bs,b.dmg*2,b.x);boomBack(b);}}
+    else if(!gone&&b.rico!=null&&bs&&bs.ready&&!bs.dead&&Math.abs(b.x-bs.x)<bs.w/2&&Math.abs(b.y-bs.y)<bs.h/2){bossDamage(bs,b.dmg*2,b.x);gone=true;}
+    else if(!gone&&bs&&bs.ready&&!bs.dead&&Math.abs(b.x-bs.x)<bs.w/2&&Math.abs(b.y-bs.y)<bs.h/2){bossDamage(bs,(b.dmg*(b.falloff&&b.range?Math.max(0.8,pelletMul(b)):1)+(b.splash||0))*(b.blast?1.3:1),b.x);if(b.blast)g.parts.push({x:b.x,y:b.y,ring:b.sr*0.6,t:0,life:0.18,col:b.col});gone=true;}
+    if(gone)g.bullets.splice(i,1);
+  }
+  for(let i=g.waves.length-1;i>=0;i--){const wv=g.waves[i];wv.t+=dt;const y=wv.y0-380*Math.min(1,wv.t/wv.dur);
+    for(const e of g.enemies){if(e.dead||wv.hit.has(e))continue;if(Math.abs(e.x-wv.x)<110&&e.y>y-14&&e.y<wv.y0){wv.hit.add(e);damageEnemy(e,wv.dmg||30,true);if(!e.dead)e.burn=3;}}
+    for(const w of g.walls){if(w.dead||wv.hit.has(w))continue;if(w.x1>wv.x-110&&w.x0<wv.x+110&&w.y+w.h>y-14&&w.y<wv.y0){wv.hit.add(w);wallDamage(w,6);}}
+    const bs=g.boss;if(bs&&bs.ready&&!bs.dead&&!wv.hit.has(bs)&&Math.abs(bs.x-wv.x)<110+bs.w/2&&bs.y+bs.h/2>y-14&&bs.y<wv.y0){wv.hit.add(bs);bossDamage(bs,wv.dmg||30,wv.x);}
+    if(wv.t>=wv.dur)g.waves.splice(i,1);}
+  if(g.shells)for(let i=g.shells.length-1;i>=0;i--){const s=g.shells[i];s.t+=dt;if(s.tgt&&!s.tgt.dead){s.x1=s.tgt.x;s.y1=s.tgt.y;}else if(s.tw&&!s.tw.dead){s.y1=s.tw.y+s.tw.h/2;} // battery shells follow what they aimed at
+    if(s.t>=s.dur){blastAt(s.x1,s.y1,s.r||120,s.dmg||30,s.wm||3,s.col||'#f472b6');if(!s.r||s.big){doShake(3,0.12);sfx('shell');}g.shells.splice(i,1);}}
+}
+function passGate(gt,row){
+  if(gt.k==='kind'){
+    if(gt.branch&&gt.tier===2&&g.branch[gt.kind]&&!g.branch2[gt.kind]){g.branch2[gt.kind]=gt.branch;g.nextFire[gt.kind]=[];setMsg(BRANCH[gt.kind][g.branch[gt.kind]].name+' \u2192 '+kname(gt.kind),2.2);sfx('forge');vib([20,30,40]);timescale=0.5;tsT=0.5;}
+    else if(gt.branch&&gt.tier===1&&!g.branch[gt.kind]){g.branch[gt.kind]=gt.branch;g.nextFire[gt.kind]=[];setMsg(KINDS[gt.kind].name+' \u2192 '+BRANCH[gt.kind][gt.branch].name,2.2);sfx('forge');vib([20,30,40]);timescale=0.5;tsT=0.5;}
+    g.rank[gt.kind]++;addKind(gt.kind,gateVal(gt));sfx('pass');vib(10);
+    if(g.rank[gt.kind]===RANKUP&&!g.branch[gt.kind])setMsg(KINDS[gt.kind].name+' RANK 3: upgrade on the next row',1.8);g.pickLog.push({t:g.t,kind:gt.kind,v:gateVal(gt),others:row.gates.filter(o=>o!==gt).map(o=>o.k==='kind'?o.kind+':'+gateVal(o):o.k)});}
+  else if(gt.k==='minus'){const v=-gateVal(gt);if(v>0)hitPoint(g.cx,F.y0,v,'a red gate');else{pop(g.cx,F.y0-24,'SAFE','#2ee6a6',18);}}
+  else if(gt.k==='forge'){forge(gt.promo);addKind(PROMOS[gt.promo].kind,gt.printed);}
+  else if(gt.k==='swap'){const n=Math.ceil(g.K[gt.from]/2);if(n>0){g.K[gt.from]-=n;const m=Math.max(1,Math.round(n*KINDS[gt.to].mul/KINDS[gt.from].mul));g.K[gt.to]+=m;
+    g.cFlash=0.3;g.cCol=KINDS[gt.to].col;formation();pop(g.cx,F.y0-24,'-'+n+' '+kname(gt.from)+'  +'+m+' '+kname(gt.to),KINDS[gt.to].col,15);sfx('pass');vib(10);}}
+}
+function forge(id){
+  const P=PROMOS[id];if(g.K[P.kind]<P.need||(id in g.fused))return;
+  formation();const pts=F.pos.filter(p=>p.k===P.kind).map(p=>({x:p.x,y:p.y}));
+  g.K[P.kind]-=P.need;g.fused[id]=P.need;g.promosMade.push(id);if(id==='bulwark')g.bulPlates=5*P.need;
+  formation();const tgt=id==='bulwark'?{x:g.cx,y:F.y0+10}:(F.bigs.find(b=>b.k===id)||{x:g.cx,y:F.y1});
+  g.forgeFx={id,pts,tx:tgt.x,ty:tgt.y,t:0};
+  timescale=0.35;tsT=0.9;hitstop=0.1;doShake(6,0.3);sfx('forge');vib([20,30,60]);
+  setMsg(P.name+'!',2.4);
+}
+function updateGates(dt,scroll){
+  for(let i=g.gates.length-1;i>=0;i--){const row=g.gates[i];row.y+=scroll*dt;
+    for(const gt of row.gates){gt.row=row;if(gt.pop>0)gt.pop-=dt;if(gt.gold>0)gt.gold-=dt;}
+    if(!row.done&&row.y+row.h>=F.y0&&row.y<=F.y1){
+      // the gate under the crowd's center is the one taken
+      const gt=row.gates.find(q=>g.cx>=q.x0&&g.cx<q.x1)||row.gates[0];row.done=true;row.taken=gt;passGate(gt,row);}
+    if(row.y>H+40)g.gates.splice(i,1);
+  }
+  for(let i=g.muds.length-1;i>=0;i--){const m=g.muds[i];m.y+=scroll*dt;if(m.y>H)g.muds.splice(i,1);}
+  if(g.bridge){g.bridge.y+=scroll*dt;if(g.bridge.y>H)g.bridge=null;}
+  for(let i=g.walls.length-1;i>=0;i--){const w=g.walls[i];w.y+=scroll*dt;if(w.flash>0)w.flash-=dt;
+    if(!w.dead&&!w.cage&&w.y+w.h>=F.y0&&w.y<=F.y1&&F.x1>w.x0&&F.x0<w.x1){w.dead=true;burst((w.x0+w.x1)/2,w.y+20,'#8a93a6',14,160);hitPoint(Math.max(w.x0,Math.min(w.x1,g.cx)),F.y0,w.K,'a wall');}
+    if(w.dead||w.y>H+40)g.walls.splice(i,1);}
+}
+// ---------- supply drops, cages, rally and evolutions ----------
+const DROPS={od:{name:'OVERDRIVE',col:'#ffd166',ic:'2x',say:'double fire for 6 s'},air:{name:'AIRSTRIKE',col:'#ff7a2a',ic:'!',say:'8 shells hit the road ahead'},ap:{name:'AP ROUNDS',col:'#93c5fd',ic:'AP',say:'shots pierce armour for 6 s'}};
+function spawnDrop(x,kind){if(x==null)x=RX0+40+g.rnd()*(RW-80);kind=kind||['od','air','ap'][Math.floor(g.rnd()*3)];g.drops.push({x,y:-30,kind,t:0});}
+function useDrop(d){const D=DROPS[d.kind];sfx('card');vib(15);pop(g.cx,F.y0-30,D.name+'!',D.col,20);setMsg(D.name+': '+D.say,1.8);
+  if(d.kind==='od'){speedUp(()=>{g.odT=6;});}else if(d.kind==='ap')g.apT=6;
+  else{g.shells=g.shells||[];for(let i=0;i<8;i++){const x=Math.max(RX0+30,Math.min(RX1-30,g.cx+(g.rnd()-0.5)*160)),y=F.y0-90-i*55;g.shells.push({x0:x,y0:-40,x1:x,y1:y,t:0,dur:0.3+i*0.09,r:55,dmg:45,wm:3,col:'#ffd166',big:true,drop:true});}}}
+function updateDrops(dt,scroll){
+  for(let i=g.drops.length-1;i>=0;i--){const d=g.drops[i];d.t+=dt;d.y+=scroll*dt;
+    if(d.y+12>F.y0&&d.y-12<F.y1&&d.x+14>F.x0&&d.x-14<F.x1){g.drops.splice(i,1);useDrop(d);continue;}if(d.y>H+30)g.drops.splice(i,1);}
+  if(g.odT>0)g.odT-=dt;if(g.apT>0)g.apT-=dt;if(g.rallyT>0)g.rallyT-=dt;if(g.rallyCD>0)g.rallyCD-=dt;if(g.breach>0)g.breach=Math.max(0,g.breach-TUNE.breachDrain*dt);if(g.breachFl>0)g.breachFl-=dt;
+  if(g.evo.includes('train')){g.trainT-=dt;if(g.trainT<=0){g.trainT=12;spawnDrop(Math.max(RX0+40,Math.min(RX1-40,g.cx+(g.rnd()-0.5)*160)));setMsg('AMMO TRAIN: supply drop',1.2);}}
+}
+function spawnCage(x){const kinds=rosterK(),tk=topKind(),lead=g.rnd()<0.65,kind=lead&&tk&&kinds.includes(tk)?tk:kinds[Math.floor(g.rnd()*kinds.length)];x=Math.max(RX0+34,Math.min(RX1-34,x));
+  g.walls.push({x0:x-30,x1:x+30,y:-60,h:34,K:Math.ceil((g.sec>=2?35:20)/6),pool:0,flash:0,cage:true,kind,officer:g.rnd()<0.15});}
+function freeCage(w){const x=(w.x0+w.x1)/2,y=w.y+w.h/2;sfx('cheer');burst(x,y,'#ffd166',12,140);
+  if(w.officer&&g.cards.length<maxCards()){const offs=unlockedK().filter(k=>g.K[k]>0).map(k=>Object.keys(CARDS).find(c=>CARDS[c].officer===k&&!has(c))).filter(Boolean);
+    if(offs.length){const c=offs[Math.floor(g.rnd()*offs.length)];g.cards.push(c);setMsg('RESCUED: '+CARDS[c].name+' joins',2);pop(x,y-20,CARDS[c].name+'!',CARDS[c].col,16);return;}}
+  g.tokens.push({x,y,v:Math.ceil(6*KINDS[w.kind].mul),t:0,k:w.kind});pop(x,y-20,'RESCUED','#ffd166',16);}
+// Rally: the button in the bottom corner (or Space). The crowd plants for 2 s and fires three times as fast. 20 s to recharge.
+function rally(){if(mode!=='play'||!g||g.over||g.rallyCD>0)return;speedUp(()=>{g.rallyT=2;});g.rallyCD=20;g.rallyUsed=true;sfx('forge');vib([20,20,20]);pop(g.cx,F.y0-30,'RALLY!','#ffd166',22);g.parts.push({x:g.cx,y:(F.y0+F.y1)/2,ring:90,t:0,life:0.4,col:'#ffd166'});}
+// Card evolutions: hold a plain card and reach the matching upgrade, and the card becomes something bigger
+const EVOS={
+  wp:{name:'WHITE PHOSPHORUS',card:'hot',kind:'rifle',leaf:'incend',with:'Incendiary',col:'#fff3c4',desc:'Anything that dies burning explodes in fire.'},
+  train:{name:'AMMO TRAIN',card:'quarter',kind:'shot',leaf:'drum',with:'Drum Mags',col:'#c9f27a',desc:'A supply drop every 12 s.'},
+  hosp:{name:'FIELD HOSPITAL',card:'medic',kind:'shield',leaf:'wave',with:'Wave Shields',col:'#ff9ecb',desc:'+3 of your biggest kind every 6 s.'},
+  code:{name:'CODE BREAKER',card:'hacker',kind:'rifle',leaf:'spot',with:'Spotters',col:'#2ee6a6',desc:'Gates start half pumped. Red gates print half.'},
+  roll:{name:'DRUM ROLL',card:'drums',kind:'rifle',leaf:'burst',with:'Burst Fire',col:'#d6a35c',desc:'Bursts fire 5 rounds instead of 3.'},
+  over:{name:'OVERCHARGE',card:'hacker',kind:'rifle',leaf:'rail',with:'Railguns',col:'#7df3ff',desc:'Every rail shot that passes through a gate fills it to the top; red gates drop to zero.'}
+};
+// the evolution a card shows: one already made, else one your army is on the way to, else the first
+function cardEvo(c){const L=Object.keys(EVOS).filter(id=>EVOS[id].card===c);if(!L.length)return null;if(!g)return L[0];
+  return L.find(id=>g.evo.includes(id))||L.find(id=>{const E=EVOS[id],b=g.branch[E.kind];return g.K[E.kind]>0&&(!b||b===E.leaf||!!(BRANCH[E.kind][b].next||{})[E.leaf]);})||L[0];}
+function checkEvo(){for(const id in EVOS){if(g.evo.includes(id))continue;const E=EVOS[id];if(!has(E.card)||(g.branch[E.kind]!==E.leaf&&g.branch2[E.kind]!==E.leaf))continue;
+  g.evo.push(id);setMsg('EVOLVED: '+E.name,2.4);sfx('forge');vib([20,30,60]);timescale=0.4;tsT=0.7;doShake(5,0.25);pop(g.cx,F.y0-40,E.desc,E.col,14);
+  g.parts.push({x:g.cx,y:(F.y0+F.y1)/2,ring:130,t:0,life:0.6,col:E.col});if(id==='train')g.trainT=2;}}
+// ---------- enemies ----------
+const ENAME={grunt:'a grunt',plated:'armoured troops',ant:'the ants',charger:'a charger',brute:'a brute',turret:'a turret shot',thief:'a gate thief',riot:'riot shields',priest:'a field priest',blob:'a splitter',flyer:'a flyer',bomber:'a bomber'};
+// Gate Thief: runs for the best gate in the next row and turns it red at half its number. Once it has stolen, it charges like a grunt.
+function updateThief(e,dt,scroll,sl){
+  let tg=null,tr=null;
+  for(const row of g.gates){if(row.done||row.y+row.h<e.y||row.y+row.h>F.y0-200||row.gates.some(q=>q.branch||q.k==='forge'||q.stolen))continue;if(tr&&row.y>=tr.y)continue;
+    let best=null;for(const q of row.gates)if(q.k==='kind'&&(!best||gateVal(q)>gateVal(best)))best=q;if(best){tg=best;tr=row;}}
+  e.y+=(scroll+(tg?170:90)*sl)*dt; // a thief with a gate in sight hurries, so it steals early enough to be seen
+  if(tg){const mx=(tg.x0+tg.x1)/2,d=mx-e.x;e.x+=Math.sign(d)*Math.min(160*dt,Math.abs(d));e.tgx=mx;e.tgy=tr.y+tr.h/2;
+    if(e.y>=tr.y+8&&e.x>=tg.x0&&e.x<tg.x1){stealGate(tg,tr);e.stole=true;e.tgx=null;e.lane=Math.max(-120,Math.min(120,e.x-195));}}
+  else{e.tgx=null;const d=Math.max(RX0+10,Math.min(RX1-10,g.cx+e.lane*0.55))-e.x;e.x+=Math.sign(d)*Math.min(40*sl*dt,Math.abs(d));}
+}
+function stealGate(q,row){const v=gateVal(q);q.k='minus';q.printed=Math.ceil(Math.max(3,Math.ceil(v/2))*(g.evo.includes('code')?0.5:1)*(T(4)?1.5:1));q.charge=0;q.capped=false;q.zeroed=false;q.gold=0;q.pop=0.2;q.stolen=true;
+  pop((q.x0+q.x1)/2,Math.max(70,row.y-12),'STOLEN!','#ff6b6b',18);sfx('warn');burst((q.x0+q.x1)/2,row.y+row.h/2,'#ff6b6b',10,140);}
+// Field Priest: hangs back near the top and every 3.5 s raises up to two of the fallen at 60% health
+function updatePriest(e,dt,scroll){
+  e.y+=(e.y<130?scroll:14)*dt;e.x=Math.max(RX0+14,Math.min(RX1-14,e.bx+Math.sin(e.age*0.8)*50));
+  e.raiseT=(e.raiseT===undefined?2.5:e.raiseT)-(e.stun>0?0:dt);if(e.raiseT>0)return;e.raiseT=3.5;
+  let n=0;for(let j=g.corpses.length-1;j>=0&&n<2;j--){const c=g.corpses[j];if(c.y>F.y0-140||c.y<0)continue;g.corpses.splice(j,1);
+    const r=enemy(c.type,c.x,c.y,{raised:true});r.hp=r.maxhp*0.6;g.parts.push({beam:true,x:e.x,y:e.y,x2:c.x,y2:c.y,t:0,life:0.45,col:'#f0abfc'});burst(c.x,c.y,'#f0abfc',6,90);n++;}
+  if(n){sfx('hatch');pop(e.x,e.y-22,'RISE!','#f0abfc',14);}
+}
+// Flyer: swoops side to side, hovers a moment over the crowd, then dives at where the crowd was. Walls and Shields do not stop it.
+function updateFlyer(e,dt,scroll,sl){
+  if(e.dive){e.x+=e.lvx*dt;e.y+=e.lvy*dt;return;}
+  if(e.wind>0){e.wind-=dt;if(e.wind<=0){const dx=e.aim.x-e.x,dy=e.aim.y-e.y,L=Math.hypot(dx,dy)||1;e.lvx=dx/L*380;e.lvy=dy/L*380;e.dive=true;}return;}
+  e.y+=(scroll+40*sl)*dt;e.x=Math.max(RX0+10,Math.min(RX1-10,e.bx+Math.sin(e.age*2.2)*90));
+  if(e.y<F.y0-20&&e.y>F.y0-200){e.aim={x:g.cx,y:F.y0+F.h/2+30};e.wind=0.3;sfx('hum');}
+}
+// a hit from above lands on the nearest soldiers who are not Shields
+function hitAir(x,y,cost,why){if(g.over)return;if(g.share){shareHit(x,y,biteOf(why,{type:'flyer'}),why,{area:false,bigs:[]});return;}let pool=F.pos.filter(p=>p.k!=='shield');if(!pool.length)pool=F.pos.slice();
+  const list=pool.sort((a,b)=>figDist(a,x,y)-figDist(b,x,y)).slice(0,Math.ceil(cost));if(!list.length){lastStand(why);return;}killFigs(list,why,{at:{x,y}});}
+function updateEnemies(dt,scroll){
+  const es=g.enemies;
+  for(let i=es.length-1;i>=0;i--){const e=es[i];
+    if(e.dead){es.splice(i,1);continue;}
+    e.age+=dt;if(e.flash>0)e.flash-=dt;if(e.slow>0)e.slow-=dt;if(e.mark>0)e.mark-=dt;if(e.stun>0)e.stun-=dt;const sl=(e.stun>0?0:e.slow>0?0.5:1)*(T(1)?1.15:1);
+    if(e.burn>0){e.burn-=dt;e.burnT+=dt;while(e.burnT>=0.25){e.burnT-=0.25;e.hp-=0.5;if(e.hp<=0){kill(e);break;}}}
+    if(e.dead){es.splice(i,1);continue;}
+    if(e.type==='grunt'||e.type==='plated'||e.type==='riot'||(e.type==='thief'&&e.stole)){e.y+=(scroll+(e.type==='plated'||e.type==='riot'?70:100)*sl)*dt;if(e.type!=='riot'){const d=Math.max(RX0+10,Math.min(RX1-10,g.cx+e.lane*0.55))-e.x;e.x+=Math.sign(d)*Math.min(40*sl*dt,Math.abs(d));}} // each one keeps its own lane beside the crowd's center
+    else if(e.type==='ant'){e.y+=(scroll+130*sl)*dt;const d=Math.max(RX0+8,Math.min(RX1-8,g.cx+e.lane*0.45))-e.x;e.x+=Math.sign(d)*Math.min(90*dt,Math.abs(d))+Math.sin(e.age*12+e.bx)*30*dt;}
+    else if(e.type==='brute'){e.y+=(scroll+40*sl)*dt;}
+    else if(e.type==='charger'){
+      if(!e.lunge){const c={x:g.cx,y:F.y0+8};
+        if(e.y<c.y&&Math.hypot(c.x-e.x,c.y-e.y)<170){e.lunge={tx:c.x,ty:c.y+30};e.wind=0.4;sfx('hum');}
+        else{e.y+=(scroll+200*sl)*dt;e.x=Math.max(RX0+8,Math.min(RX1-8,e.bx+Math.sin(e.age*Math.PI*2)*50));}}
+      else if(e.wind>0){e.wind-=dt;if(e.wind<=0){const dx=e.lunge.tx-e.x,dy=e.lunge.ty-e.y,L=Math.hypot(dx,dy)||1;e.lvx=dx/L*440;e.lvy=dy/L*440;e.dive=true;}}
+      if(e.dive){e.x+=e.lvx*dt;e.y+=e.lvy*dt;}
+    }
+    else if(e.type==='mortar'){ // stands at the road edge and drifts down slowly; shells the back rows
+      e.y+=(e.y<150?scroll:24)*dt;e.fireT-=e.stun>0?0:dt;
+      if(e.fireT<=0&&e.y>60&&e.y<F.y0-40){e.fireT=4;const ax=Math.max(RX0+36,Math.min(RX1-36,g.cx+(g.rnd()-0.5)*90)),ay=F.y1-44;g.mortars.push({x:ax,y:ay,t:0,dur:0.9});sfx('warn');}
+    }
+    else if(e.type==='turret'){ // sits at the road edge and lobs slow shots at the crowd: dodge them, or let a Shield take them
+      e.y+=(e.y<180?scroll:20)*dt;e.fireT=(e.fireT===undefined?1.5:e.fireT)-(e.stun>0?0:dt);
+      if(e.fireT<=0&&e.y>60&&e.y<F.y0-60){e.fireT=2.6;const tx=g.cx,ty=F.y0+F.h/2,dx=tx-e.x,dy=ty-e.y,L=Math.hypot(dx,dy)||1;g.shots.push({x:e.x,y:e.y,vx:dx/L*230,vy:dy/L*230,t:0});sfx('warn');}
+    }
+    else if(e.type==='thief')updateThief(e,dt,scroll,sl);
+    else if(e.type==='bomber'){e.y+=(scroll+150*sl)*dt;const d=g.cx-e.x;e.x+=Math.sign(d)*Math.min(90*dt,Math.abs(d));} // homes in on the crowd
+    else if(e.type==='blob'){e.y+=(scroll+55*sl)*dt;const d=Math.max(RX0+14,Math.min(RX1-14,g.cx+e.lane*0.5))-e.x;e.x+=Math.sign(d)*Math.min(25*dt,Math.abs(d));}
+    else if(e.type==='priest')updatePriest(e,dt,scroll);
+    else if(e.type==='flyer')updateFlyer(e,dt,scroll,sl);
+    else if(e.type==='truck'){e.x+=e.vx*dt;if((e.vx>0&&e.x>W+60)||(e.vx<0&&e.x<-60)){es.splice(i,1);setMsg('The truck got away',1.2);continue;}}
+    const hits=e.type!=='mortar'&&e.type!=='turret'&&e.type!=='truck'&&e.x+e.w/2>F.x0&&e.x-e.w/2<F.x1&&e.y+e.h/2>F.y0&&e.y-e.h/2<F.y1;
+    if(hits){e.dead=true;burst(e.x,e.y,'#ff5c5c',5);
+      if(e.type==='bomber'){sfx('shell');doShake(4,0.15);burst(e.x,e.y,'#ff7a2a',14,160);hitCircle(e.x,e.y,46,'a bomber');}
+      else if(e.type==='flyer')hitAir(e.x,e.y,e.cost,'a flyer');
+      else hitPoint(e.x,e.y,e.cost,ENAME[e.type],e.type==='ant',true,biteOf(null,e));es.splice(i,1);continue;}
+    if(!e.past&&e.y-e.h/2>F.y1+6){e.past=true;breachBy(e);}
+    if(e.lunge&&e.y>=e.lunge.ty){burst(e.x,e.y,'#ff5c8a',6);e.dead=true;es.splice(i,1);continue;}
+    if(e.y>H+40||e.x<-70||e.x>W+70){es.splice(i,1);}
+  }
+  for(let i=g.mortars.length-1;i>=0;i--){const m=g.mortars[i];m.t+=dt;
+    if(m.t>=m.dur){g.mortars.splice(i,1);sfx('shell');doShake(4,0.15);burst(m.x,m.y,'#ff7a2a',14,160);
+      hitRect(m.x-42,m.y-42,m.x+42,m.y+42,'a mortar shell');}}
+  for(let i=g.shots.length-1;i>=0;i--){const s=g.shots[i];s.t+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;
+    if(s.x>F.x0-6&&s.x<F.x1+6&&s.y>F.y0-6&&s.y<F.y1+6){g.shots.splice(i,1);turretHit(s);continue;}
+    if(s.y>H+20||s.y<-20||s.x<-20||s.x>W+20)g.shots.splice(i,1);}
+  for(let i=g.tokens.length-1;i>=0;i--){const t=g.tokens[i];t.t+=dt;if(t.t<0)continue;const dx=g.cx-t.x,dy=F.y0-t.y,L=Math.hypot(dx,dy);
+    if(L<12){addKind(t.k||'rifle',t.v);sfx('token');g.tokens.splice(i,1);continue;}const sp=Math.min(L,320*dt);t.x+=dx/L*sp;t.y+=dy/L*sp;}
+  updateMines(dt,scroll);
+  for(let i=g.zaps.length-1;i>=0;i--){g.zaps[i].t+=dt;if(g.zaps[i].t>0.1)g.zaps.splice(i,1);}
+  for(let i=g.corpses.length-1;i>=0;i--){const c=g.corpses[i];c.t+=dt;c.y+=scroll*dt;if(c.t>4||c.y>H)g.corpses.splice(i,1);}
+}
+// ---------- bosses ----------
+const BOSSES={1:{hp:1200,w:120,h:90,name:'THE TANK',msg:'BOSS: THE TANK (sends armour)'},2:{hp:3000,w:160,h:100,name:'TWIN HATCH',msg:'BOSS: TWIN HATCH'},
+  3:{hp:1300,w:300,h:110,name:'SIEGE TOWER',msg:'SIEGE TOWER: break its three guns first'},4:{hp:3000,w:150,h:100,name:'HIVE QUEEN',msg:'HIVE QUEEN: hit her while she lays'}};
+function startBoss(kind){
+  g.phase='bossIn';g.phaseT=0;g.hitsThisBoss=0;
+  const BD=BOSSES[kind],bm=(T(6)?1.3:1)*(TUNE.bossHP[kind]||1);g.boss={kind,hp:0,maxhp:BD.hp*bm,x:195,y:-100,w:BD.w,h:BD.h,dir:1,t:0,ready:false,countT:0,atkT:1.5,spawnT:4,enrage:false,tel:null,dead:false,volley:0,hatch:0,hatchT:0,flash:0,acc:0,accT:0,landed:false,name:BD.name,layT:0,lay:0,wallT:4,ports:kind===3?[-100,0,100].map((dx,i)=>({dx,hp:500*bm,max:500*bm,fireT:1.2+i*0.9,flash:0})):null};
+  sfx('drone');setMsg(BD.msg,2.2);if((g.K.knight>0&&KP('knight').melee)||(g.K.bers>0&&KP('bers').melee))(g.hintQ=g.hintQ||[]).push('PUSH UP: your melee soldiers can only reach the boss up close');if(!g.rallyUsed&&!S.autoRally)(g.hintQ=g.hintQ||[]).push('TIP: RALLY (or a second finger) for triple fire');
+}
+// enraged bosses keep speeding up: half as fast again every 10 s, up to five times
+function enrT(){return T(9)?TUNE.enrage-7:TUNE.enrage;}
+function enr(fast,slow){const b=g.boss;if(!b||!b.enrage)return slow;return fast/Math.min(5,1+Math.max(0,b.t-enrT())/10*0.5);}
+function overlapFrac(x0,x1,a,b){const o=Math.min(x1,b)-Math.max(x0,a);return Math.max(0,o)/Math.max(1,x1-x0);}
+function updateBoss(dt){
+  const b=g.boss;if(!b)return;if(b.flash>0)b.flash-=dt;
+  if(g.phase==='bossIn'){g.phaseT+=dt;const k=Math.min(1,g.phaseT);b.y=-100+280*(k*k);
+    if(k>=1&&!b.landed){b.landed=true;timescale=0.3;tsT=0.5;doShake(6,0.3);sfx('shell');}
+    if(b.landed){b.countT+=dt;b.hp=Math.min(b.maxhp,b.maxhp*b.countT);if(b.countT>=1){b.hp=b.maxhp;b.ready=true;g.phase='boss';}}return;}
+  if(g.phase!=='boss')return;
+  b.t+=dt;
+  if(!b.enrage&&b.t>=enrT()){b.enrage=true;setMsg('ENRAGED: it gets faster the longer it lives',2.2);sfx('warn');}
+  if(b.acc>0){b.accT+=dt;if(b.accT>=0.12){const big=(b.kind===2&&b.hatch>0)||(b.kind===4&&b.lay>0);pop(b.x+(Math.random()-0.5)*40,b.y-10,Math.round(b.acc),big?'#ffd166':'#fff',big?22:14);b.acc=0;b.accT=0;}}
+  if(b.kind===1){
+    b.x+=b.dir*90*dt;if(b.x>280){b.x=280;b.dir=-1;}if(b.x<110){b.x=110;b.dir=1;}
+    b.spawnT-=dt;if(b.spawnT<=0){b.spawnT=b.enrage?4:5;for(const dx of[-26,26])enemy('plated',b.x+dx,b.y+50);}
+    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.tel={type:'circle',x:g.cx,y:F.y0+F.h/2,r:64,t:0,dur:0.8};sfx('warn');tip('danger','PINK STRIPES: it lands there. Slide out before it fills',2);}}
+    else{b.tel.t+=dt;if(b.tel.t>=b.tel.dur){const T=b.tel;burst(T.x,T.y,'#ff7a2a',16,220);sfx('shell');doShake(5,0.2);
+      hitCircle(T.x,T.y,T.r,'a Tank shell');
+      b.tel=null;b.atkT=enr(1.3,2.3);}}
+  }else if(b.kind===2){
+    b.hatchT+=dt;const ph=b.hatchT%6,was=b.hatch>0;b.hatch=ph>=4?1:0;
+    if(b.hatch&&!was){sfx('hatch');setMsg('HATCH OPEN: x2 damage',1.2);}
+    b.spawnT-=dt;if(b.spawnT<=0){b.spawnT=enr(4,6);swarm(b.enrage?10:6,b.x,false);if(b.enrage)pack('plated',2,b.x,false);}
+    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.volley++;const m=b.volley%4;
+      if(m===3){const c=F.y0+F.h/2;b.tel={type:'bar',y0:c-22,y1:c+22,t:0,dur:0.8};}
+      else{const c=g.cx,s=m===0?[[RX0,RX0+70],[RX1-70,RX1]]:m===1?[[c-35,c+35]]:[[c-110,c-40],[c+40,c+110]];b.tel={type:'stripes',s,t:0,dur:0.8};}sfx('warn');}}
+    else{b.tel.t+=dt;if(b.tel.t>=b.tel.dur){const T=b.tel;sfx('shell');doShake(5,0.2);
+      if(T.type==='bar'){for(let x=RX0+30;x<RX1;x+=60)burst(x,(T.y0+T.y1)/2,'#ff7a2a',4,160);hitRect(RX0,T.y0,RX1,T.y1,'a Twin Hatch bar');}
+      else for(const s of T.s){burst((s[0]+s[1])/2,PITY1-120,'#ff7a2a',10,200);hitRect(s[0],0,s[1],H,'a Twin Hatch blast');}
+      b.tel=null;b.atkT=enr(1.2,2.2);}}
+  }
+  else if(b.kind===3){ // three gun ports fire aimed shots; every 7 s it drops a wall on your side
+    for(const p of b.ports){if(p.flash>0)p.flash-=dt;if(p.hp<=0)continue;p.fireT-=dt;if(p.fireT<=0){p.fireT=enr(1.6,2.5);const x=b.x+p.dx,y=b.y+b.h/2,dx=g.cx-x,dy=F.y0+F.h/2-y,L=Math.hypot(dx,dy)||1;g.shots.push({x,y,vx:dx/L*230,vy:dy/L*230,t:0,siege:1});sfx('warn');}}
+    b.wallT-=dt;if(b.wallT<=0){b.wallT=enr(4,5.5);const left=g.cx<195;spawnWall(14+2*Math.floor(b.t/7),left?RX0:195,left?195:RX1,false);g.walls[g.walls.length-1].y=b.y+b.h/2;setMsg('WALL INCOMING',1);}
+  }
+  else if(b.kind===4){ // every 6 s she lays for 2.5 s: double damage, and out come ants (and a splitter every other time); acid spit in between
+    b.x=195+Math.sin(b.t*0.5)*70;b.layT+=dt;const ph=b.layT%6,was=b.lay>0;b.lay=ph>=3.5?1:0;
+    if(b.lay&&!was){sfx('hatch');setMsg('LAYING: x2 damage',1.2);b.eggs=(b.eggs||0)+1;for(let i=0;i<10;i++)enemy('ant',Math.max(RX0+8,Math.min(RX1-8,b.x+(rand()-0.5)*b.w)),b.y+b.h/2+rand()*30);if(b.eggs%2===0)enemy('blob',b.x,b.y+b.h/2+20);}
+    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.tel={type:'circle',x:g.cx,y:F.y0+F.h/2,r:58,t:0,dur:0.9,acid:true};sfx('warn');}}
+    else{b.tel.t+=dt;if(b.tel.t>=b.tel.dur){const T=b.tel;burst(T.x,T.y,'#84cc16',16,220);sfx('shell');doShake(5,0.2);hitCircle(T.x,T.y,T.r,'Hive Queen acid');b.tel=null;b.atkT=enr(1.4,2.3);}}
+  }
+  if(b.hp<=0){b.hp=0;b.dead=true;if(b.kind===1)g.tankDown=true;b.tel=null;g.phase='bossDead';g.phaseT=0;timescale=0.3;tsT=1;doShake(8,0.5);g.bosses++;sfx('cheer');vib([30,40,30,40,80]);
+    for(let i=0;i<6;i++)setTimeout(()=>{if(g&&g.boss)burst(b.x+(Math.random()-0.5)*b.w,b.y+(Math.random()-0.5)*b.h,i%2?'#ffd166':'#ff7a2a',10,160);},i*120);
+    setMsg(b.name+' DESTROYED',2.4);
+    // earned crate: no hits = 2 picks of 3; 1-2 hits = 1 of 3; 3+ hits = 1 of 2
+    const h=g.hitsThisBoss;g.bossCrate=h===0?{n:2,of:3}:h<=2?{n:1,of:3}:{n:1,of:2};g.bossCrate.why=h===0?'FLAWLESS: PICK 2':'BOSS CRATE ('+h+' hit'+(h===1?'':'s')+')';}
+}
+// ---------- crates & results ----------
+function pickCards(of){
+  const pool=Object.keys(CARDS).filter(c=>!has(c)&&cardUnlocked(c));
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(g.rnd()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  // one card is always the Officer for your biggest kind that has one (if you do not hold it yet)
+  const order=Object.keys(g.K).sort((a,b)=>g.K[b]-g.K[a]);let off=null;
+  for(const k of order){const c=Object.keys(CARDS).find(c=>CARDS[c].officer===k&&CARDS[c].promo);if(c&&!has(c)){off=c;break;}}
+  let pick=pool.slice(0,of);if(off&&!pick.includes(off))pick[0]=off;return pick;
+}
+function openDraft(crate,after){mode='draft';g.draft={left:crate.n,cards:pickCards(crate.of),t:0,why:crate.why,after,take:null};drag=null;}
+// hand full: pick the new card, then the held card it replaces, or keep your hand
+const SKIPR={x:95,y:H-96,w:200,h:56};function inRect(p,r){return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h;}
+function draftFull(){return !!g.draft&&(!!g.draft.take||g.cards.length>=maxCards());}
+function cardRect(i){return g&&g.draft&&g.draft.take?{x:24,y:236+i*122,w:342,h:110}:{x:24,y:250+i*156,w:342,h:140};}
+function draftHit(p){if(!g.draft)return -1;for(let i=0;i<g.draft.cards.length;i++){const r=cardRect(i);if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h)return i;}return -1;}
+function pickCard(i){
+  if(mode!=='draft'||!g.draft)return;const D=g.draft;if(i===-2){endDraft();return;} // keep my hand
+  const id=D.cards[i];if(!id)return;
+  if(D.take){const j=g.cards.indexOf(id);if(j<0)return;g.cards[j]=D.take;g.evo=g.evo.filter(x=>EVOS[x].card!==id);
+    sfx('card');vib(20);setMsg(CARDS[D.take].name+' in, '+CARDS[id].name+' out',1.8);D.offer.splice(D.offer.indexOf(D.take),1);D.take=null;D.left--;D.cards=D.offer;
+    if(D.left>0&&D.cards.length){D.t=0.2;return;}endDraft();return;}
+  if(g.cards.length>=maxCards()){D.take=id;D.offer=D.cards;D.cards=g.cards.slice();D.t=0.2;return;}
+  g.cards.push(id);sfx('card');vib(20);setMsg(CARDS[id].name+' joins',1.2);
+  D.left--;D.cards.splice(i,1);
+  if(D.left>0&&D.cards.length){D.t=0.2;return;}
+  endDraft();
+}
+function endDraft(){
+  const after=g.draft.after;g.draft=null;mode='play';last=performance.now();acc=0;if(g.retT<0)startReturn();after();
+}
+// ---------- the fork: after the Tank, pick one of two roads to the last boss ----------
+const ROUTES={factory:{name:'THE FACTORY',col:'#9aa3b5',boss:'Twin Hatch',desc:'Armour, mortars, chargers and a huge horde.',reward:'Reward: pick an extra card now'},
+  swamp:{name:'THE SWAMP',col:'#84cc16',boss:'Hive Queen',desc:'Night and mud. Ants, splitters, flyers and bombers.',reward:'Reward: every gate prints +50%'},
+  fortress:{name:'THE FORTRESS',col:'#d6a35c',boss:'Siege Tower',desc:'Walls, riot shields, priests, turrets and a narrow bridge.',reward:'Reward: a free Officer now'}};
+function openFork(){const all=['factory','swamp','fortress'];for(let i=all.length-1;i>0;i--){const j=Math.floor(g.rnd()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
+  const extra=unlockedK().filter(k=>!g.roster.includes(k)),rec=extra.length?extra[Math.floor(g.rnd()*extra.length)]:null;if(rec)g.roster.push(rec);
+  g.boss=null;g.fork={opts:all.slice(0,2),t:0,rec};mode='fork';drag=null;}
+function forkRect(i){return{x:24,y:250+i*190,w:342,h:170};}
+function forkHit(p){if(!g.fork)return -1;for(let i=0;i<g.fork.opts.length;i++){const r=forkRect(i);if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h)return i;}return -1;}
+function freeOfficer(){if(g.cards.length>=maxCards())return null;for(const k of ALLK.slice().sort((a,b)=>g.K[b]-g.K[a])){if(!g.K[k])continue;const c=Object.keys(CARDS).find(c=>CARDS[c].officer===k&&!has(c));if(c)return c;}return null;}
+function gunKind(){return ALLK.filter(k=>KINDS[k].rate||KINDS[k].eng||KINDS[k].drone).sort((a,b)=>g.K[b]-g.K[a])[0];}
+function forkReward(id){
+  if(id==='fortress'&&!freeOfficer())return (g.cards.length>=maxCards()?'Hand full':'No Officer for your kinds')+': +8 '+kname(gunKind())+' instead';return ROUTES[id].reward;}
+function bonusSoldiers(n,why){const k=gunKind();g.K[k]+=n;formation();pop(g.cx,F.y0-24,'+'+n+' '+kname(k),KINDS[k].col,20);setMsg(why,2);}
+function pickRoute(i){if(mode!=='fork'||!g.fork)return;const id=g.fork.opts[i];if(!id)return;const rw=forkReward(id);g.route=id;g.fork=null;
+  g.sec=2;g.night=id==='swamp'||T(3);g.gateBonus=id==='swamp'?1.5:1;g.script=buildSection(2,g.rnd,id);g.si=0;g.st=0;g.phase='road';g.boss=null;
+  mode='play';last=performance.now();acc=0;drag=null;sfx('card');vib(15);
+  if(rw!==ROUTES[id].reward)bonusSoldiers(8,ROUTES[id].name+': '+rw.toUpperCase());
+  else if(id==='factory')openDraft({n:1,of:3,why:'FACTORY ROAD: EXTRA CARD'},()=>{});
+  else if(id==='fortress'){const c=freeOfficer();if(c){g.cards.push(c);setMsg(CARDS[c].name+' joins: free Officer',2);}}}
+function finishRun(win){if(mode==='results')return;mode='results';g.win=win;g.resT=0;drag=null;g.hudMsgT=0;
+  // record progress: lifetime totals, challenges, Threat, Daily Muster
+  const home=totalN(),r={win,tank:g.tankDown,ants:g.antKills,fire:g.fireKills,shield:g.hadShield,home};PROG.kills+=g.kills;PROG.walls+=g.wallsBroken;
+  for(const U of UNLOCKS)if(!PROG.unl[U.id]&&U.test(r)){PROG.unl[U.id]=true;g.newUnl.push(U.what);}
+  if(win&&!g.dailyRun&&!g.practice&&g.threat>=PROG.max&&PROG.max<10){PROG.max=Math.min(10,g.threat+1);g.newThreat=PROG.max;}
+  if(g.dailyRun){g.score=Math.floor(home*10+g.kills+(win?1000:0)+Math.max(0,300-g.t)*2);PROG.daily.score=g.score;PROG.daily.best=Math.max(PROG.daily.best||0,g.score);}
+  saveP();if(win){sfx('cheer');vib([40,60,40,60,120]);}}
+
+// ---------- main step ----------
+function step(dt){
+  g.t+=dt;
+  const ky=keys['w']||keys['arrowup']||keys['s']||keys['arrowdown'];
+  if(keys['a']||keys['arrowleft'])g.tx-=400*dt;if(keys['d']||keys['arrowright'])g.tx+=400*dt;
+  if(keys['w']||keys['arrowup'])g.ty-=400*dt;if(keys['s']||keys['arrowdown'])g.ty+=400*dt;
+  if(ky){g.retT=-1;g.keyY=true;}else if(g.keyY){g.keyY=false;if(!(drag&&drag.axis==='y'))startReturn();}
+  if(g.rallyT>0){g.tx=g.cx;if(drag&&drag.axis==='x'){drag.ox=g.cx;drag.ax=drag.px;}} // planted
+  formation();
+  let lo=RX0+F.w/2,hi=RX1-F.w/2;
+  if(onBridge()){lo=Math.max(lo,g.bridge.x0+F.w/2);hi=Math.min(hi,g.bridge.x1-F.w/2);if(hi<lo)lo=hi=(g.bridge.x0+g.bridge.x1)/2;}
+  if(g.tx<lo||g.tx>hi){g.tx=Math.max(lo,Math.min(hi,g.tx));if(drag&&drag.axis==='x'){drag.ox=g.tx;drag.ax=drag.px;}}
+  g.ty=Math.max(PITY0,Math.min(PITY1,g.ty));
+  const prev=g.cx,mud=inMud();g.cx+=(g.tx-g.cx)*Math.min(1,dt/(mud?0.45:0.06));g.cx=onBridge()?g.cx+(Math.max(lo,Math.min(hi,g.cx))-g.cx)*Math.min(1,dt/0.08):Math.max(lo,Math.min(hi,g.cx));
+  if(g.retT>=0&&!(drag&&drag.axis==='y')){g.retT+=dt;const k=Math.min(1,g.retT/1.1),e=k*k*(3-2*k);g.ty=g.cy=g.retY0+(PITY1-g.retY0)*e;if(k>=1)g.retT=-1;}
+  else g.cy+=(g.ty-g.cy)*Math.min(1,dt/(mud?0.45:0.06));
+  g.cy=Math.max(PITY0,Math.min(PITY1,g.cy));g.vx=(g.cx-prev)/dt;
+  // minigun: sideways speed over 60 px/s counts as moving; Gun Chief spins up twice as fast and keeps 3/s moving
+  {const HP=KP('heavy'),moving=Math.abs(g.vx)>60&&!(g.K.banner>0&&KP('banner').quick),hi=HP.rate,lo2=Math.min(hi,Math.max(HP.moveRate,has('gunchief')?hi*0.5:0)),up=has('gunchief')?0.15:0.3;
+    if(moving)g.mgRate=Math.max(lo2,g.mgRate-hi/3*dt);else g.mgRate=Math.min(hi,g.mgRate+(hi-lo2)/up*dt);}
+  g.figS+=((regN()<30?1.5:1.0)-g.figS)*Math.min(1,dt/0.25);
+  g.scrollV=Math.min(SCROLL,g.scrollV+SCROLL*dt);const scroll=(g.phase==='road'||g.phase==='clear')?g.scrollV:g.scrollV*0.5;g.roadOff=((g.roadOff||0)+scroll*dt)%80;g.sceneY=(g.sceneY||0)+scroll*dt;
+  if(g.over){g.overT+=dt;if(g.overT>0.7){finishRun(false);return;}}
+  if(g.phase==='road'){g.st+=dt;while(g.si<g.script.length&&g.script[g.si][0]<=g.st){g.script[g.si][1]();g.si++;}}
+  else if(g.phase==='clear'&&!g.over){g.phaseT+=dt;if(g.phaseT>=1.6&&g.enemies.every(e=>e.type==='mortar'||e.type==='truck'||e.type==='priest'||e.type==='turret'||e.y>F.y1)){g.enemies=[];if(g.sec===1)startBoss(1);else startBoss(g.route==='swamp'?4:g.route==='fortress'?3:2);}}
+  else if(g.phase==='bossDead'&&!g.over){g.phaseT+=dt;if(g.phaseT>=2.6){
+    if(g.boss.kind===1){openDraft(g.bossCrate,openFork);return;}
+    else{finishRun(true);return;}}}
+  if(g.pendingCrate&&!g.over){const c=g.pendingCrate;g.pendingCrate=null;openDraft(c,()=>{});return;}
+  checkEvo();if(g.K.shield>0)g.hadShield=true;
+  if(has('medic')&&!g.over){g.medicT+=dt;const hosp=g.evo.includes('hosp');if(g.medicT>=(hosp?6:8)){g.medicT=0;if(hosp){const k=ALLK.slice().sort((a,b)=>g.K[b]-g.K[a])[0];addKind(k,3);}else addKind('rifle',2);}}
+  updateDrops(dt,scroll);
+  if(g.K.banner>0&&KP('banner').call){g.callT-=dt;if(g.callT<=0){g.callT=6;const k=ALLK.filter(k=>KINDS[k].rate||KINDS[k].eng||KINDS[k].drone).sort((a,b)=>g.K[b]-g.K[a])[0];addKind(k,Math.ceil(g.K.banner/4));}}
+  updateFire(dt);updateBullets(dt);updateGates(dt,scroll);updateEnemies(dt,scroll);updateBoss(dt);
+  for(let i=g.parts.length-1;i>=0;i--){const p=g.parts[i];p.t+=dt;if(p.t>p.life){g.parts.splice(i,1);continue;}if(!p.ring&&!p.beam){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=300*dt;}}
+  for(let i=g.pops.length-1;i>=0;i--){const p=g.pops[i];p.t+=dt;p.y+=p.vy*dt;if(p.t>1)g.pops.splice(i,1);}
+  for(let i=g.rags.length-1;i>=0;i--){const r=g.rags[i];r.t+=dt;r.x+=r.vx*dt;r.y+=r.vy*dt;r.vy+=700*dt;r.rot+=r.vr*dt;if(r.t>1.2)g.rags.splice(i,1);}
+  if(g.forgeFx){g.forgeFx.t+=dt/Math.max(timescale,0.35);if(g.forgeFx.t>1.1)g.forgeFx=null;}
+  if(g.cFlash>0)g.cFlash-=dt;if(g.hudMsgT>0)g.hudMsgT-=dt;if(g.hintQ&&g.hintQ.length&&g.hudMsgT<=0)setMsg(g.hintQ.shift(),2.6);
+  const N=totalN(),d=N-g.disp;g.disp=Math.abs(d)<0.5?N:g.disp+d*Math.min(1,dt/0.12);
+}
+let last=performance.now(),acc=0;
+function autoRallyNow(){ // Auto Rally: the same rule the test bot uses
+  if(g.over||g.rallyCD>0)return false;const B=g.boss;
+  if(g.mortars.length||(B&&(B.tel||B.atkT<1.4))||g.walls.some(w=>!w.dead&&!w.cage&&w.y+w.h>F.y0-460&&w.y<F.y1&&F.x1>w.x0&&F.x0<w.x1))return false; // never plant into a shell or a wall
+  return !!(B&&B.ready&&!B.dead)||g.enemies.filter(e=>!e.dead&&e.y>F.y0-320&&e.y<F.y0).length>=8;}
+function frame(now){
+  requestAnimationFrame(frame);
+  if(now-last<(S.saver?24:10))return; // 120 Hz screens would draw every picture twice; Battery saver draws 30 a second
+  let el=(now-last)/1000;last=now;if(el>0.1)el=0.1;
+  if(mode==='play'&&S.autoRally&&g&&autoRallyNow()){rally();tip('auto','AUTO RALLY: triple fire for 2 s. Turn it off in Pause to fire it yourself',2);}
+  if(shakeT>0){shakeT-=el;if(shakeT<=0)shakeA=0;}
+  if(mode==='play'){acc+=el;let n=0;while(acc>=1/60&&n++<4){acc-=1/60;if(hitstop>0){hitstop-=1/60;if(!S.calm)continue;}if(tsT>0){tsT-=1/60;if(tsT<=0)timescale=1;}step(timescale/60);if(mode!=='play')break;}}
+  else if(mode==='results')g.resT+=el;
+  else if(mode==='draft'&&g.draft)g.draft.t+=el;
+  else if(mode==='fork'&&g.fork)g.fork.t+=el;
+  render();
+}
+
+// ---------- drawing ----------
+const FONT='-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+function txt(s,x,y,size,col,align,weight){ctx.font=(weight||'700')+' '+size+'px '+FONT;ctx.fillStyle=col;ctx.textAlign=align||'center';ctx.textBaseline='middle';ctx.fillText(s,x,y);}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function shape(sh,x,y,r,col){ctx.fillStyle=col;ctx.beginPath();shapePath(sh,x,y,r);ctx.fill();}
+function shapePath(sh,x,y,r){
+  if(sh==='circle'){ctx.moveTo(x+r,y);ctx.arc(x,y,r,0,Math.PI*2);}
+  else if(sh==='triangle'){ctx.moveTo(x,y-r*1.15);ctx.lineTo(x+r*1.05,y+r*0.8);ctx.lineTo(x-r*1.05,y+r*0.8);}
+  else if(sh==='square')ctx.rect(x-r*0.9,y-r*0.9,r*1.8,r*1.8);
+  else if(sh==='diamond'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.2);ctx.lineTo(x-r,y);}
+  else if(sh==='hex'){for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3;(i?ctx.lineTo:ctx.moveTo).call(ctx,x+Math.cos(a)*r*1.1,y+Math.sin(a)*r*1.1);}}
+  else if(sh==='plus'){const a=r*0.45;ctx.rect(x-a,y-r*1.05,a*2,r*2.1);ctx.rect(x-r*1.05,y-a,r*2.1,a*2);}
+  else if(sh==='ring'){ctx.moveTo(x+r*1.05,y);ctx.arc(x,y,r*1.05,0,Math.PI*2);ctx.moveTo(x+r*0.45,y);ctx.arc(x,y,r*0.45,0,Math.PI*2,true);}
+  else if(sh==='flag'){ctx.rect(x-r*0.95,y-r*1.15,r*0.4,r*2.3);ctx.moveTo(x-r*0.55,y-r*1.15);ctx.lineTo(x+r*1.15,y-r*0.6);ctx.lineTo(x-r*0.55,y-r*0.05);}
+  else if(sh==='chevron'){ctx.moveTo(x-r*1.25,y+r*0.7);ctx.lineTo(x,y-r*1);ctx.lineTo(x+r*1.25,y+r*0.7);ctx.lineTo(x+r*0.6,y+r*0.7);ctx.lineTo(x,y-r*0.1);ctx.lineTo(x-r*0.6,y+r*0.7);}
+  else if(sh==='star'){for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*0.5:r*1.25;(i?ctx.lineTo:ctx.moveTo).call(ctx,x+Math.cos(a)*q,y+Math.sin(a)*q);}}
+  else if(sh==='card')ctx.rect(x-r*0.75,y-r*1.1,r*1.5,r*2.2);
+  else if(sh==='axe'){ctx.moveTo(x-r*1.2,y-r*1);ctx.lineTo(x,y-r*0.25);ctx.lineTo(x+r*1.2,y-r*1);ctx.lineTo(x+r*1.2,y+r*1);ctx.lineTo(x,y+r*0.25);ctx.lineTo(x-r*1.2,y+r*1);}
+  else if(sh==='shield'){ctx.moveTo(x-r*1.2,y-r*0.9);ctx.lineTo(x+r*1.2,y-r*0.9);ctx.lineTo(x+r*1.2,y+r*0.1);ctx.quadraticCurveTo(x+r*1.1,y+r*0.9,x,y+r*1.1);ctx.quadraticCurveTo(x-r*1.1,y+r*0.9,x-r*1.2,y+r*0.1);}
+  ctx.closePath();
+}
+function drawRoad(){
+  ctx.fillStyle='#1a1d24';ctx.fillRect(0,0,W,H);ctx.fillStyle='#232733';ctx.fillRect(RX0,0,RW,H);
+  ctx.fillStyle='#2c3140';const off=g?g.roadOff:0;for(let y=-80+off;y<H;y+=80){ctx.fillRect(RX0+RW/3-2,y,4,36);ctx.fillRect(RX0+2*RW/3-2,y,4,36);}
+  ctx.fillStyle='rgba(255,255,255,0.025)';ctx.fillRect(RX0,PITY0-60,RW,PITY1-PITY0+60);
+  if(!g)return;
+  for(const m of g.muds){ctx.fillStyle='rgba(110,76,40,0.6)';rr(m.x0,m.y,m.x1-m.x0,m.h,18);ctx.fill();ctx.fillStyle='rgba(160,120,70,0.5)';for(let i=0;i<6;i++){const bx=m.x0+20+((i*53)%Math.max(1,m.x1-m.x0-40)),by=m.y+20+((i*71)%Math.max(1,m.h-40));ctx.beginPath();ctx.arc(bx,by,3+Math.sin(performance.now()/300+i)*1.5,0,Math.PI*2);ctx.fill();}
+    txt('MUD: slow steering',(m.x0+m.x1)/2,m.y+14,10,'#d6a35c','center','800');}
+  if(g.bridge){const b=g.bridge;ctx.fillStyle='#16324f';ctx.fillRect(RX0,b.y,b.x0-RX0,b.h);ctx.fillRect(b.x1,b.y,RX1-b.x1,b.h);ctx.fillStyle='rgba(147,197,253,0.18)';for(let y=b.y+((g.roadOff||0)%40);y<b.y+b.h;y+=40){ctx.fillRect(RX0+10,y,b.x0-RX0-30,2);ctx.fillRect(b.x1+20,y+20,RX1-b.x1-30,2);}
+    ctx.fillStyle='#5a4632';ctx.fillRect(b.x0,b.y,b.x1-b.x0,b.h);ctx.fillStyle='#4a3826';for(let y=b.y;y<b.y+b.h;y+=14)ctx.fillRect(b.x0,y,b.x1-b.x0,3);ctx.fillStyle='#8a6d4a';ctx.fillRect(b.x0-4,b.y,4,b.h);ctx.fillRect(b.x1,b.y,4,b.h);}
+}
+function drawGates(){
+  for(const row of g.gates){
+    for(const gt of row.gates){
+      const x=gt.x0+3,w=gt.x1-gt.x0-6,y=row.y,h=row.h,mx=(gt.x0+gt.x1)/2,taken=row.done&&row.taken===gt;
+      ctx.save();if(row.done)ctx.globalAlpha=taken?0.3:0.15;
+      if(gt.k==='kind'){const K=KINDS[gt.kind];
+        ctx.fillStyle=K.col+'33';rr(x,y,w,h,10);ctx.fill();ctx.lineWidth=gt.capped?4:2.5;ctx.strokeStyle=gt.gold>0?'#ffd166':K.col;rr(x,y,w,h,10);ctx.stroke();
+        const v=gateVal(gt),s=gt.pop>0?1.15:1,bn=gt.branch?(gt.tier===2?BRANCH[gt.kind][g.branch[gt.kind]].next[gt.branch]:BRANCH[gt.kind][gt.branch]):null;
+        if(bn){ctx.lineWidth=3+Math.sin(performance.now()/300)*1.2;ctx.strokeStyle='#ffd166';rr(x,y,w,h,10);ctx.stroke();txt('UPGRADE: PICK ONE',mx,y+11,10,'#ffd166','center','800');}
+        shape(K.shape,x+18,y+(bn?31:24),8,K.col);
+        txt('+'+v,mx+8,y+(bn?31:25),Math.round((bn?24:28)*s),'#fff','center','900');
+        txt(bn?bn.gate:kgate(gt.kind),mx,y+(bn?54:52),w<120?12:14,K.col,'center','800');
+        // charge bar
+        ctx.fillStyle='rgba(255,255,255,0.12)';ctx.fillRect(x+10,y+h-8,w-20,3);ctx.fillStyle=K.col;ctx.fillRect(x+10,y+h-8,(w-20)*gt.charge,3);
+      }else if(gt.k==='minus'){
+        ctx.fillStyle='rgba(255,59,59,0.18)';rr(x,y,w,h,10);ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=gt.zeroed?'#2ee6a6':'#ff3b3b';rr(x,y,w,h,10);ctx.stroke();
+        const v=gateVal(gt);txt(v===0?'0':String(v),mx,y+26,28,v===0?'#2ee6a6':'#ff6b6b','center','900');txt(gt.stolen?'STOLEN: SHOOT IT':'SHOOT TO DEFUSE',mx,y+52,11,'#ff9a9a','center','700');
+      }else if(gt.k==='swap'){const A=KINDS[gt.from],B=KINDS[gt.to],fs=w<120?9:10;ctx.fillStyle='rgba(255,255,255,0.07)';rr(x,y,w,h,10);ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#e8ecf2';ctx.setLineDash([6,4]);rr(x,y,w,h,10);ctx.stroke();ctx.setLineDash([]);
+        txt('SWAP',mx,y+12,11,'#e8ecf2','center','900');shape(A.shape,mx-28,y+31,8,A.col);txt('\u2192',mx,y+31,20,'#fff','center','900');shape(B.shape,mx+28,y+31,8,B.col);
+        txt('half your '+kgate(gt.from),mx,y+50,fs,A.col,'center','800');txt('become '+kgate(gt.to),mx,y+62,fs,B.col,'center','800');
+      }else if(gt.k==='forge'){const P=PROMOS[gt.promo],t=performance.now()/300;
+        ctx.fillStyle='rgba(255,209,102,0.25)';rr(x,y,w,h,10);ctx.fill();ctx.lineWidth=3+Math.sin(t)*1.5;ctx.strokeStyle='#ffd166';rr(x,y,w,h,10);ctx.stroke();
+        txt('FORGE',mx,y+20,18,'#ffd166','center','900');txt(P.name,mx,y+42,w<120?11:13,'#fff','center','800');txt(P.need+' FUSE \u00b7 +'+gt.printed+' JOIN',mx,y+58,10,'#ffd166','center','700');
+      }
+      ctx.restore();
+    }
+  }
+}
+function drawWalls(){for(const w of g.walls){if(w.dead)continue;
+  if(w.cage){const K=KINDS[w.kind],mx=(w.x0+w.x1)/2;ctx.fillStyle=w.flash>0?'#fff':'#3a3324';rr(w.x0,w.y,w.x1-w.x0,w.h,5);ctx.fill();ctx.fillStyle='#ffd166';for(let x=w.x0+7;x<w.x1-4;x+=8)ctx.fillRect(x,w.y+2,2,w.h-4);
+    ctx.strokeStyle='#ffd166';ctx.lineWidth=2;rr(w.x0,w.y,w.x1-w.x0,w.h,5);ctx.stroke();ctx.fillStyle='#3a3324';ctx.beginPath();ctx.arc(mx,w.y+w.h/2,10,0,Math.PI*2);ctx.fill();
+    if(w.officer)txt('?',mx,w.y+w.h/2+1,15,'#fff','center','900');else shape(K.shape,mx,w.y+w.h/2,6,K.col);txt('CAGE: shoot it open',mx,w.y-8,10,'#ffd166','center','800');continue;}ctx.fillStyle=w.flash>0?'#cfd6e3':'#6b7487';rr(w.x0+2,w.y,w.x1-w.x0-4,w.h,6);ctx.fill();
+  ctx.fillStyle='#4b5263';for(let x=w.x0+10;x<w.x1-10;x+=26)ctx.fillRect(x,w.y+6,18,6);txt(String(w.K),(w.x0+w.x1)/2,w.y+24,20,'#fff','center','900');
+  txt('blasts x2',(w.x0+w.x1)/2,w.y-8,11,'#f472b6','center','700');}}
+function drawEnemies(){
+  if(g.enemies.some(e=>e.type==='priest'&&!e.dead)){ctx.strokeStyle='rgba(240,171,252,0.35)';ctx.lineWidth=2;for(const c of g.corpses){ctx.beginPath();ctx.moveTo(c.x-4,c.y-4);ctx.lineTo(c.x+4,c.y+4);ctx.moveTo(c.x+4,c.y-4);ctx.lineTo(c.x-4,c.y+4);ctx.stroke();}}
+  for(const e of g.enemies){if(e.dead)continue;const fl=e.flash>0;
+    if(e.type==='grunt'){ctx.fillStyle=fl?'#fff':'#ff5c5c';rr(e.x-8,e.y-8,16,16,4);ctx.fill();}
+    else if(e.type==='plated'){ctx.fillStyle=fl?'#fff':'#9aa3b5';rr(e.x-9,e.y-9,18,18,3);ctx.fill();ctx.fillStyle='#5b6375';ctx.fillRect(e.x-9,e.y-3,18,6);ctx.strokeStyle='#e8ecf2';ctx.lineWidth=1.5;rr(e.x-9,e.y-9,18,18,3);ctx.stroke();}
+    else if(e.type==='ant'){ctx.fillStyle=fl?'#fff':'#c084fc';ctx.beginPath();ctx.arc(e.x,e.y,4,0,Math.PI*2);ctx.fill();}
+    else if(e.type==='charger'){ctx.fillStyle=fl?'#fff':'#ff5c8a';ctx.beginPath();ctx.moveTo(e.x,e.y+9);ctx.lineTo(e.x+8,e.y-7);ctx.lineTo(e.x-8,e.y-7);ctx.closePath();ctx.fill();}
+    else if(e.type==='brute'){ctx.fillStyle=fl?'#fff':'#ff9a3c';rr(e.x-14,e.y-14,28,28,6);ctx.fill();txt('+5',e.x,e.y,12,'#2a1500','center','900');}
+    else if(e.type==='mortar'){ctx.fillStyle=fl?'#fff':'#c0c6d0';rr(e.x-13,e.y-10,26,20,4);ctx.fill();ctx.fillStyle='#4b5263';ctx.fillRect(e.x-3,e.y-20,6,12);txt('MORTAR',e.x+(e.x<195?46:-46),e.y,10,'#c0c6d0','center','800');}
+    else if(e.type==='turret'){ctx.fillStyle=fl?'#fff':'#b8c0cc';ctx.beginPath();ctx.arc(e.x,e.y,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ff5c5c';ctx.beginPath();ctx.arc(e.x,e.y,4,0,Math.PI*2);ctx.fill();txt('TURRET',e.x+(e.x<195?44:-44),e.y,10,'#b8c0cc','center','800');}
+    else if(e.type==='truck'){ctx.fillStyle=fl?'#fff':'#ffd166';rr(e.x-29,e.y-17,58,34,6);ctx.fill();ctx.fillStyle='#7a5a00';ctx.fillRect(e.x-20,e.y-8,24,16);txt('CRATE',e.x+12,e.y,9,'#2a1d00','center','900');}
+    else if(e.type==='thief'){
+      ctx.fillStyle=fl?'#fff':'#ff6b6b';ctx.beginPath();ctx.moveTo(e.x,e.y-9);ctx.lineTo(e.x+8,e.y);ctx.lineTo(e.x,e.y+9);ctx.lineTo(e.x-8,e.y);ctx.closePath();ctx.fill();ctx.fillStyle='#1a1d24';ctx.fillRect(e.x-6,e.y-3,12,3);
+      if(e.stole){ctx.fillStyle='#ffd166';ctx.beginPath();ctx.arc(e.x+7,e.y+6,3.5,0,Math.PI*2);ctx.fill();}else txt('THIEF',e.x,e.y-17,9,'#ff9a9a','center','900');}
+    else if(e.type==='bomber'){ctx.fillStyle=fl?'#fff':'#3b3f4a';ctx.beginPath();ctx.arc(e.x,e.y,7,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#ff7a2a';ctx.lineWidth=2;ctx.stroke();
+      ctx.fillStyle=(Math.floor(e.age*8)%2)?'#ff3b3b':'#ffd166';ctx.beginPath();ctx.arc(e.x,e.y-9,2.5,0,Math.PI*2);ctx.fill();}
+    else if(e.type==='riot'){const a=Math.atan2(g.cx-e.x,F.y0-e.y);ctx.fillStyle=fl?'#fff':'#ff5c5c';rr(e.x-7,e.y-9,14,14,3);ctx.fill();
+      ctx.save();ctx.translate(e.x,e.y);ctx.rotate(-a);ctx.fillStyle='#cbd5e1';rr(-12,5,24,5,2);ctx.fill();ctx.restore();}
+    else if(e.type==='priest'){ctx.fillStyle=fl?'#fff':'#f0abfc';ctx.beginPath();ctx.moveTo(e.x,e.y-6);ctx.lineTo(e.x+10,e.y+10);ctx.lineTo(e.x-10,e.y+10);ctx.closePath();ctx.fill();ctx.beginPath();ctx.arc(e.x,e.y-8,5,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#ffd166';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(e.x,e.y-16,6,2,0,0,Math.PI*2);ctx.stroke();txt('PRIEST',e.x+(e.x<195?40:-40),e.y,10,'#f0abfc','center','800');}
+    else if(e.type==='blob'){const r=11+Math.sin(e.age*5)*1.2;ctx.fillStyle=fl?'#fff':'#a855f7';ctx.beginPath();ctx.arc(e.x,e.y,r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#c084fc';for(let k=0;k<5;k++){const a=k*1.256+e.age;ctx.beginPath();ctx.arc(e.x+Math.cos(a)*5,e.y+Math.sin(a)*5,2.2,0,Math.PI*2);ctx.fill();}}
+    else if(e.type==='flyer'){const fw=Math.sin(e.age*18)*4;ctx.fillStyle='rgba(0,0,0,0.25)';ctx.beginPath();ctx.ellipse(e.x+6,e.y+16,7,3,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=fl?'#fff':'#f43f5e';ctx.beginPath();ctx.moveTo(e.x,e.y+6);ctx.lineTo(e.x+11,e.y-4+fw);ctx.lineTo(e.x+3,e.y-2);ctx.lineTo(e.x,e.y-7);ctx.lineTo(e.x-3,e.y-2);ctx.lineTo(e.x-11,e.y-4+fw);ctx.closePath();ctx.fill();}
+    if(e.elite){ctx.strokeStyle='#ffd166';ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,e.w/2+4,0,Math.PI*2);ctx.stroke();}
+    if(e.raised){ctx.strokeStyle='rgba(240,171,252,0.8)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(e.x,e.y,e.w/2+3,0,Math.PI*2);ctx.stroke();}
+    if(e.mark>0){ctx.strokeStyle='#4ade80';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(e.x,e.y,e.w/2+5,0,Math.PI*2);ctx.stroke();}
+    if(e.maxhp>=12&&e.hp<e.maxhp&&e.type!=='ant'){const w=Math.max(20,e.w);ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(e.x-w/2,e.y-e.h/2-7,w,3);ctx.fillStyle='#ff5c5c';ctx.fillRect(e.x-w/2,e.y-e.h/2-7,w*Math.max(0,e.hp/e.maxhp),3);}
+  }
+  for(const wv of g.waves){const k=Math.min(1,wv.t/wv.dur),y=wv.y0-380*k;ctx.fillStyle='rgba(255,122,42,'+(0.45*(1-k)+0.15)+')';ctx.fillRect(wv.x-110,y-14,220,28);ctx.fillStyle='rgba(251,113,133,0.25)';ctx.fillRect(wv.x-110,y,220,wv.y0-y);}
+  for(const t of g.tokens){ctx.globalAlpha=t.t<0?0.45:1;ctx.fillStyle=t.k?KINDS[t.k].col:'#4ade80';ctx.beginPath();ctx.arc(t.x,t.y,t.up?6:9,0,Math.PI*2);ctx.fill();txt(t.up?'\u2191':'+'+t.v,t.x,t.y,t.up?9:10,'#052','center','900');ctx.globalAlpha=1;}
+  for(const m of g.mines){const k=Math.min(1,m.t/0.35),x=m.sx+(m.x-m.sx)*k,y=m.sy+(m.y-m.sy)*k-Math.sin(k*Math.PI)*60;ctx.fillStyle='#4b5263';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=(Math.floor(m.t*6)%2)?'#ffd166':'#cbd5e1';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();}
+  for(const d of g.drops){const D=DROPS[d.kind];ctx.strokeStyle='rgba(232,236,242,0.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(d.x-12,d.y-10);ctx.lineTo(d.x,d.y-26);ctx.lineTo(d.x+12,d.y-10);ctx.stroke();
+    ctx.fillStyle='#e8ecf2';ctx.beginPath();ctx.arc(d.x,d.y-26,12,Math.PI,0);ctx.fill();ctx.fillStyle='#2a2414';rr(d.x-13,d.y-11,26,22,4);ctx.fill();ctx.strokeStyle=D.col;ctx.lineWidth=2;rr(d.x-13,d.y-11,26,22,4);ctx.stroke();
+    txt(D.ic,d.x,d.y,11,D.col,'center','900');txt(D.name,d.x,d.y+20,11,D.col,'center','900');}
+  if(g.shells)for(const s of g.shells){const k=s.t/s.dur,x=s.x0+(s.x1-s.x0)*k,y=s.y0+(s.y1-s.y0)*k-(s.drop?0:Math.sin(k*Math.PI)*120);ctx.fillStyle=s.col||'#f472b6';ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(232,236,242,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(s.x1,s.y1,120*k,0,Math.PI*2);ctx.stroke();}
+}
+function drawBoss(){const b=g.boss;if(!b||b.dead&&g.phaseT>1.2)return;
+  ctx.save();ctx.fillStyle={1:'#7c8597',2:'#8a6e9e',3:'#6b6155',4:'#5b21b6'}[b.kind];rr(b.x-b.w/2,b.y-b.h/2,b.w,b.h,12);ctx.fill();
+  if(b.flash>0){ctx.globalAlpha=0.28;ctx.fillStyle='#fff';rr(b.x-b.w/2,b.y-b.h/2,b.w,b.h,12);ctx.fill();ctx.globalAlpha=1;}
+  if(b.kind===1){ctx.fillStyle='#4b5263';ctx.fillRect(b.x-8,b.y+b.h/2-4,16,30);}
+  else if(b.kind===2){ctx.fillStyle=b.hatch?'#ffd166':'#4b3a5a';rr(b.x-30,b.y-16,60,32,6);ctx.fill();if(b.hatch)txt('x2',b.x,b.y,18,'#2a1d00','center','900');}
+  else if(b.kind===3){ctx.fillStyle='#4b4237';for(let i=0;i<7;i++)ctx.fillRect(b.x-b.w/2+8+i*42,b.y-b.h/2-10,26,12);
+    for(const p of b.ports){const x=b.x+p.dx,y=b.y+b.h/2-24;if(p.hp>0){ctx.fillStyle=p.flash>0?'#fff':'#2b2620';rr(x-26,y-16,52,32,5);ctx.fill();ctx.fillStyle='#8a93a6';ctx.fillRect(x-4,y+10,8,16);
+      ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(x-24,y-24,48,4);ctx.fillStyle='#ff5c5c';ctx.fillRect(x-24,y-24,48*p.hp/p.max,4);}else{ctx.fillStyle='#1a1612';rr(x-26,y-16,52,32,5);ctx.fill();txt('X',x,y,14,'#5b5145','center','900');}}}
+  else{ctx.strokeStyle='#7c3aed';ctx.lineWidth=4;for(const s of[-1,1])for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(b.x+s*60,b.y-24+i*20);ctx.lineTo(b.x+s*(92+Math.sin(b.t*6+i)*6),b.y-14+i*24);ctx.stroke();}
+    ctx.fillStyle=b.lay?'#ffd166':'#3b0764';ctx.beginPath();ctx.ellipse(b.x,b.y+8,36,20,0,0,Math.PI*2);ctx.fill();if(b.lay)txt('x2',b.x,b.y+8,18,'#2a1d00','center','900');}
+  {const ny=b.kind===3?b.y-b.h/2+14:b.y+b.h/2-12;ctx.font='900 12px '+FONT;const tw=ctx.measureText(b.name).width;ctx.fillStyle='rgba(8,10,16,0.6)';rr(b.x-tw/2-6,ny-9,tw+12,18,5);ctx.fill();txt(b.name,b.x,ny,12,'#e8ecf2','center','900');}ctx.restore();
+}
+function drawCrowd(){
+  const f=F,bob=performance.now()/120;
+  if('bulwark' in g.fused){ctx.fillStyle='#60a5fa';rr(f.x0-6,f.y0,f.w+12,16,6);ctx.fill();ctx.fillStyle='#1e3a8a';for(let i=0;i<g.fused.bulwark;i++)ctx.fillRect(f.x0+i*(f.w+4)/8-2+4,f.y0+5,(f.w)/8-4,6);}
+  const forging=g.forgeFx;
+  let crackDrawn=false;
+  {const by={},fr=4.2*g.figS/1.2;for(let i=0;i<f.pos.length;i++)(by[f.pos[i].k]=by[f.pos[i].k]||[]).push(i);
+    for(const k in by){const K=KINDS[k];ctx.fillStyle=K.col;ctx.beginPath();for(const i of by[k]){const p=f.pos[i];shapePath(K.shape,p.x,p.y+Math.sin(bob+i)*0.8,fr);}ctx.fill();}} // one fill per kind, not one per soldier
+  for(let i=0;i<f.pos.length;i++){const p=f.pos[i];const yy=p.y+Math.sin(bob+i)*0.8;
+    if(p.k==='shield'&&!crackDrawn&&g.shieldDmg>0){crackDrawn=true;ctx.strokeStyle='#0b1a3a';ctx.lineWidth=1.2;ctx.beginPath();for(let c=0;c<g.shieldDmg;c++){ctx.moveTo(p.x-3+c*3,yy-4);ctx.lineTo(p.x-1+c*3,yy+3);}ctx.stroke();}}
+  // captain
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(f.cap.x,f.cap.y,5*g.figS/1.2,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd166';ctx.fillRect(f.cap.x-4,f.cap.y-8*g.figS/1.2,8,3);
+  for(const b of f.bigs){const P=PROMOS[b.k],col=P.col;ctx.save();ctx.fillStyle=col+'38';ctx.beginPath();ctx.arc(b.x,b.y,24,0,Math.PI*2);ctx.fill(); // a soft halo: blur glows are slow on phones
+    if(b.k==='battery'){shape('triangle',b.x,b.y,15,col);ctx.shadowBlur=0;ctx.fillStyle='#3b0a24';ctx.fillRect(b.x-3,b.y-14,6,10);}
+    else if(b.k==='wall'){ctx.fillStyle=col;rr(b.x-26,b.y-9,52,18,5);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#4a2a00';for(let k=-3;k<=3;k++)ctx.fillRect(b.x+k*7-1.5,b.y-17,3,9);}
+    else if(b.k==='firing'){ctx.fillStyle=col;rr(b.x-26,b.y-9,52,18,5);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#0f3d22';for(let k=-5;k<=5;k++)ctx.fillRect(b.x+k*4.5-1,b.y-16,2,8);}
+    else if(b.k==='inferno'){shape('diamond',b.x,b.y,15,col);ctx.shadowBlur=0;ctx.fillStyle='#ff7a2a';ctx.beginPath();ctx.moveTo(b.x-6,b.y-14);ctx.lineTo(b.x,b.y-26-Math.random()*4);ctx.lineTo(b.x+6,b.y-14);ctx.closePath();ctx.fill();}
+    else{shape('square',b.x,b.y,14,col);ctx.shadowBlur=0;ctx.fillStyle='#3a2f00';for(let k=-1;k<=1;k++)ctx.fillRect(b.x+k*7-1.5,b.y-20,3,12);}
+    ctx.restore();txt(String(g.fused[b.k]),b.x,b.y+3,11,'#111','center','900');}
+  if(forging){const k=Math.min(1,forging.t/0.6);const col=PROMOS[forging.id].col;
+    for(const p of forging.pts){const x=p.x+(forging.tx-p.x)*k*k,y=p.y+(forging.ty-p.y)*k*k;shape(KINDS[PROMOS[forging.id].kind].shape,x,y,4,col);}
+    if(forging.t>0.6){const r=(forging.t-0.6)*160;ctx.strokeStyle=col;ctx.lineWidth=3;ctx.globalAlpha=Math.max(0,1-(forging.t-0.6)*2);ctx.beginPath();ctx.arc(forging.tx,forging.ty,r,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}}
+}
+function drawNight(){if(!g.night||g.sec<2)return;const cx=g.cx,cy=(F.y0+F.y1)/2,gr=ctx.createRadialGradient(cx,cy,100,cx,cy,440);gr.addColorStop(0,'rgba(2,4,12,0)');gr.addColorStop(1,'rgba(2,4,12,0.62)');ctx.fillStyle=gr;ctx.fillRect(-GX-20,-20,W+2*GX+40,H+40);}
+function drawSupport(){
+  for(const s of g.sentries){ctx.fillStyle='#4b5263';rr(s.x-7,s.y-5,14,10,3);ctx.fill();ctx.fillStyle='#cbd5e1';ctx.fillRect(s.x-1.5,s.y-13,3,9);ctx.strokeStyle='rgba(203,213,225,0.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(s.x,s.y+5);ctx.lineTo(g.cx+(s.side<0?-F.w/2:F.w/2),F.y1-4);ctx.stroke();}
+  for(const d of g.drones){if(d.cd>0)continue;if(d.las){ctx.strokeStyle='rgba(167,139,250,0.9)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.las.x,d.las.y);ctx.stroke();}
+    ctx.fillStyle='#a78bfa';ctx.beginPath();ctx.moveTo(d.x,d.y-6);ctx.lineTo(d.x+6,d.y);ctx.lineTo(d.x,d.y+6);ctx.lineTo(d.x-6,d.y);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(221,214,254,0.7)';ctx.lineWidth=1;for(const [ox,oy] of [[-6,-6],[6,-6],[-6,6],[6,6]]){ctx.beginPath();ctx.arc(d.x+ox,d.y+oy,3,0,Math.PI*2);ctx.stroke();}}
+  for(const z of g.zaps){ctx.strokeStyle=z.col;ctx.globalAlpha=1-z.t/0.1;ctx.lineWidth=2;for(const pts of z.segs){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(const p of pts)ctx.lineTo(p[0],p[1]);ctx.stroke();}
+    ctx.strokeStyle='#fff';ctx.lineWidth=0.8;for(const pts of z.segs){ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(const p of pts)ctx.lineTo(p[0],p[1]);ctx.stroke();}ctx.globalAlpha=1;}
+}
+function drawFx(){
+  const BA=S.calm?0.55:0.75;let bc=null;ctx.globalAlpha=BA;
+  for(const b of g.bullets){if(b.delay>0)continue;if(b.col!==bc){bc=b.col;ctx.fillStyle=bc;}if(b.fire){ctx.fillRect(b.x-2.5,b.y-2.5,5,5);}else if(b.blast){ctx.fillRect(b.x-2.5,b.y-7,5,14);}else if(b.big){ctx.fillRect(b.x-2,b.y-8,4,16);}else if(b.boom||b.rico!=null||b.axe){b.spin=(b.spin||0)+0.35;ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.spin);ctx.fillRect(-6,-1.5,12,3);ctx.fillRect(-1.5,-6,3,7);ctx.restore();}else if(b.card!=null){ctx.fillRect(b.x-2.5,b.y-3.5,5,7);}else if(b.falloff){const m=pelletMul(b);ctx.globalAlpha=BA*(0.35+0.65*m);ctx.fillRect(b.x-1.5*m-0.5,b.y-5,3*m+1,10);ctx.globalAlpha=BA;}else ctx.fillRect(b.x-1,b.y-5,2,10);}
+  ctx.globalAlpha=1;
+  for(const p of g.parts){const k=p.t/p.life;if(p.beam){ctx.strokeStyle=p.col;ctx.globalAlpha=1-k;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x2,p.y2);ctx.stroke();ctx.globalAlpha=1;continue;}
+    if(p.ring){ctx.strokeStyle=p.col;ctx.globalAlpha=1-k;ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,p.ring*(0.4+0.6*k),0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
+    else{ctx.globalAlpha=1-k;ctx.fillStyle=p.col;ctx.fillRect(p.x-p.r/2,p.y-p.r/2,p.r,p.r);ctx.globalAlpha=1;}}
+  for(const r of g.rags){ctx.save();ctx.globalAlpha=Math.max(0,1-r.t/1.2);ctx.translate(r.x,r.y);ctx.rotate(r.rot);shape(KINDS[r.k].shape,0,0,4,KINDS[r.k].col);ctx.restore();}
+  for(const p of g.pops){ctx.globalAlpha=Math.max(0,1-p.t);txt(p.txt,p.x,p.y,p.size,p.col,'center','900');ctx.globalAlpha=1;}
+}
+function drawHUD(){ctx.save();ctx.translate(0,CT);hudIn();ctx.restore();} // the HUD hangs from the top of the screen, even when the road is trimmed
+function hudIn(){
+  if(g.breachOn){const nar=CB>20,x=nar&&S.rallyLeft?104:16,y=H-22-CB-CT,w=nar?W-120:W-32,k=Math.min(1,g.breach/TUNE.breachMax),hot=k>0.7;
+    ctx.fillStyle='rgba(11,13,18,0.75)';ctx.fillRect(x-4,y-17,w+8,25);ctx.fillStyle='#2a2f3b';ctx.fillRect(x,y,w,6);
+    ctx.fillStyle=g.breachFl>0||hot&&!S.calm&&Math.sin(performance.now()/90)>0?'#ff3b3b':'#e0565b';ctx.fillRect(x,y,w*k,6);
+    txt('BREACH',x,y-7,10,k>0?'#ff8a8a':'#8a93a6','left','900');txt(k>0?Math.ceil(g.breach)+' / '+TUNE.breachMax:'nothing got past',x+w,y-7,10,'#8a93a6','right','800');}
+  ctx.fillStyle='rgba(11,13,18,0.82)';ctx.fillRect(-GX,0,W+2*GX,g.hudH||88);
+  const N=Math.round(g.disp);txt(String(N),20,26,34,g.cFlash>0?g.cCol:'#fff','left','900');
+  ctx.font='900 34px '+FONT;const nw=ctx.measureText(String(N)).width;txt('soldiers',26+nw,32,13,'#8a93a6','left','700');
+  // stacked mix bar: the build at a glance
+  const tot=Math.max(1,totalN());let x=20;const bw=150;ctx.fillStyle='#2a2f3b';ctx.fillRect(20,48,bw,8);
+  for(const k of ALLK){const n=g.K[k]+(Object.keys(g.fused).filter(id=>PROMOS[id].kind===k).reduce((s,id)=>s+g.fused[id],0));if(!n)continue;const w=bw*n/tot;ctx.fillStyle=KINDS[k].col;ctx.fillRect(x,48,w,8);x+=w;}
+  {const tk=topGun();if(tk){const f=Math.round(TUNE.focus*gunShare(tk)*100);txt('FOCUS +'+f+'%',176,52,10,KINDS[tk].col,'left','900');}}
+  // kind counts with shapes
+  const tight=ALLK.filter(k=>g.K[k]>0).length>5,ps=tight?3.5:5;
+  let cx=20;for(const k of ALLK){const n=g.K[k];if(!n)continue;shape(KINDS[k].shape,cx+5,72,5,KINDS[k].col);txt(String(n),cx+13,72,tight?12:13,'#e8ecf2','left','800');
+    const nb=g.branch[k]?Object.keys(BRANCH[k][g.branch[k]].next).length:1,np=!g.branch[k]?RANKUP:(g.branch2[k]||!nb)?TUNE.rankMax:RANKUP2;
+    for(let i=0;i<np;i++){const gold=(i===RANKUP-1&&g.branch[k])||(i===RANKUP2-1&&g.branch2[k]);ctx.fillStyle=i<g.rank[k]?(gold?'#ffd166':KINDS[k].col):'#3a3f4b';ctx.fillRect(cx+2+i*ps,81,tight?2.5:3,3);}
+    cx+=Math.max(14+String(n).length*(tight?7:8)+(tight?5:12),tight?26:0,np*ps+6);}
+  for(const id in g.fused){const P=PROMOS[id];txt('★'+g.fused[id],cx+2,72,13,P.col,'left','900');cx+=40;}
+  // this road's roster: the kinds its gates can offer
+  {let rx=W-70;for(let i=g.roster.length-1;i>=0;i--){const K=KINDS[g.roster[i]];shape(K.shape,rx,40,4,K.col);rx-=13;}}
+  // active boosts under the pause button, and the Rally ring in the bottom corner
+  {let by=66;for(const [t,n,c] of [[g.odT,'OVERDRIVE','#ffd166'],[g.apT,'AP ROUNDS','#93c5fd'],[g.rallyT,'RALLY','#ffd166']])if(t>0){txt(n+' '+Math.ceil(t),W-12,by,11,c,'right','900');by+=14;}}
+  {const x=RALLYB.x,y=RALLYB.y-CT,k=g.rallyCD>0?1-g.rallyCD/20:1,rdy=k>=1&&!g.over,pl=rdy&&!S.calm?Math.sin(performance.now()/1000*6)*0.5+0.5:0,r=29+pl*2;
+    if(rdy){ctx.fillStyle='rgba(255,209,102,'+(0.12+0.2*pl).toFixed(3)+')';ctx.beginPath();ctx.arc(x,y,r+11,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=rdy?'rgba(58,42,6,0.94)':'rgba(11,13,18,0.75)';ctx.beginPath();ctx.arc(x,y,r+4,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle=rdy?'#ffd166':'#5b6375';ctx.lineWidth=4;ctx.beginPath();ctx.arc(x,y,r,-Math.PI/2,-Math.PI/2+Math.PI*2*k);ctx.stroke();
+    txt('RALLY',x,y-6,13,rdy?'#ffd166':'#8a93a6','center','900');txt(rdy?(S.autoRally?'AUTO':lastTouch?'TAP':'SPACE'):Math.ceil(g.rallyCD)+'s',x,y+10,11,rdy?'#ffe6a8':'#8a93a6','center','800');}
+  // section / time / pause
+  txt(g.phase.startsWith('boss')?g.boss&&g.boss.name||'':(g.sec===2&&g.route?ROUTES[g.route].name:'SECTION '+g.sec)+(g.dailyRun?'  DAILY':'')+(g.threat?'  T'+g.threat:''),W-70,22,12,'#8a93a6','right','800');
+  ctx.fillStyle='#2a2f3b';rr(W-56,8,44,44,10);ctx.fill();ctx.fillStyle='#e8ecf2';ctx.fillRect(W-41,20,5,20);ctx.fillRect(W-31,20,5,20);
+  // officers and cards, in a row under the counts; an Officer's chip shows its promotion progress and turns gold when the Forge is ready
+  let ox=20,oy=90;for(const id of g.cards){const C=CARDS[id];let label=C.name,col=C.col,bg=C.col+'33';{const ev=cardEvo(id);if(ev&&g.evo.includes(ev)){label=EVOS[ev].name;col='#2a1d00';bg=EVOS[ev].col;}}
+    if(C.promo){let pid=promoOf(id);const P=PROMOS[pid];if(pid in g.fused||g.promosMade.includes(pid)){label+=' ★';}
+      else{const n=g.K[P.kind];if(n>=P.need){label+=' FORGE READY';col='#2a1d00';bg='#ffd166';}else label+=' '+n+'/'+P.need;}}
+    ctx.font='800 11px '+FONT;const w=ctx.measureText(label).width+12;if(ox+w>W-10&&ox>20){ox=20;oy+=21;} // a second row when four long chips do not fit
+    ctx.fillStyle=bg;rr(ox,oy,w,18,6);ctx.fill();txt(label,ox+w/2,oy+9,11,col,'center','800');ox+=w+5;}
+  g.hudH=g.cards.length?oy+24:88;
+  // boss bar
+  const b=g.boss;if(b&&!b.dead&&g.phase!=='road'){ctx.fillStyle='#2a2f3b';const by=(g.hudH||88)+8;ctx.fillRect(40,by,W-80,8);ctx.fillStyle=b.hatch||b.lay?'#ffd166':'#ff5c5c';ctx.fillRect(40,by,(W-80)*Math.max(0,b.hp/b.maxhp),10);}
+  if(g.hudMsgT>0&&g.hudMsg){ctx.globalAlpha=Math.min(1,g.hudMsgT*3);let fs=17,L=[g.hudMsg];const mw=l=>ctx.measureText(l).width;ctx.font='900 '+fs+'px '+FONT;
+    if(mw(g.hudMsg)>W-80){const w=g.hudMsg.split(' ');let best=null;for(let i=1;i<w.length;i++){const a=w.slice(0,i).join(' '),b=w.slice(i).join(' '),m=Math.max(mw(a),mw(b));if(!best||m<best[0])best=[m,a,b];}
+      if(best)L=[best[1],best[2]];while(fs>12&&Math.max(...L.map(mw))>W-80){fs--;ctx.font='900 '+fs+'px '+FONT;}} // a long tip goes on two lines rather than shrinking
+    const lh=fs*1.3;ctx.fillStyle='rgba(11,13,18,0.8)';rr(30,140,W-60,L.length*lh+18,10);ctx.fill();L.forEach((l,i)=>txt(l,W/2,149+lh/2+i*lh,fs,'#ffd166','center','900'));ctx.globalAlpha=1;}
+}
+function dimAll(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();}
+function wrapC(s,y,w,size,col){ctx.font='700 '+size+'px '+FONT;const words=s.split(' ');let line='',yy=y; // centred lines
+  for(const wd of words){const t=line?line+' '+wd:wd;if(ctx.measureText(t).width>w&&line){txt(line,W/2,yy,size,col,'center','700');line=wd;yy+=size*1.35;}else line=t;}if(line)txt(line,W/2,yy,size,col,'center','700');return yy;}
+function wrap(s,x,y,w,size,col){ctx.font='500 '+size+'px '+FONT;const words=s.split(' ');let line='',yy=y;ctx.fillStyle=col;ctx.textAlign='left';ctx.textBaseline='middle';
+  for(const wd of words){const t=line?line+' '+wd:wd;if(ctx.measureText(t).width>w&&line){ctx.fillText(line,x,yy);line=wd;yy+=size*1.3;}else line=t;}if(line)ctx.fillText(line,x,yy);return yy;}
+function drawDraft(){
+  ctx.fillStyle='rgba(8,10,16,0.9)';dimAll();
+  const D=g.draft,full=draftFull();
+  txt(D.take?'DROP ONE FOR '+CARDS[D.take].name.toUpperCase():D.why||'CRATE',W/2,D.take?160:170,D.take?20:24,'#ffd166','center','900');
+  txt(D.take?'your hand is full: tap the card to let go':full?'hand full: pick one to swap in, or keep your hand':D.left>1?'pick '+D.left+' more':'pick one',W/2,D.take?194:204,15,'#8a93a6','center','700');
+  g.draft.cards.forEach((id,i)=>{const C=CARDS[id],r=cardRect(i),k=Math.min(1,Math.max(0,(g.draft.t-i*0.1)*4));ctx.save();ctx.globalAlpha=k;ctx.translate(0,(1-k)*30);
+    ctx.fillStyle='#1d212b';rr(r.x,r.y,r.w,r.h,14);ctx.fill();ctx.strokeStyle=C.col;ctx.lineWidth=2.5;rr(r.x,r.y,r.w,r.h,14);ctx.stroke();
+    txt((i+1)+'',r.x+20,r.y+24,14,'#5b6375','center','900');
+    txt(C.name,r.x+40,r.y+24,20,C.col,'left','900');if(C.officer)txt('OFFICER',r.x+r.w-16,r.y+24,11,C.col,'right','900');
+    wrap(C.desc,r.x+40,r.y+54,r.w-60,14,'#c3cad6');
+    if(D.take){}else if(C.promo){const pid=Object.keys(PROMOS).find(q=>{const Q=PROMOS[q];return Q.officer===id&&!Q.hidden&&!(Q.branch&&g.branch[Q.kind]!==Q.branch)&&!(Q.notBranch&&g.branch[Q.kind]===Q.notBranch);})||C.promo,P=PROMOS[pid];const hidden=P.hidden&&!g.promosMade.includes(pid);
+      txt(hidden?'Promotion: ???  '+P.hint:'Promotion: '+P.need+' '+(P.branch?BRANCH[P.kind][P.branch].name:KINDS[P.kind].name)+' → '+P.name,r.x+40,r.y+r.h-22,12,'#ffd166','left','800');}
+    else{const ev=cardEvo(id);if(ev){const E=EVOS[ev];txt('Evolves with '+E.with+' → '+E.name,r.x+40,r.y+r.h-22,12,E.col,'left','800');}}
+    ctx.restore();});
+  if(full){const r=SKIPR;ctx.fillStyle='#262b36';rr(r.x,r.y,r.w,r.h,12);ctx.fill();ctx.strokeStyle='#8a93a6';ctx.lineWidth=2;rr(r.x,r.y,r.w,r.h,12);ctx.stroke();txt('KEEP MY HAND',r.x+r.w/2,r.y+r.h/2,16,'#e8ecf2','center','900');}
+}
+function drawFork(){
+  ctx.fillStyle='rgba(8,10,16,0.92)';dimAll();txt('THE ROAD FORKS',W/2,170,26,'#ffd166','center','900');txt('pick your way to the last boss',W/2,204,15,'#8a93a6','center','700');
+  if(g.fork.rec){const K=KINDS[g.fork.rec],s='Both roads add a new kind: '+K.name;ctx.font='800 13px '+FONT;const tw=ctx.measureText(s).width;shape(K.shape,W/2+8-tw/2-14,226,6,K.col);txt(s,W/2+8,226,13,K.col,'center','800');}
+  g.fork.opts.forEach((id,i)=>{const R=ROUTES[id],r=forkRect(i),k=Math.min(1,Math.max(0,(g.fork.t-i*0.1)*4));ctx.save();ctx.globalAlpha=k;ctx.translate(0,(1-k)*30);
+    ctx.fillStyle='#1d212b';rr(r.x,r.y,r.w,r.h,14);ctx.fill();ctx.strokeStyle=R.col;ctx.lineWidth=2.5;rr(r.x,r.y,r.w,r.h,14);ctx.stroke();
+    txt((i+1)+'',r.x+20,r.y+26,14,'#5b6375','center','900');txt(R.name,r.x+40,r.y+26,22,R.col,'left','900');
+    wrap(R.desc,r.x+40,r.y+60,r.w-60,14,'#c3cad6');txt('Boss: '+R.boss,r.x+40,r.y+r.h-50,14,'#ff8a8a','left','800');txt(forkReward(id),r.x+40,r.y+r.h-24,13,'#ffd166','left','800');ctx.restore();});
+}
+const LTIPS=[[/Tank/,'The Tank fires at the pink circle under you. Slide out as it fills.'],
+  [/mortar/,'Mortar shells land on the pink squares. Slide out before they fill.'],
+  [/Twin Hatch/,'Dodge the pink strips, and hit hardest while a hatch is open (x2 damage).'],
+  [/Siege/,'Shields block Siege Tower shots. Break its gun ports one at a time.'],
+  [/Hive Queen/,'Slide out of the pink circle, and clear the ants before they reach you.'],
+  [/ants/,'Ants come in swarms. Shotguns, Engineers and Berserkers are built for crowds.'],
+  [/turret/,'Shields block turret shots. Kill turrets early.'],
+  [/charger/,'Chargers show a pink line before they dash. Step aside, or let Shields stop them.'],
+  [/brute/,'Brutes hit very hard up close. Kill them before they reach you.'],
+  [/bomber/,'Kill bombers early. Shields soak the blast.'],
+  [/armoured/,'Armour shrugs off light bullets. Grenadiers and Knights are built for it.'],
+  [/wall/,'Walls block the road. Grenadiers break them fast, or steer round them.'],
+  [/red gate/,'Shoot red gates down to zero, or steer round them.'],
+  [/grunt/,'Grunts hurt when they reach you. Keep building one kind: every gate of it adds damage.']];
+const PLUR={grunt:'grunts',plated:'armoured troops',ant:'ants',charger:'chargers',brute:'brutes',thief:'gate thieves',riot:'riot shields',priest:'field priests',blob:'splitters',flyer:'flyers',bomber:'bombers',turret:'turrets'};
+function lossInfo(){let top=null,n=0;for(const k in g.lossBy||{})if(g.lossBy[k]>n){n=g.lossBy[k];top=k;}
+  const breach=g.deathBy==='too many enemies getting past';let tipS=null;
+  if(breach){let pt=null,pn=0;for(const k in g.pastBy||{})if(g.pastBy[k]>pn){pn=g.pastBy[k];pt=k;}
+    tipS='Enemies that get past fill BREACH'+(pt?' (most were '+(PLUR[pt]||pt)+')':'')+'. Shoot the ones heading for the road edges.';}
+  else{const why=top||g.deathBy||'';for(const [re,t] of LTIPS)if(re.test(why)){tipS=t;break;}}
+  return {top,n,tip:tipS||(S.autoRally?'Build more of one kind: every gate of it makes it hit harder.':'Rally when enemies bunch up or a boss opens: triple fire for 2 s.')};}
+function drawResults(){
+  ctx.fillStyle='rgba(8,10,16,0.93)';dimAll();
+  const N=totalN();txt(g.win?'ROAD CLEARED':'THE COLUMN FELL',W/2,110,30,g.win?'#ffd166':'#ff6b6b','center','900');
+  txt(g.win?N+' came home':'to '+(g.deathBy||'the road'),W/2,152,20,'#fff','center','800');
+  let y=180;
+  if(!g.win){const L=lossInfo();if(L.top){txt('Most soldiers lost to '+L.top+': '+L.n,W/2,y,14,'#ffb3b3','center','800');y+=24;}
+    y=wrapC('TRY: '+L.tip,y,320,14,'#ffd166')+26;} // what hurt you most, and one thing to try next time
+  if(g.breachOn){txt('BREACH at its fullest: '+Math.min(TUNE.breachMax,Math.round(g.breachPeak))+' / '+TUNE.breachMax,W/2,y,13,'#ff8a8a','center','800');y+=30;}else y+=30;
+  const rows=ALLK.filter(k=>g.K[k]||g.lost[k]).length+g.promosMade.length,rs=rows>6?24:30; // tighter rows when the list is long
+  txt('WHO CAME HOME',W/2,y,13,'#8a93a6','center','800');y+=rs;
+  for(const k of ALLK){const K=KINDS[k],n=g.K[k],l=g.lost[k];if(!n&&!l)continue;shape(K.shape,70,y,7,K.col);txt(kname(k),88,y,15,'#e8ecf2','left','800');txt(String(n),260,y,16,'#fff','right','900');txt(l?'lost '+l:'',330,y,12,'#ff8a8a','right','700');y+=rs;}
+  for(const id of g.promosMade){const P=PROMOS[id];txt('★ '+P.name,70,y,15,P.col,'left','900');txt(id in g.fused?String(g.fused[id]):'fell',260,y,16,'#fff','right','900');y+=rs;}
+  if(g.route){txt('Road: '+ROUTES[g.route].name,W/2,y+4,13,ROUTES[g.route].col,'center','800');y+=22;}
+  y+=10;txt('Bosses '+g.bosses+'/2   ·   '+Math.floor(g.t/60)+':'+String(Math.floor(g.t%60)).padStart(2,'0')+'   ·   '+g.kills+' kills',W/2,y,14,'#c3cad6','center','700');y+=30;
+  if(g.cards.length){y=wrap('Cards: '+g.cards.map(c=>CARDS[c].name).join(', '),30,y,330,12,'#8a93a6')+22;}
+  if(g.evo.length){y=wrap('Evolved: '+g.evo.map(id=>EVOS[id].name).join(', '),30,y,330,12,'#ffd166')+22;}
+  if(g.dailyRun){txt('DAILY MUSTER: '+g.score+' points',W/2,y+6,20,'#ffd166','center','900');txt('best ever '+PROG.daily.best,W/2,y+28,12,'#8a93a6','center','700');y+=50;}
+  else if(g.practice){txt('Daily practice: not scored',W/2,y,13,'#8a93a6','center','800');y+=24;}
+  if(g.newThreat){txt('THREAT '+g.newThreat+' UNLOCKED: '+THREATS[g.newThreat],W/2,y,12,'#ffb37a','center','900');y+=22;}
+  for(const u of g.newUnl){txt((PROG.testAll?'EARNED (for testing off): ':'UNLOCKED: ')+u,W/2,y,14,'#2ee6a6','center','900');y+=22;}
+  const hid=Object.keys(PROMOS).filter(id=>PROMOS[id].hidden&&!g.promosMade.includes(id));
+  if(hid.length&&g.win){txt('1 secret promotion not found yet',W/2,y+10,13,'#ffd166','center','800');}
+  {const r=RBTN[2];ctx.fillStyle='#262b36';rr(r.x,r.y,r.w,r.h,10);ctx.fill();txt('TITLE',r.x+r.w/2,r.y+r.h/2,14,'#e8ecf2','center','900');}
+  if(g.threat){txt('Threat '+g.threat,24,42,13,'#ffb37a','left','900');}
+  for(let i=0;i<2;i++){const r=RBTN[i];ctx.fillStyle=i?'#262b36':'#ffd166';rr(r.x,r.y,r.w,r.h,12);ctx.fill();txt(i?'NEW ROAD':'SAME ROAD',r.x+r.w/2,r.y+r.h/2,18,i?'#e8ecf2':'#2a1d00','center','900');}
+}
+function render(){
+  ctx.setTransform(dpr*scale,0,0,dpr*scale,dpr*scale*GX,-dpr*scale*CT);
+  if(!g){drawScenery();drawRoad();return;}
+  ctx.save();if(shakeA>0){ctx.translate((Math.random()-0.5)*shakeA,(Math.random()-0.5)*shakeA);}
+  drawScenery();drawRoad();drawGates();drawWalls();drawEnemies();drawBoss();drawCrowd();drawSupport();drawFx();drawNight();drawDanger();ctx.restore();
+  drawHUD();
+  if(mode==='draft'||mode==='fork'||mode==='results')ctx.setTransform(dpr*so,0,0,dpr*so,dpr*oX,dpr*oY);
+  if(mode==='draft'&&g.draft)drawDraft();
+  if(mode==='fork'&&g.fork)drawFork();
+  if(mode==='results')drawResults();
+}
+// ---------- danger: everything that can hurt the crowd, in one colour nothing friendly uses, drawn on top ----------
+const DNG='#ff2bd6';let dPat=null;
+function dangerPat(){if(dPat)return dPat;const c=document.createElement('canvas');c.width=c.height=16;const x=c.getContext('2d');x.strokeStyle='rgba(255,43,214,0.6)';x.lineWidth=3;x.beginPath();for(const o of[-16,0,16]){x.moveTo(o,16);x.lineTo(o+16,0);}x.stroke();dPat=ctx.createPattern(c,'repeat');return dPat;}
+function dZone(k){ctx.fillStyle='rgba(255,43,214,0.07)';ctx.fill();ctx.fillStyle=dangerPat();ctx.fill();
+  ctx.lineWidth=4.5;ctx.strokeStyle='rgba(8,10,16,0.65)';ctx.stroke();ctx.lineWidth=2.5;ctx.strokeStyle=k>0.7&&!S.calm&&Math.floor(performance.now()/80)%2===0?'#fff':DNG;ctx.stroke();} // stripes, with a white blink just before it lands
+function dCore(k){ctx.fillStyle='rgba(255,43,214,'+(0.12+0.25*k).toFixed(3)+')';ctx.fill();}
+function dLine(x0,y0,x1,y1,w){ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.lineWidth=w+2.5;ctx.strokeStyle='rgba(8,10,16,0.6)';ctx.stroke();ctx.lineWidth=w;ctx.strokeStyle=DNG;ctx.stroke();ctx.setLineDash([]);}
+function drawDanger(){
+  for(const m of g.mortars){const k=Math.min(1,m.t/m.dur);ctx.beginPath();ctx.rect(m.x-42,m.y-42,84,84);dZone(k);ctx.beginPath();ctx.rect(m.x-42*k,m.y-42*k,84*k,84*k);dCore(k);
+    txt('MORTAR',m.x,m.y-52,11,'#ff9be9','center','900');}
+  const b=g.boss,T=b&&!b.dead?b.tel:null;
+  if(T){const k=Math.min(1,T.t/T.dur);
+    if(T.type==='circle'){ctx.beginPath();ctx.arc(T.x,T.y,T.r,0,Math.PI*2);dZone(k);ctx.beginPath();ctx.arc(T.x,T.y,T.r*k,0,Math.PI*2);dCore(k);}
+    else if(T.type==='bar'){ctx.beginPath();ctx.rect(RX0,T.y0,RW,T.y1-T.y0);dZone(k);ctx.beginPath();ctx.rect(RX0,T.y0,RW*k,T.y1-T.y0);dCore(k);}
+    else for(const s of T.s){ctx.beginPath();ctx.rect(s[0]+1,0,s[1]-s[0]-2,H);dZone(k);dCore(k*0.6);}}
+  for(const e of g.enemies){if(e.dead)continue;
+    if(e.type==='charger'){if(e.lunge&&e.wind>0)dLine(e.x,e.y,e.lunge.tx,e.lunge.ty,3);}
+    else if(e.type==='flyer'){if(e.wind>0&&e.aim)dLine(e.x,e.y,e.aim.x,e.aim.y,2);}
+    else if(e.type==='thief'){if(e.tgx!=null){ctx.globalAlpha=0.6;dLine(e.x,e.y,e.tgx,e.tgy,1.5);ctx.globalAlpha=1;}}
+    else if(e.type==='bomber'){ctx.beginPath();ctx.arc(e.x,e.y,40,0,Math.PI*2);ctx.lineWidth=1.5;ctx.strokeStyle='rgba(255,43,214,0.45)';ctx.stroke();}}
+  for(const s of g.shots){ctx.fillStyle='rgba(8,10,16,0.7)';ctx.beginPath();ctx.arc(s.x,s.y,8.5,0,Math.PI*2);ctx.fill();ctx.fillStyle=DNG;ctx.beginPath();ctx.arc(s.x,s.y,6,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x,s.y,2.5,0,Math.PI*2);ctx.fill();}
+}
+// ---------- side scenery for wide screens (iPad, an open Duo): calm, dark, and never in the danger colour ----------
+function hh(i){let x=Math.imul(i^0x5bd1e995,0x85ebca6b);x^=x>>>13;x=Math.imul(x,0xc2b2ae35);x^=x>>>16;return (x>>>0)/4294967296;}
+const SCENE={fields:{ground:'#151b17',edge:'#1f261f',a:'#1d2a20',b:'#25352a',c:'#23272d'},
+  factory:{ground:'#15171c',edge:'#232731',a:'#1f232b',b:'#2a2f39',c:'#1b1e24'},
+  swamp:{ground:'#0e1615',edge:'#15211d',a:'#0b1d1d',b:'#18301f',c:'#1d3326'},
+  fortress:{ground:'#1b1813',edge:'#29231a',a:'#262019',b:'#30291f',c:'#1f1b15'}};
+function drawScenery(){if(GX<=0)return;
+  const th=g&&g.sec===2&&g.route&&SCENE[g.route]?g.route:'fields',P=SCENE[th],sy=g?(g.sceneY||0):0,TS=110;
+  ctx.fillStyle=P.ground;ctx.fillRect(-GX,0,GX,H);ctx.fillRect(W,0,GX,H);
+  ctx.fillStyle=P.edge;ctx.fillRect(-5,0,5,H);ctx.fillRect(W,0,5,H);
+  const j0=Math.floor((-TS-sy)/TS),j1=Math.ceil((H+TS-sy)/TS);
+  if(th==='factory'||th==='fortress'){for(const sd of[-1,1]){const x=sd<0?-28:W+28;ctx.fillStyle=P.a;ctx.fillRect(x-7,0,14,H); // a pipe or a wall that runs beside the road
+    ctx.fillStyle=P.b;for(let j=j0;j<=j1;j++){const y=j*TS+sy;if(th==='factory')ctx.fillRect(x-9,y,18,6);else for(let q=0;q<5;q++)ctx.fillRect(x-7,y+q*22,14,9);}}}
+  const nq=1+Math.min(3,Math.floor(GX/110)); // more things on wider sides
+  for(let j=j0;j<=j1;j++)for(const sd of[-1,1])for(let q=0;q<nq;q++){const id=j*8+(sd>0?4:0)+q,r1=hh(id),r2=hh(id+7919),r3=hh(id+15485);
+    const d=(th==='factory'||th==='fortress'?50:14)+r1*Math.max(10,Math.min(GX,420)-40);if(d>GX-8)continue;
+    const x=sd<0?-d:W+d,y=j*TS+sy+r2*TS,sz=8+r3*16;
+    if(th==='fields'){if(r3<0.6){ctx.fillStyle=P.a;ctx.beginPath();ctx.arc(x,y,sz,0,Math.PI*2);ctx.fill();ctx.fillStyle=P.b;ctx.beginPath();ctx.arc(x-sz*0.2,y-sz*0.2,sz*0.55,0,Math.PI*2);ctx.fill();}
+      else{ctx.fillStyle=P.c;rr(x-sz*0.6,y-sz*0.4,sz*1.2,sz*0.8,4);ctx.fill();}}
+    else if(th==='factory'){ctx.fillStyle=P.b;ctx.fillRect(x-sz*0.7,y-sz*0.7,sz*1.4,sz*1.4);ctx.strokeStyle=P.c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-sz*0.7,y-sz*0.7);ctx.lineTo(x+sz*0.7,y+sz*0.7);ctx.moveTo(x+sz*0.7,y-sz*0.7);ctx.lineTo(x-sz*0.7,y+sz*0.7);ctx.stroke();}
+    else if(th==='swamp'){if(r3<0.5){ctx.fillStyle=P.a;ctx.beginPath();ctx.ellipse(x,y,sz*1.8,sz,0,0,Math.PI*2);ctx.fill();}
+      else{ctx.fillStyle=P.b;ctx.beginPath();ctx.moveTo(x,y);ctx.arc(x,y,sz*0.7,0.5,Math.PI*2);ctx.closePath();ctx.fill();ctx.strokeStyle=P.c;ctx.lineWidth=2;ctx.beginPath();for(let w=-1;w<=1;w++){ctx.moveTo(x+sz+w*4,y+6);ctx.lineTo(x+sz+w*6,y-12);}ctx.stroke();}}
+    else{ctx.fillStyle=r3<0.5?P.b:P.c;rr(x-sz*0.8,y-sz*0.5,sz*1.6,sz,3);ctx.fill();}}
+}
+// test hook: lets a script drive the game without a screen
+window.__mu={get g(){return g;},get mode(){return mode;},startRun,step:(dt)=>{if(mode==='play'){if(tsT>0){tsT-=dt;if(tsT<=0)timescale=1;}step(dt*timescale);}},pickCard,pickRoute,PROG,makeRoster,setTarget:(x,y)=>{if(g){g.tx=x;if(y!==undefined){g.ty=y;g.retT=-1;}}},F:()=>F,KINDS,PROMOS,BRANCH};
+requestAnimationFrame(frame);
+</script>
