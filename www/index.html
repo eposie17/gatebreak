@@ -36,7 +36,7 @@ h1{font-size:44px;margin:0;letter-spacing:4px;color:#fff;font-weight:900}
  <div class="row"><span id="dailyb" class="pre" style="font-weight:800;color:#ffd166">DAILY MUSTER</span><span id="tall" class="tog">Testing: all unlocked</span></div>
  <div class="key" id="dailyd"></div>
  <div class="row"><span id="tdmg" class="tog">New damage rules</span></div>
- <div class="sub">Slide sideways to pick gates. Push up to dodge; let go and you slide back down. Everyone shoots on their own. Shoot a gate to pump its number.<br><b>Every gate adds one kind of soldier.</b> Strong kinds come in smaller numbers.<br>Take a kind's gate <b>three times</b> and the next row is its upgrade: two gold gates, pick one. Six times, and that upgrade gets its own pair. <b>Soldiers are expendable:</b> every hit takes the same share of each kind, however big your army (a brute takes a fifth). Shields soak area hits first. <b>Don't just dodge:</b> enemies that get past you fill the BREACH bar, and a full bar loses the run.<br><b>Building pays.</b> Every gate of a kind adds a pip: +10% damage, up to 10 pips. <b>FOCUS</b> adds your share of a kind on top, so an army that is all one kind does double damage with it.</div>
+ <div class="sub">Drag anywhere on the screen to move your army, in any direction. It can go partway up the road to dodge; let go and it slides back down. Everyone shoots on their own. Shoot a gate to pump its number.<br><b>Every gate adds one kind of soldier.</b> Strong kinds come in smaller numbers.<br>Take a kind's gate <b>three times</b> and the next row is its upgrade: two gold gates, pick one. Six times, and that upgrade gets its own pair. <b>Soldiers are expendable:</b> every hit takes the same share of each kind, however big your army (a brute takes a fifth). Shields soak area hits first. <b>Don't just dodge:</b> enemies that get past you fill the BREACH bar, and a full bar loses the run.<br><b>Building pays.</b> Every gate of a kind adds a pip: +10% damage, up to 10 pips. <b>FOCUS</b> adds your share of a kind on top, so an army that is all one kind does double damage with it.</div>
  <div class="sub" style="font-size:14px"><b>RALLY</b>: the crowd plants and fires three times as fast for 2 s. <b>Auto Rally</b> fires it for you; turn it off below to tap the button yourself (or touch anywhere with a second finger). Fire boosts add together, up to four times the fire. Shoot open cages to free soldiers. Touch a supply drop to use it. <b>Pink stripes</b> mean danger: get out before they fill. After the Tank, the road forks: pick your way to the last boss.</div>
  <div class="kinds" id="kinds"></div>
  <div class="sub" style="font-size:14px;color:#ffd166">Hold enough of one kind plus its Officer and a gold FORGE gate appears. Walk through it to fuse them into one big unit. Some cards evolve when you reach the right upgrade.</div>
@@ -736,28 +736,30 @@ function toL(e){const x=e.clientX-offX,y=e.clientY-offY;if(mode==='draft'||mode=
 const ptrs=new Set(); // fingers on the screen right now
 window.addEventListener('pointerdown',e=>ptrs.add(e.pointerId),true);for(const ev of['pointerup','pointercancel'])window.addEventListener(ev,e=>ptrs.delete(e.pointerId),true);
 function startReturn(){if(!g)return;if(g.ty<PITY1-0.5||g.cy<PITY1-0.5){g.retT=0;g.retY0=g.cy;}}
-cv.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();const p=toL(e);
+// the whole screen steers, except the menus drawn on top (title, pause), which keep their own taps and scrolling
+const WRAP=document.getElementById('wrap');
+function onField(e){const t=e.target;return t===cv||t===WRAP||t===document.body||t===document.documentElement;}
+document.addEventListener('pointerdown',e=>{if(!onField(e))return;e.preventDefault();audioInit();const p=toL(e);
   if(mode==='play'&&g&&Math.hypot(p.x-RALLYB.x,p.y-RALLYB.y)<RALLYB.r){rally();return;} // a second thumb can Rally without letting go of the steering
   if(mode==='play'&&g&&drag&&drag.id!==e.pointerId&&ptrs.has(drag.id)){rally();return;} // a second finger anywhere is a Rally too; the first keeps steering
-  drag={sx:p.x,sy:p.y,px:p.x,py:p.y,ax:p.x,ay:p.y,ox:g?g.tx:195,oy:g?g.ty:PITY1,t0:performance.now(),id:e.pointerId,axis:null,m:mode};
+  drag={sx:p.x,sy:p.y,px:p.x,py:p.y,ax:p.x,ay:p.y,ox:g?g.tx:195,oy:g?g.ty:PITY1,t0:performance.now(),id:e.pointerId,on:false,m:mode};
   try{cv.setPointerCapture(e.pointerId);}catch(x){}});
-cv.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const p=toL(e);drag.px=p.x;drag.py=p.y;
+document.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const p=toL(e);drag.px=p.x;drag.py=p.y;
   if(g&&Math.hypot(p.x-drag.sx,p.y-drag.sy)>6)g.lastTap=0; // a steering nudge is never half of a double-tap
   if(mode!=='play'||!g)return;
-  if(!drag.axis){const dx=p.x-drag.sx,dy=p.y-drag.sy;if(Math.hypot(dx,dy)<12)return;
-    drag.axis=Math.abs(dx)>=Math.abs(dy)?'x':'y';
-    if(drag.axis==='x'){drag.ax=drag.sx;drag.ox=g.tx;}else{drag.ay=drag.sy;drag.oy=g.retT>=0?g.cy:g.ty;g.retT=-1;}}
-  if(drag.axis==='x'){const lo=RX0+F.w/2,hi=RX1-F.w/2;let t=drag.ox+(p.x-drag.ax)*S.gain;
-    if(t<lo||t>hi){t=Math.max(lo,Math.min(hi,t));drag.ox=t;drag.ax=p.x;}g.tx=t;}
-  else{let t=drag.oy+(p.y-drag.ay)*S.gain;if(t<PITY0||t>PITY1){t=Math.max(PITY0,Math.min(PITY1,t));drag.oy=t;drag.ay=p.y;}g.ty=t;}
+  if(!drag.on){if(Math.hypot(p.x-drag.sx,p.y-drag.sy)<4)return;
+    drag.on=true;drag.ax=drag.sx;drag.ay=drag.sy;drag.ox=g.tx;drag.oy=g.retT>=0?g.cy:g.ty;g.retT=-1;}
+  {const lo=RX0+F.w/2,hi=RX1-F.w/2;let t=drag.ox+(p.x-drag.ax)*S.gain;
+    if(t<lo||t>hi){t=Math.max(lo,Math.min(hi,t));drag.ox=t;drag.ax=p.x;}g.tx=t;}  // at an edge the anchor moves with you, so turning back answers at once
+  {let t=drag.oy+(p.y-drag.ay)*S.gain;if(t<PITY0||t>PITY1){t=Math.max(PITY0,Math.min(PITY1,t));drag.oy=t;drag.ay=p.y;}g.ty=t;}
 });
 function endDrag(e){if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const p=toL(e);const dt=performance.now()-drag.t0,d=Math.hypot(p.x-drag.sx,p.y-drag.sy);
   if(mode==='play'&&g&&g.retT<0)startReturn();
   if(mode==='play'?(dt<300&&d<6):(d<14&&drag.m===mode))handleTap(p,drag);drag=null;}
 window.addEventListener('resize',()=>{if(drag&&mode==='play'&&g&&g.retT<0)startReturn();drag=null;});
 window.addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
-cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',()=>{if(drag&&mode==='play'&&g&&g.retT<0)startReturn();drag=null;});
-for(const ev of['touchstart','touchmove','touchend'])cv.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+document.addEventListener('pointerup',endDrag);document.addEventListener('pointercancel',e=>{if(!drag||e.pointerId!==drag.id)return;if(mode==='play'&&g&&g.retT<0)startReturn();drag=null;});
+for(const ev of['touchstart','touchmove','touchend'])document.addEventListener(ev,e=>{if(onField(e))e.preventDefault();},{passive:false}); // no page scroll, zoom or callout while steering; the menus still scroll
 window.addEventListener('keydown',e=>{setTouch(false);
   const k=e.key.toLowerCase();keys[k]=true;if(mode==='play'&&k.startsWith('arrow'))e.preventDefault();
   if(k==='p'){if(mode==='play')pause();else if(mode==='pause')resume();}
@@ -1309,15 +1311,15 @@ function step(dt){
   const ky=keys['w']||keys['arrowup']||keys['s']||keys['arrowdown'];
   if(keys['a']||keys['arrowleft'])g.tx-=400*dt;if(keys['d']||keys['arrowright'])g.tx+=400*dt;
   if(keys['w']||keys['arrowup'])g.ty-=400*dt;if(keys['s']||keys['arrowdown'])g.ty+=400*dt;
-  if(ky){g.retT=-1;g.keyY=true;}else if(g.keyY){g.keyY=false;if(!(drag&&drag.axis==='y'))startReturn();}
-  if(g.rallyT>0){g.tx=g.cx;if(drag&&drag.axis==='x'){drag.ox=g.cx;drag.ax=drag.px;}} // planted
+  if(ky){g.retT=-1;g.keyY=true;}else if(g.keyY){g.keyY=false;if(!(drag&&drag.on))startReturn();}
+  if(g.rallyT>0){g.tx=g.cx;if(drag&&drag.on){drag.ox=g.cx;drag.ax=drag.px;}} // planted
   formation();
   let lo=RX0+F.w/2,hi=RX1-F.w/2;
   if(onBridge()){lo=Math.max(lo,g.bridge.x0+F.w/2);hi=Math.min(hi,g.bridge.x1-F.w/2);if(hi<lo)lo=hi=(g.bridge.x0+g.bridge.x1)/2;}
-  if(g.tx<lo||g.tx>hi){g.tx=Math.max(lo,Math.min(hi,g.tx));if(drag&&drag.axis==='x'){drag.ox=g.tx;drag.ax=drag.px;}}
+  if(g.tx<lo||g.tx>hi){g.tx=Math.max(lo,Math.min(hi,g.tx));if(drag&&drag.on){drag.ox=g.tx;drag.ax=drag.px;}}
   g.ty=Math.max(PITY0,Math.min(PITY1,g.ty));
   const prev=g.cx,mud=inMud();g.cx+=(g.tx-g.cx)*Math.min(1,dt/(mud?0.45:0.06));g.cx=onBridge()?g.cx+(Math.max(lo,Math.min(hi,g.cx))-g.cx)*Math.min(1,dt/0.08):Math.max(lo,Math.min(hi,g.cx));
-  if(g.retT>=0&&!(drag&&drag.axis==='y')){g.retT+=dt;const k=Math.min(1,g.retT/1.1),e=k*k*(3-2*k);g.ty=g.cy=g.retY0+(PITY1-g.retY0)*e;if(k>=1)g.retT=-1;}
+  if(g.retT>=0&&!(drag&&drag.on)){g.retT+=dt;const k=Math.min(1,g.retT/1.1),e=k*k*(3-2*k);g.ty=g.cy=g.retY0+(PITY1-g.retY0)*e;if(k>=1)g.retT=-1;}
   else g.cy+=(g.ty-g.cy)*Math.min(1,dt/(mud?0.45:0.06));
   g.cy=Math.max(PITY0,Math.min(PITY1,g.cy));g.vx=(g.cx-prev)/dt;
   // minigun: sideways speed over 60 px/s counts as moving; Gun Chief spins up twice as fast and keeps 3/s moving
