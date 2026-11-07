@@ -115,7 +115,7 @@ function saveP(){try{localStorage.setItem('mu_prog',JSON.stringify(PROG));}catch
 function tip(id,txt,now){if(!g)return;g.tipDone=g.tipDone||{};if(g.tipDone[id])return;g.tipDone[id]=1;const n=PROG.tips[id]||0;if(n>=2)return;PROG.tips[id]=n+1;saveP();
   if(now===2)setMsg(txt,2.8);else{g.hintQ=g.hintQ||[];if(now)g.hintQ.unshift(txt);else g.hintQ.push(txt);}}
 // each Threat level adds one rule on top of the ones below it; winning a level unlocks the next
-const THREATS=['Normal road','Enemies move 15% faster','Elite enemies: more health, gold rims','Night falls on section 2','Red gates hit 50% harder','Gate Thieves come in pairs','Bosses have 30% more health','A Bomber joins every pack','You start with 3 Riflemen, not 5','Bosses enrage 7 s sooner','You can hold 3 cards, not 4'];
+const THREATS=['Normal road','Enemies move 15% faster','Elite enemies: more health, gold rims','Night falls on section 2','Red gates hit 50% harder','Gate Thieves come in pairs','Bosses have 30% more health','Enemies hit 15% harder','BREACH holds 3 less','Bosses have another 25% more health','Hold 3 cards, not 4, and bosses enrage 7 s sooner'];
 function T(n){return !!g&&g.threat>=n;}
 function today(){const d=new Date();return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate();}
 function dailySeed(){let h=today()^0x5bd1e995;h=Math.imul(h^h>>>16,0x45d9f3b);h=Math.imul(h^h>>>16,0x45d9f3b);return (h^h>>>16)|0;}
@@ -180,11 +180,11 @@ const KINDS={
   gren:{name:'GRENADIERS',one:'Grenadier',col:'#f472b6',shape:'triangle',gun:'Grenade launcher',mul:0.4,rate:0.6,dmg:6,splash:4,splashR:42,blast:true,job:'armour and walls',desc:'Grenade launcher. Small blasts that crack armour and walls.'},
   tesla:{name:'ENGINEERS',gate:'ENGINEERS',one:'Engineer',col:'#22d3ee',shape:'hex',gun:'Tesla coil',mul:0.52,rate:0.9,dmg:2.6,chain:4,jump:70,reach:200,job:'crowds of enemies',desc:'Short-range lightning that jumps from enemy to enemy, four in a chain. At rank 3 they build bigger Tesla Coils, or switch to Drones that hunt the road edges.'},
   // proto 8: six new kinds from Posi's ideas. Cowboys fire in cylinders (cyl shots, gap s apart, then reload s); their rate is the average and only marks them as a gun.
-  boomer:{name:'BOOMERANGS',gate:'BOOMERANGS',one:'Boomeranger',col:'#a3e635',shape:'chevron',gun:'Boomerang',mul:1.0,rate:0.85,dmg:5.2,range:420,boom:true,job:'lines of enemies',desc:'Boomerangs fly out, then come back. They hit everything on the way out and again on the way back.'},
+  boomer:{name:'BOOMERANGS',gate:'BOOMERANGS',one:'Boomeranger',col:'#a3e635',shape:'chevron',gun:'Boomerang',mul:1.0,rate:0.85,dmg:5.6,range:420,boom:true,job:'lines of enemies',desc:'Boomerangs fly out, then come back. They hit everything on the way out and again on the way back.'},
   cowboy:{name:'COWBOYS',gate:'COWBOYS',one:'Cowboy',col:'#d6a35c',shape:'star',gun:'Revolver',mul:0.6,rate:2.2,cyl:6,gap:0.12,reload:2,dmg:5.75,job:'bursts of damage',desc:'Revolver. Six fast shots, then a long reload.'},
   knight:{name:'KNIGHTS',gate:'KNIGHTS',one:'Knight',col:'#e5e7eb',shape:'plus',gun:'Sword',mul:0.6,rate:1.1,dmg:5,melee:true,reach:120,hits:1,ap:true,job:'up close, armour',desc:'Melee. A strong stab at the nearest enemy in reach; stabs find the gaps in armour. Against a boss, push up to get in reach.'},
   wild:{name:'WILDCARDS',gate:'WILDCARDS',one:'Wildcard',col:'#818cf8',shape:'card',gun:'Playing cards',mul:0.75,rate:1.25,dmg:7,cards:true,job:'a bit of everything',desc:'Throws a random card: an Ace hits hard, a Bomb explodes, a Bouncer hops between 3 enemies, a Spade goes through 3.'},
-  silent:{name:'SILENTS',gate:'SILENTS',one:'Silent',col:'#2dd4bf',shape:'ring',gun:'Quiet pistol',mul:0.8,rate:1,dmg:5.6,dodge:0.45,job:'staying alive',desc:'Quiet pistols: slow and light. Each Silent dodges 45% of the hits that would take them.'},
+  silent:{name:'SILENTS',gate:'SILENTS',one:'Silent',col:'#2dd4bf',shape:'ring',gun:'Quiet pistol',mul:0.8,rate:1,dmg:6.0,dodge:0.45,job:'staying alive',desc:'Quiet pistols: slow and light. Each Silent dodges 45% of the hits that would take them.'},
   bers:{name:'BERSERKERS',gate:'BERSERKERS',one:'Berserker',col:'#fb7185',shape:'axe',gun:'Axe',mul:0.5,rate:0.8,dmg:11.5,melee:true,reach:120,hits:3,sweep:true,job:'crowds up close',desc:'Melee. A sweeping axe that hits up to 3 enemies in reach. Against a boss, push up to get in reach.'},
   eng:{name:'ENGINEERS',gate:'ENGINEERS',one:'Engineer',col:'#cbd5e1',shape:'plus',gun:'Sentries',mul:0.5,eng:true,job:'sentry guns',desc:'No gun of their own. They tow sentry guns beside the crowd that aim at anything in range, even from the side.'},
   drone:{name:'DRONE OPERATORS',gate:'DRONES',one:'Drone Operator',col:'#a78bfa',shape:'ring',gun:'Drones',mul:0.5,drone:true,job:'the road edges',desc:'Drones fly out over walls and hunt enemies at the road edges first: mortars, turrets, priests.'},
@@ -223,7 +223,7 @@ const BRANCH={
            emp:{name:'EMP COILS',gate:'EMP',stun:0.8,emp:true,desc:'Every zap stuns for most of a second; turrets and mortars stop firing.'}}},
          drone:{name:'DRONES',gate:'DRONES',one:'Drone Engineer',drone:true,desc:'No more lightning: drones fly out over walls and hunt enemies at the road edges first.',next:{
            kami:{name:'KAMIKAZE DRONES',gate:'KAMIKAZE',kami:true,desc:'Drones dive in and explode, then a new one launches.'},
-           repair:{name:'REPAIR DRONES',gate:'REPAIR',repair:true,desc:'Drones shoot at half power and bring a fallen soldier back every 5 s.'}}}},
+           repair:{name:'REPAIR DRONES',gate:'REPAIR',repair:true,desc:'Drones shoot at two-thirds power and bring a fallen soldier back every 3.5 s.'}}}},
   eng:{nests:{name:'SENTRY NESTS',gate:'NESTS',one:'Nest Engineer',maxS:6,per:4,desc:'More sentries, and they last longer.',next:{
            flame:{name:'FLAME SENTRIES',gate:'FLAME SENTRY',sFlame:true,desc:'Sentries spray short cones of fire.'},
            rail:{name:'RAIL SENTRIES',gate:'RAIL SENTRY',sRail:true,desc:'Slow sentry shots that pierce everything in a line.'}}},
@@ -233,7 +233,7 @@ const BRANCH={
   drone:{kami:{name:'KAMIKAZE DRONES',gate:'KAMIKAZE',one:'Kamikaze Pilot',kami:true,desc:'Drones dive in and explode, then a new one launches.',next:{
            swarm:{name:'SWARM',gate:'SWARM',swarm:true,desc:'Twice as many drones, each half as strong: smaller blasts over more targets.'},
            bomb:{name:'BUNKER BOMBS',gate:'BUNKER BOMBS',bomb:true,desc:'Huge blasts that go for walls too.'}}},
-         repair:{name:'REPAIR DRONES',gate:'REPAIR',one:'Repair Pilot',repair:true,desc:'Drones shoot at half power and bring fallen soldiers back, one every 5 s.',next:{
+         repair:{name:'REPAIR DRONES',gate:'REPAIR',one:'Repair Pilot',repair:true,desc:'Drones shoot at two-thirds power and bring fallen soldiers back, one every 3.5 s.',next:{
            medevac:{name:'MEDEVAC',gate:'MEDEVAC',medevac:true,desc:'Bring the fallen back faster, two at a time.'},
            shdrone:{name:'SHIELD DRONES',gate:'SHIELD DRONES',shdrone:true,desc:'Drones fly into turret shots to stop them.'}}}},
   banner:{drums:{name:'WAR DRUMS',gate:'WAR DRUMS',one:'Drummer',per:0.06,cap:0.8,desc:'+6% fire rate each, up to +80%.',next:{
@@ -247,13 +247,13 @@ const BRANCH={
   cowboy:{dual:{name:'DUAL WIELD',gate:'DUAL WIELD',one:'Gunslinger',cyl:12,gap:0.07,reload:2.2,dmg:4.9,desc:'Two revolvers: twelve shots before each reload.',next:{}},
           lasso:{name:'LASSOS',gate:'LASSOS',one:'Wrangler',lasso:true,desc:'At every reload each Cowboy lassos an enemy: it can\'t move for 2 s and takes a heavy hit.',next:{}}},
   knight:{charge:{name:'CHARGE',gate:'CHARGE',one:'Charging Knight',reach:260,dmg:5.6,dash:true,desc:'Knights dash up the road to strike, so they reach much further.',next:{}},
-          guard:{name:'GUARD',gate:'GUARD',one:'Guard',parry:0.5,desc:'Knights block: each one parries half of the hits that would take them.',next:{}}},
+          guard:{name:'GUARD',gate:'GUARD',one:'Guard',parry:0.6,desc:'Knights block: each one parries 60% of the hits that would take them.',next:{}}},
   wild:{quick:{name:'QUICK HANDS',gate:'QUICK HANDS',one:'Card Sharp',rate:2,desc:'Throws cards much faster.',next:{}},
         stakes:{name:'HIGH STAKES',gate:'HIGH STAKES',one:'High Roller',dmg:14,joker:true,desc:'Every card hits twice as hard, but a Joker joins the deck and does nothing.',next:{}}},
   silent:{shadow:{name:'SHADOWSTEP',gate:'SHADOWSTEP',one:'Shadow',dodge:0.6,strike:20,desc:'Silents dodge 60% of hits, and every dodge strikes back at the nearest enemy.',next:{}},
-          cover:{name:'COVER',gate:'COVER',one:'Lookout',cover:true,desc:'Everyone else can dodge too: 3% per Silent, up to 30%.',next:{}}},
+          cover:{name:'COVER',gate:'COVER',one:'Lookout',cover:true,desc:'Everyone else can dodge too: 4% per Silent, up to 36%.',next:{}}},
   bers:{toss:{name:'THROWING AXES',gate:'THROW AXES',one:'Axe Thrower',melee:false,axe:true,range:380,pierce:2,rate:1.1,dmg:15.5,desc:'They throw their axes: spinning blades that fly up the road and cut through 3 enemies.',next:{}},
-        great:{name:'GREATAXES',gate:'GREATAXES',one:'Greataxe',reach:140,hits:5,dmg:15.5,rate:0.7,desc:'Bigger, slower swings that hit up to 5 enemies in a wider arc.',next:{}}},
+        great:{name:'GREATAXES',gate:'GREATAXES',one:'Greataxe',reach:140,hits:6,dmg:15.5,rate:0.7,desc:'Bigger, slower swings that hit up to 6 enemies in a wider arc.',next:{}}},
   shield:{bounce:{name:'BOUNCING SHIELDS',gate:'BOUNCING',one:'Bouncing Shield',bounce:true,desc:'Enemy shots bounce off and fly back at them.',next:{}},
           wave:{name:'WAVE SHIELDS',gate:'WAVE',one:'Wave Shield',wave:true,desc:'Every 4 s a shove pushes enemies back and stings them.',next:{}}}
 };
@@ -263,10 +263,10 @@ function kname(k){const L=leaf(k);return L?L.name:KINDS[k].name;}
 function kgate(k){const L=leaf(k);return L?L.gate:KINDS[k].gate||KINDS[k].name;} // short label for gates
 // proto 7: building pays. Each gate of a kind adds a pip (+10% damage, up to 10 pips), and FOCUS adds that kind's share of
 // your gun soldiers on top: a crowd that is all one kind does double damage with it. Shields don't count toward the share.
-const TUNE={rankP:0.10,rankMax:10,focus:1.0,boostCap:3,areaCap:0.22,hp1:[1.0,1.4],hp2:[2.6,4.7],bossHP:{1:5.5,2:7,3:11,4:9},enrage:21,lead:4,
+const TUNE={facArmour:0.7,rankP:0.10,rankMax:10,focus:1.0,boostCap:3,areaCap:0.22,hp1:[1.0,1.4],hp2:[2.75,5.0],bossHP:{1:5.5,2:7.5,3:13,4:10},enrage:21,lead:4,
   share:true,breach:true,breachMax:14,breachDrain:0.25,
   // % of every kind one hit takes (expendable crowd); elites add `elite`
-  bite:{grunt:12.5,plated:12.5,ant:4.7,charger:23,brute:31,thief:7,riot:14.5,priest:12.5,blob:16.5,flyer:8.5,elite:6,turret:9.5,mortar:23,bomber:23,tank:25,hatchBar:21,hatchBlast:21,acid:23,siege:7},
+  bite:{grunt:12.5,plated:12.5,ant:4.7,charger:23,brute:31,thief:7,riot:14.5,priest:12.5,blob:16.5,flyer:8.5,elite:6,turret:9.5,mortar:23,bomber:23,tank:30,hatchBar:21,hatchBlast:21,acid:27.5,siege:7},
   // how much of the BREACH bar one enemy fills when it gets past the crowd (elites count double)
   breachVal:{grunt:1,plated:1,ant:0.5,brute:3,riot:1.5,blob:1.5,flyer:1,bomber:1,charger:1.5}};
 function fusedOf(k){let n=0;for(const id in g.fused)if(PROMOS[id].kind===k)n+=g.fused[id];return n;}
@@ -321,16 +321,16 @@ const CARDS={
   breach:{name:'Breach Captain',officer:'shot',col:'#fb923c',desc:'Shotguns fire one more pellet and reach 30% further.',promo:'wall'},
   line:{name:'Line Sergeant',officer:'rifle',col:'#4ade80',desc:'Riflemen fire 10% faster.',promo:'firing'},
   hacker:{name:'Gate Hacker',col:'#2ee6a6',desc:'Gates pump twice as fast and cap at 2.5x the printed number.'},
-  quarter:{name:'Quartermaster',col:'#c9f27a',desc:'Every kind gate prints +1 more.'},
-  hot:{name:'Hot Rounds',col:'#ff7a2a',desc:'Bullets set enemies on fire: 2 dmg/s for 3 s. Fire ignores armour.'},
+  quarter:{name:'Quartermaster',col:'#c9f27a',desc:'Every kind gate prints 20% more (at least +1).'},
+  hot:{name:'Hot Rounds',col:'#ff7a2a',desc:'Bullets set enemies on fire: 3 dmg/s for 3 s. Fire ignores armour.'},
   medic:{name:'Field Medic',col:'#ff9ecb',desc:'Every 8 s, +2 Riflemen.'},
   chief:{name:'Chief Engineer',officer:'tesla',col:'#22d3ee',desc:'Lightning jumps to one more enemy. Drones hit 30% harder.',promo:'tower'},
   drums:{name:'War Drums',col:'#d6a35c',desc:'Every kind fires 25% faster.'}
 };
 const PROMOS={
-  battery:{name:'MORTAR BATTERY',kind:'gren',need:12,officer:'sapper',notBranch:'flame',col:'#f472b6',desc:'Every second it lobs two big shells at the nearest enemies, even ones at the road edge. Walls take triple.'},
+  battery:{name:'MORTAR BATTERY',kind:'gren',need:14,officer:'sapper',notBranch:'flame',col:'#f472b6',desc:'Every second it lobs two big shells at the nearest enemies, even ones at the road edge. Walls take triple.'},
   nest:{name:'GATLING NEST',kind:'heavy',need:10,officer:'gunchief',col:'#facc15',desc:'Fires 20 heavy rounds a second that pass through, even while moving.'},
-  inferno:{name:'INFERNO ENGINE',kind:'gren',need:12,officer:'sapper',branch:'flame',col:'#fb7185',desc:'Every 1.5 s it rolls a wide wall of fire far up the road. Everything it touches burns.'},
+  inferno:{name:'INFERNO ENGINE',kind:'gren',need:10,officer:'sapper',branch:'flame',col:'#fb7185',desc:'Every 1.5 s it rolls a wide wall of fire far up the road. Everything it touches burns.'},
   wall:{name:'WALL OF LEAD',kind:'shot',need:10,officer:'breach',col:'#fb923c',desc:'A wide line that fires a sweeping fan of twelve heavy pellets every 0.8 s.'},
   firing:{name:'FIRING LINE',kind:'rifle',need:12,officer:'line',col:'#4ade80',desc:'Every second, one volley: twelve heavy shots across the whole road, each passing through three enemies.'},
   bulwark:{name:'BULWARK',kind:'shield',need:8,officer:'drill',col:'#60a5fa',hidden:true,hint:'Shields, and the right sergeant...',desc:'One big wall up front with 5 plates per Shield. Any hit costs one plate instead of soldiers; ants bounce off.'},
@@ -352,8 +352,7 @@ function newRun(sd,o){o=o||{};
     script:[],si:0,scrollV:0,kills:0,bosses:0,boss:null,draft:null,over:false,overT:0,deathBy:null,
     cFlash:0,cCol:'#fff',medicT:0,phaseT:0,hudMsg:null,hudMsgT:0,figS:1.5,disp:5,
     lost:kobj(0),hitsThisBoss:0,emit:{},batteryT:1,forgeFx:null,pickLog:[],
-    trucksKilled:0,route:null,fork:null,night:false,gateBonus:1,muds:[],bridge:null,seen:{},corpses:[],zaps:[],sentries:[],sentT:0.5,mines:[],mineT:1,drones:[],fallen:[],repT:5,callT:6,drops:[],odT:0,apT:0,rallyT:0,rallyCD:0,lastTap:0,evo:[],trainT:12,swapCD:0,share:TUNE.share&&!PROG.classic,breachOn:TUNE.breach&&!PROG.classic,breach:0,breachPeak:0,breachFl:0};
-  if(T(8))g.K.rifle=3;
+    trucksKilled:0,route:null,fork:null,night:false,gateBonus:1,muds:[],bridge:null,seen:{},corpses:[],zaps:[],sentries:[],sentT:0.5,mines:[],mineT:1,drones:[],fallen:[],repT:3.5,callT:6,drops:[],odT:0,apT:0,rallyT:0,rallyCD:0,lastTap:0,evo:[],trainT:12,swapCD:0,share:TUNE.share&&!PROG.classic,breachOn:TUNE.breach&&!PROG.classic,breach:0,breachPeak:0,breachFl:0};
   g.roster=makeRoster();
   g.script=buildSection(1,g.rnd);
 }
@@ -388,7 +387,7 @@ function formation(){
 }
 
 // ---------- spawners ----------
-function kindPrinted(kind,v){return Math.max(1,Math.ceil(v*KINDS[kind].mul*(g.gateBonus||1)))+(has('quarter')?1:0);}
+function kindPrinted(kind,v){const b=Math.max(1,Math.ceil(v*KINDS[kind].mul*(g.gateBonus||1)));return b+(has('quarter')?Math.max(1,Math.round(b*0.2)):0);}
 // a gate row: defs are {k:'kind',kind,v} {k:'minus',v} or {k:'pick',v} (a random kind, never one already in the row)
 function spawnGateRow(defs,mir){
   tip('gate','GATES: slide into one to add that kind of soldier');
@@ -437,7 +436,7 @@ function enemy(type,x,y,o){
   if(T(5)&&type==='thief'&&!(o&&o.pair))enemy('thief',W-x,y-24,{pair:true});
   Object.assign(e,o||{});g.enemies.push(e);return e;
 }
-function pack(type,n,x,mir,gap){if(mir)x=W-x;gap=gap||24;const span=(n-1)*gap;x=Math.max(RX0+20+span/2,Math.min(RX1-20-span/2,x));for(let i=0;i<n;i++)enemy(type,x-span/2+i*gap,-20-(i%2)*12);if(T(7)&&type!=='bomber')enemy('bomber',x,-70);}
+function pack(type,n,x,mir,gap){if(mir)x=W-x;gap=gap||24;const span=(n-1)*gap;x=Math.max(RX0+20+span/2,Math.min(RX1-20-span/2,x));for(let i=0;i<n;i++)enemy(type,x-span/2+i*gap,-20-(i%2)*12);}
 function swarm(n,x,mir){if(mir)x=W-x;for(let i=0;i<n;i++)enemy('ant',Math.max(RX0+8,Math.min(RX1-8,x+(g.rnd()-0.5)*140)),-20-g.rnd()*160);}
 function truck(){const d=g.rnd()<0.5?1:-1;enemy('truck',d>0?-40:W+40,210,{dir:d});setMsg('SUPPLY TRUCK: shoot it for a crate',2);}
 function buildSection(sec,rnd,route){
@@ -697,7 +696,8 @@ function hitCircle(x,y,r,why){if(g.over)return;const list=areaCap(F.pos.filter(p
 // expendable crowd: a hit takes the same share of every kind (at least one soldier), wherever it lands
 function rround(v){const f=Math.floor(v);return f+(rand()<v-f?1:0);}
 const WHYB={'a turret shot':'turret','a mortar shell':'mortar','a bomber':'bomber','a Tank shell':'tank','a Siege Tower shot':'siege','a Twin Hatch bar':'hatchBar','a Twin Hatch blast':'hatchBlast','Hive Queen acid':'acid'};
-function biteOf(why,e){const B=TUNE.bite;return(e?(B[e.type]||6)+(e.elite?B.elite:0):(B[WHYB[why]]||8))/100;}
+function biteOf(why,e){const B=TUNE.bite;return(e?(B[e.type]||6)+(e.elite?B.elite:0):(B[WHYB[why]]||8))/100*(T(7)?1.15:1);}
+function bMax(){return TUNE.breachMax-(T(8)?3:0);}
 function shareList(b,x,y){const list=[];
   for(const k in g.K){const c=g.K[k];if(c<=0)continue;const n=Math.min(c,rround(c*b));if(!n)continue;
     const ps=F.pos.filter(p=>p.k===k).sort((a,q)=>figDist(a,x,y)-figDist(q,x,y));
@@ -708,11 +708,11 @@ function shareHit(x,y,b,why,o){if(g.over)return;const bigs=F.bigs.filter(q=>q.k 
   if(!F.pos.length&&!bigs.length){lastStand(why);return;}
   killFigs(shareList(b,x,y),why,Object.assign({bigs,at:{x,y},area:true,share:b},o||{}));}
 // enemies that get past the crowd fill the BREACH bar; it drains slowly, and a full bar loses the run
-function breachBy(e){const v=TUNE.breachVal[e.type];if(!v||!g.breachOn||g.over||e.lunge)return;const a=v*(e.elite?2:1);
+function breachBy(e){const v=TUNE.breachVal[e.type];if(!v||!g.breachOn||g.over||e.lunge)return;const a=v*(e.elite?2:1)*(g.route==='factory'&&e.type==='plated'?TUNE.facArmour:1);
   g.breach+=a;g.breachPeak=Math.max(g.breachPeak,g.breach);g.breachFl=0.5;g.pastBy=g.pastBy||{};g.pastBy[e.type]=(g.pastBy[e.type]||0)+a;
   if(!g.seen.breach){g.seen.breach=1;tip('breach','BREACH: enemies that get past you fill the bar. Full bar, run over',1);}
   pop(e.x,Math.min(H-70,F.y1+16),'GOT PAST','#ff5c5c',13);
-  if(g.breach>=TUNE.breachMax){g.over=true;g.deathBy='too many enemies getting past';timescale=0.3;tsT=0.5;hitstop=0.16;doShake(8,0.3);sfx('loss');vib(80);}}
+  if(g.breach>=bMax()){g.over=true;g.deathBy='too many enemies getting past';timescale=0.3;tsT=0.5;hitstop=0.16;doShake(8,0.3);sfx('loss');vib(80);}}
 function lastStand(why){if(totalN()===0&&!g.over){g.over=true;g.deathBy=why;timescale=0.3;tsT=0.5;hitstop=0.16;doShake(8,0.3);sfx('loss');vib(80);}}
 function showLoss(out,n,shields,why,at){
   if(n===0)return;
@@ -871,7 +871,7 @@ function melee(k,K,x,w){const R=K.reach||110,y0=F.y0,d=K.dmg*w,list=[];
 function lasso(P,w){let tg=null,bd=380;for(const e of g.enemies){if(e.dead||e.type==='truck'||e.y>F.y0||(e.roped||0)>g.t)continue;const d=Math.hypot(e.x-P.x,e.y-P.y);if(d<bd){bd=d;tg=e;}}
   if(!tg)return;tg.stun=Math.max(tg.stun||0,2);tg.roped=g.t+2;damageEnemy(tg,KP('cowboy').dmg*w*1.5);g.parts.push({beam:true,x:P.x,y:P.y-6,x2:tg.x,y2:tg.y,t:0,life:0.35,col:'#d6a35c'});}
 // Silents dodge; with Cover everyone else can too; Guard Knights parry
-function dodgeOf(k){const S=g.K.silent>0?KP('silent'):null,sd=S?S.dodge||0:0,cd=S&&S.cover?Math.min(0.3,0.03*g.K.silent):0;
+function dodgeOf(k){const S=g.K.silent>0?KP('silent'):null,sd=S?S.dodge||0:0,cd=S&&S.cover?Math.min(0.36,0.04*g.K.silent):0;
   if(k==='silent')return sd;if(k==='knight'&&g.K.knight>0&&KP('knight').parry)return Math.max(KP('knight').parry,cd);return cd;}
 function shadowStrike(n){const S=KP('silent');for(let i=0;i<Math.min(n,6);i++){let tg=null,bd=1e9;for(const e of g.enemies){if(e.dead||e.y>F.y0+10||e.type==='truck')continue;const d=Math.hypot(e.x-g.cx,e.y-F.y0);if(d<bd){bd=d;tg=e;}}
   if(!tg){const bs=g.boss;if(bs&&bs.ready&&!bs.dead){bossDamage(bs,S.strike*rankMul('silent'),g.cx);g.parts.push({beam:true,x:g.cx,y:F.y0,x2:bs.x,y2:bs.y+bs.h/2,t:0,life:0.2,col:'#2dd4bf'});continue;}return;}damageEnemy(tg,S.strike*rankMul('silent'),false,true);g.parts.push({beam:true,x:g.cx,y:F.y0,x2:tg.x,y2:tg.y,t:0,life:0.2,col:'#2dd4bf'});}}
@@ -931,7 +931,7 @@ function droneTarget(d,K){let best=null,bs=-1e9;
 function updateDrones(dt){
   const K=KP('tesla'),n=K.drone?g.K.tesla:0,want=n>0?Math.min(K.swarm?12:6,Math.ceil(n/(K.swarm?2:4))):0;
   while(g.drones.length<want)g.drones.push({x:g.cx,y:F.y0,tg:null,cd:0,bcd:0,ang:rand()*6});if(g.drones.length>want)g.drones.length=want;
-  if(!want)return;const dps=n*4.2*rankMul('tesla')*boostMul('tesla')*(has('chief')?1.3:1)/want*(K.repair?0.5:1);
+  if(!want)return;const dps=n*4.2*rankMul('tesla')*boostMul('tesla')*(has('chief')?1.3:1)/want*(K.repair?0.65:1);
   for(const d of g.drones){d.las=null;if(d.bcd>0)d.bcd-=dt;
     if(d.cd>0){d.cd-=dt;d.x=g.cx;d.y=F.y0;continue;}
     if(K.shdrone&&d.bcd<=0){let s0=null,sd=1e9;for(const s of g.shots){const dd=Math.hypot(s.x-g.cx,s.y-F.y0);if(dd<260&&dd<sd){sd=dd;s0=s;}}
@@ -945,7 +945,7 @@ function updateDrones(dt){
     if(L<(K.kami?14:34)){
       if(K.kami){blastAt(d.x,d.y,K.bomb?62:40,dps*2.2*(K.bomb?1.4:1),K.bomb?4:1,'#a78bfa');sfx('blast');d.cd=1.5;d.tg=null;}
       else{if(T.boss)bossDamage(T.boss,dps*dt,d.x);else if(T.wall)wallDamage(T.wall,dps*dt*0.5);else damageEnemy(T,dps*dt*(T.type==='flyer'?1.5:1));d.las=T;}}}
-  if(K.repair){g.repT-=dt;if(g.repT<=0){g.repT=K.medevac?3:5;const c=K.medevac?2:1,got={};for(let i=0;i<c&&g.fallen.length;i++){const k=g.fallen.pop();got[k]=(got[k]||0)+1;}
+  if(K.repair){g.repT-=dt;if(g.repT<=0){g.repT=K.medevac?3:3.5;const c=K.medevac?2:1,got={};for(let i=0;i<c&&g.fallen.length;i++){const k=g.fallen.pop();got[k]=(got[k]||0)+1;}
     for(const k in got){g.K[k]+=got[k];formation();pop(g.cx,F.y0-24,'+'+got[k]+' '+kname(k)+' BACK','#a78bfa',15);}}}
 }
 // the two nearest targets above the crowd (enemies anywhere across the road, walls, then the boss)
@@ -974,7 +974,7 @@ function blastAt(x,y,R,dmg,wallMul,col,o){o=o||{};
 function pelletMul(b){const close=140;return b.travel<=close?1:Math.max(0.2,1-0.8*(b.travel-close)/Math.max(1,b.range-close));}
 function damageEnemy(e,d,blast,ap){
   if(e.type==='plated'&&!blast&&!ap)d*=0.35;if(e.mark>0)d*=1.5;
-  e.hp-=d;e.flash=0.04;if(has('hot')&&!blast){e.burn=3;}
+  e.hp-=d;e.flash=0.04;if(has('hot')&&!blast){e.burn=3;e.burnR=3;}
   if(e.hp<=0)kill(e);
 }
 const RAISE={grunt:'grunt',thief:'grunt',plated:'plated',charger:'charger',brute:'brute',riot:'riot'};
@@ -1020,7 +1020,7 @@ function updateBullets(dt){
     if(!gone)for(const e of g.enemies){if(e.dead||(b.hit&&b.hit.has(e)))continue;if(Math.abs(b.x-e.x)<e.w/2+3&&Math.abs(b.y-e.y)<e.h/2+6){
       if(b.blast){damageEnemy(e,b.dmg,true);blastAt(b.x,b.y,b.sr,b.splash,1,b.col,{fire:b.fireBlast,flak:b.flak});if(b.cluster)for(let c=0;c<b.cluster;c++){const a=rand()*Math.PI*2,r=30+rand()*25;g.shells=g.shells||[];g.shells.push({x0:b.x,y0:b.y,x1:b.x+Math.cos(a)*r,y1:b.y+Math.sin(a)*r,t:0,dur:0.15+c*0.06,r:32,dmg:b.splash*0.25,wm:1,col:b.col});}gone=true;}
       else{if(e.type==='riot'&&riotBlocks(b,e)){if(Math.random()<0.3)burst(b.x,b.y,'#cbd5e1',2,80);if(b.boom&&!b.back){boomBack(b);(b.hit=new Set()).add(e);}else gone=true;break;}
-        let dm=b.dmg;if(b.falloff&&b.range)dm*=pelletMul(b);if(b.fire||b.burnHit)e.fireHit=true;damageEnemy(e,dm,!!b.fire,!!b.ap);if((b.fire||b.burnHit)&&!e.dead)e.burn=has('sapper')?4:3;if(b.mark&&!e.dead)e.mark=3;if(b.slow&&!e.dead)e.slow=1;if(b.knock&&!e.dead)e.y=Math.max(-30,e.y-b.knock);
+        let dm=b.dmg;if(b.falloff&&b.range)dm*=pelletMul(b);if(b.fire||b.burnHit)e.fireHit=true;damageEnemy(e,dm,!!b.fire,!!b.ap);if((b.fire||b.burnHit)&&!e.dead){e.burn=has('sapper')?4:3;if(b.burnHit&&b.k==='rifle')e.burnR=3;}if(b.mark&&!e.dead)e.mark=3;if(b.slow&&!e.dead)e.slow=1;if(b.knock&&!e.dead)e.y=Math.max(-30,e.y-b.knock);
         if(b.hop>0||b.spins>0){(b.hit=b.hit||new Set()).add(e);const nx=hopTarget(b,e,b.spins>0);if(nx){const sp=Math.hypot(b.vx,b.vy)||700,dx=nx.x-b.x,dy=nx.y-b.y,L=Math.hypot(dx,dy)||1;b.vx=dx/L*sp;b.vy=dy/L*sp;if(b.spins>0){b.spins--;b.out+=90;}else b.hop--;break;}}
         if(b.boom||b.rico!=null){(b.hit=b.hit||new Set()).add(e);} // boomerangs and ricochets go through everything, hitting each enemy once a leg
         else if(e.dead&&-e.hp>0.5){b.dmg=-e.hp;(b.hit=b.hit||new Set()).add(e);} // overkill carries on to the next enemy
@@ -1144,7 +1144,7 @@ function updateEnemies(dt,scroll){
   for(let i=es.length-1;i>=0;i--){const e=es[i];
     if(e.dead){es.splice(i,1);continue;}
     e.age+=dt;if(e.flash>0)e.flash-=dt;if(e.slow>0)e.slow-=dt;if(e.mark>0)e.mark-=dt;if(e.stun>0)e.stun-=dt;const sl=(e.stun>0?0:e.slow>0?0.5:1)*(T(1)?1.15:1);
-    if(e.burn>0){e.burn-=dt;e.burnT+=dt;while(e.burnT>=0.25){e.burnT-=0.25;e.hp-=0.5;if(e.hp<=0){kill(e);break;}}}
+    if(e.burn>0){e.burn-=dt;e.burnT+=dt;while(e.burnT>=0.25){e.burnT-=0.25;e.hp-=(e.burnR||2)/4;if(e.hp<=0){kill(e);break;}}}
     if(e.dead){es.splice(i,1);continue;}
     if(e.type==='grunt'||e.type==='plated'||e.type==='riot'||(e.type==='thief'&&e.stole)){e.y+=(scroll+(e.type==='plated'||e.type==='riot'?70:100)*sl)*dt;if(e.type!=='riot'){const d=Math.max(RX0+10,Math.min(RX1-10,g.cx+e.lane*0.55))-e.x;e.x+=Math.sign(d)*Math.min(40*sl*dt,Math.abs(d));}} // each one keeps its own lane beside the crowd's center
     else if(e.type==='ant'){e.y+=(scroll+130*sl)*dt;const d=Math.max(RX0+8,Math.min(RX1-8,g.cx+e.lane*0.45))-e.x;e.x+=Math.sign(d)*Math.min(90*dt,Math.abs(d))+Math.sin(e.age*12+e.bx)*30*dt;}
@@ -1196,11 +1196,11 @@ const BOSSES={1:{hp:1200,w:120,h:90,name:'THE TANK',msg:'BOSS: THE TANK (sends a
   3:{hp:1300,w:300,h:110,name:'SIEGE TOWER',msg:'SIEGE TOWER: break its three guns first'},4:{hp:3000,w:150,h:100,name:'HIVE QUEEN',msg:'HIVE QUEEN: hit her while she lays'}};
 function startBoss(kind){
   g.phase='bossIn';g.phaseT=0;g.hitsThisBoss=0;
-  const BD=BOSSES[kind],bm=(T(6)?1.3:1)*(TUNE.bossHP[kind]||1);g.boss={kind,hp:0,maxhp:BD.hp*bm,x:195,y:-100,w:BD.w,h:BD.h,dir:1,t:0,ready:false,countT:0,atkT:1.5,spawnT:4,enrage:false,tel:null,dead:false,volley:0,hatch:0,hatchT:0,flash:0,acc:0,accT:0,landed:false,name:BD.name,layT:0,lay:0,wallT:4,ports:kind===3?[-100,0,100].map((dx,i)=>({dx,hp:500*bm,max:500*bm,fireT:1.2+i*0.9,flash:0})):null};
+  const BD=BOSSES[kind],bm=(T(6)?1.3:1)*(T(9)?1.25:1)*(TUNE.bossHP[kind]||1);g.boss={kind,hp:0,maxhp:BD.hp*bm,x:195,y:-100,w:BD.w,h:BD.h,dir:1,t:0,ready:false,countT:0,atkT:1.5,spawnT:4,enrage:false,tel:null,dead:false,volley:0,hatch:0,hatchT:0,flash:0,acc:0,accT:0,landed:false,name:BD.name,layT:0,lay:0,wallT:4,ports:kind===3?[-100,0,100].map((dx,i)=>({dx,hp:500*bm,max:500*bm,fireT:1.2+i*0.9,flash:0})):null};
   sfx('drone');setMsg(BD.msg,2.2);if((g.K.knight>0&&KP('knight').melee)||(g.K.bers>0&&KP('bers').melee))(g.hintQ=g.hintQ||[]).push('PUSH UP: your melee soldiers can only reach the boss up close');if(!g.rallyUsed&&!S.autoRally)(g.hintQ=g.hintQ||[]).push('TIP: RALLY (or a second finger) for triple fire');
 }
 // enraged bosses keep speeding up: half as fast again every 10 s, up to five times
-function enrT(){return T(9)?TUNE.enrage-7:TUNE.enrage;}
+function enrT(){return T(10)?TUNE.enrage-7:TUNE.enrage;}
 function enr(fast,slow){const b=g.boss;if(!b||!b.enrage)return slow;return fast/Math.min(5,1+Math.max(0,b.t-enrT())/10*0.5);}
 function overlapFrac(x0,x1,a,b){const o=Math.min(x1,b)-Math.max(x0,a);return Math.max(0,o)/Math.max(1,x1-x0);}
 function updateBoss(dt){
@@ -1215,7 +1215,7 @@ function updateBoss(dt){
   if(b.kind===1){
     b.x+=b.dir*90*dt;if(b.x>280){b.x=280;b.dir=-1;}if(b.x<110){b.x=110;b.dir=1;}
     b.spawnT-=dt;if(b.spawnT<=0){b.spawnT=b.enrage?4:5;for(const dx of[-26,26])enemy('plated',b.x+dx,b.y+50);}
-    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.tel={type:'circle',x:g.cx,y:F.y0+F.h/2,r:64,t:0,dur:0.8};sfx('warn');tip('danger','PINK STRIPES: it lands there. Slide out before it fills',2);}}
+    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.tel={type:'circle',x:g.cx,y:F.y0+F.h/2,r:64,t:0,dur:1.1};sfx('warn');tip('danger','PINK STRIPES: it lands there. Slide out before it fills',2);}}
     else{b.tel.t+=dt;if(b.tel.t>=b.tel.dur){const T=b.tel;burst(T.x,T.y,'#ff7a2a',16,220);sfx('shell');doShake(5,0.2);
       hitCircle(T.x,T.y,T.r,'a Tank shell');
       b.tel=null;b.atkT=enr(1.3,2.3);}}
@@ -1238,7 +1238,7 @@ function updateBoss(dt){
   else if(b.kind===4){ // every 6 s she lays for 2.5 s: double damage, and out come ants (and a splitter every other time); acid spit in between
     b.x=195+Math.sin(b.t*0.5)*70;b.layT+=dt;const ph=b.layT%6,was=b.lay>0;b.lay=ph>=3.5?1:0;
     if(b.lay&&!was){sfx('hatch');setMsg('LAYING: x2 damage',1.2);b.eggs=(b.eggs||0)+1;for(let i=0;i<10;i++)enemy('ant',Math.max(RX0+8,Math.min(RX1-8,b.x+(rand()-0.5)*b.w)),b.y+b.h/2+rand()*30);if(b.eggs%2===0)enemy('blob',b.x,b.y+b.h/2+20);}
-    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.tel={type:'circle',x:g.cx,y:F.y0+F.h/2,r:58,t:0,dur:0.9,acid:true};sfx('warn');}}
+    if(!b.tel){b.atkT-=dt;if(b.atkT<=0){b.tel={type:'circle',x:g.cx,y:F.y0+F.h/2,r:58,t:0,dur:1.1,acid:true};sfx('warn');}}
     else{b.tel.t+=dt;if(b.tel.t>=b.tel.dur){const T=b.tel;burst(T.x,T.y,'#84cc16',16,220);sfx('shell');doShake(5,0.2);hitCircle(T.x,T.y,T.r,'Hive Queen acid');b.tel=null;b.atkT=enr(1.4,2.3);}}
   }
   if(b.hp<=0){b.hp=0;b.dead=true;if(b.kind===1)g.tankDown=true;b.tel=null;g.phase='bossDead';g.phaseT=0;timescale=0.3;tsT=1;doShake(8,0.5);g.bosses++;sfx('cheer');vib([30,40,30,40,80]);
@@ -1279,7 +1279,7 @@ function endDraft(){
 }
 // ---------- the fork: after the Tank, pick one of two roads to the last boss ----------
 const ROUTES={factory:{name:'THE FACTORY',col:'#9aa3b5',boss:'Twin Hatch',desc:'Armour, mortars, chargers and a huge horde.',reward:'Reward: pick an extra card now'},
-  swamp:{name:'THE SWAMP',col:'#84cc16',boss:'Hive Queen',desc:'Night and mud. Ants, splitters, flyers and bombers.',reward:'Reward: every gate prints +50%'},
+  swamp:{name:'THE SWAMP',col:'#84cc16',boss:'Hive Queen',desc:'Night and mud. Ants, splitters, flyers and bombers.',reward:'Reward: every gate prints +35%'},
   fortress:{name:'THE FORTRESS',col:'#d6a35c',boss:'Siege Tower',desc:'Walls, riot shields, priests, turrets and a narrow bridge.',reward:'Reward: a free Officer now'}};
 function openFork(){const all=['factory','swamp','fortress'];for(let i=all.length-1;i>0;i--){const j=Math.floor(g.rnd()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
   const extra=unlockedK().filter(k=>!g.roster.includes(k)),rec=extra.length?extra[Math.floor(g.rnd()*extra.length)]:null;if(rec)g.roster.push(rec);
@@ -1292,7 +1292,7 @@ function forkReward(id){
   if(id==='fortress'&&!freeOfficer())return (g.cards.length>=maxCards()?'Hand full':'No Officer for your kinds')+': +8 '+kname(gunKind())+' instead';return ROUTES[id].reward;}
 function bonusSoldiers(n,why){const k=gunKind();g.K[k]+=n;formation();pop(g.cx,F.y0-24,'+'+n+' '+kname(k),KINDS[k].col,20);setMsg(why,2);}
 function pickRoute(i){if(mode!=='fork'||!g.fork)return;const id=g.fork.opts[i];if(!id)return;const rw=forkReward(id);g.route=id;g.fork=null;
-  g.sec=2;g.night=id==='swamp'||T(3);g.gateBonus=id==='swamp'?1.5:1;g.script=buildSection(2,g.rnd,id);g.si=0;g.st=0;g.phase='road';g.boss=null;
+  g.sec=2;g.night=id==='swamp'||T(3);g.gateBonus=id==='swamp'?1.35:1;g.script=buildSection(2,g.rnd,id);g.si=0;g.st=0;g.phase='road';g.boss=null;
   mode='play';last=performance.now();acc=0;drag=null;sfx('card');vib(15);
   if(rw!==ROUTES[id].reward)bonusSoldiers(8,ROUTES[id].name+': '+rw.toUpperCase());
   else if(id==='factory')openDraft({n:1,of:3,why:'FACTORY ROAD: EXTRA CARD'},()=>{});
@@ -1329,7 +1329,7 @@ function step(dt){
   g.scrollV=Math.min(SCROLL,g.scrollV+SCROLL*dt);const scroll=(g.phase==='road'||g.phase==='clear')?g.scrollV:g.scrollV*0.5;g.roadOff=((g.roadOff||0)+scroll*dt)%80;g.sceneY=(g.sceneY||0)+scroll*dt;
   if(g.over){g.overT+=dt;if(g.overT>0.7){finishRun(false);return;}}
   if(g.phase==='road'){g.st+=dt;while(g.si<g.script.length&&g.script[g.si][0]<=g.st){g.script[g.si][1]();g.si++;}}
-  else if(g.phase==='clear'&&!g.over){g.phaseT+=dt;if(g.phaseT>=1.6&&g.enemies.every(e=>e.type==='mortar'||e.type==='truck'||e.type==='priest'||e.type==='turret'||e.y>F.y1)){g.enemies=[];if(g.sec===1)startBoss(1);else startBoss(g.route==='swamp'?4:g.route==='fortress'?3:2);}}
+  else if(g.phase==='clear'&&!g.over){g.phaseT+=dt;if(g.phaseT>=1.6&&g.enemies.every(e=>e.type==='mortar'||e.type==='truck'||e.type==='priest'||e.type==='turret'||e.y>F.y1)){g.enemies=[];if(g.sec===1){if(!g.trucksKilled){openDraft({n:1,of:2,why:'SUPPLY DROP'},()=>startBoss(1));return;}startBoss(1);}else startBoss(g.route==='swamp'?4:g.route==='fortress'?3:2);}}
   else if(g.phase==='bossDead'&&!g.over){g.phaseT+=dt;if(g.phaseT>=2.6){
     if(g.boss.kind===1){openDraft(g.bossCrate,openFork);return;}
     else{finishRun(true);return;}}}
@@ -1523,10 +1523,10 @@ function drawFx(){
 }
 function drawHUD(){ctx.save();ctx.translate(0,CT);hudIn();ctx.restore();} // the HUD hangs from the top of the screen, even when the road is trimmed
 function hudIn(){
-  if(g.breachOn){const nar=CB>20,x=nar&&S.rallyLeft?104:16,y=H-22-CB-CT,w=nar?W-120:W-32,k=Math.min(1,g.breach/TUNE.breachMax),hot=k>0.7;
+  if(g.breachOn){const nar=CB>20,x=nar&&S.rallyLeft?104:16,y=H-22-CB-CT,w=nar?W-120:W-32,k=Math.min(1,g.breach/bMax()),hot=k>0.7;
     ctx.fillStyle='rgba(11,13,18,0.75)';ctx.fillRect(x-4,y-17,w+8,25);ctx.fillStyle='#2a2f3b';ctx.fillRect(x,y,w,6);
     ctx.fillStyle=g.breachFl>0||hot&&!S.calm&&Math.sin(performance.now()/90)>0?'#ff3b3b':'#e0565b';ctx.fillRect(x,y,w*k,6);
-    txt('BREACH',x,y-7,10,k>0?'#ff8a8a':'#8a93a6','left','900');txt(k>0?Math.ceil(g.breach)+' / '+TUNE.breachMax:'nothing got past',x+w,y-7,10,'#8a93a6','right','800');}
+    txt('BREACH',x,y-7,10,k>0?'#ff8a8a':'#8a93a6','left','900');txt(k>0?Math.ceil(g.breach)+' / '+bMax():'nothing got past',x+w,y-7,10,'#8a93a6','right','800');}
   ctx.fillStyle='rgba(11,13,18,0.82)';ctx.fillRect(-GX,0,W+2*GX,g.hudH||88);
   const N=Math.round(g.disp);txt(String(N),20,26,34,g.cFlash>0?g.cCol:'#fff','left','900');
   ctx.font='900 34px '+FONT;const nw=ctx.measureText(String(N)).width;txt('soldiers',26+nw,32,13,'#8a93a6','left','700');
@@ -1565,7 +1565,7 @@ function hudIn(){
   if(g.hudMsgT>0&&g.hudMsg){ctx.globalAlpha=Math.min(1,g.hudMsgT*3);let fs=17,L=[g.hudMsg];const mw=l=>ctx.measureText(l).width;ctx.font='900 '+fs+'px '+FONT;
     if(mw(g.hudMsg)>W-80){const w=g.hudMsg.split(' ');let best=null;for(let i=1;i<w.length;i++){const a=w.slice(0,i).join(' '),b=w.slice(i).join(' '),m=Math.max(mw(a),mw(b));if(!best||m<best[0])best=[m,a,b];}
       if(best)L=[best[1],best[2]];while(fs>12&&Math.max(...L.map(mw))>W-80){fs--;ctx.font='900 '+fs+'px '+FONT;}} // a long tip goes on two lines rather than shrinking
-    const lh=fs*1.3;ctx.fillStyle='rgba(11,13,18,0.8)';rr(30,140,W-60,L.length*lh+18,10);ctx.fill();L.forEach((l,i)=>txt(l,W/2,149+lh/2+i*lh,fs,'#ffd166','center','900'));ctx.globalAlpha=1;}
+    const lh=fs*1.3,bb=g.boss,my=bb&&!bb.dead&&bb.y>0?Math.max(140,Math.round(bb.y+bb.h/2+14-CT)):140;ctx.fillStyle='rgba(11,13,18,0.8)';rr(30,my,W-60,L.length*lh+18,10);ctx.fill();L.forEach((l,i)=>txt(l,W/2,my+9+lh/2+i*lh,fs,'#ffd166','center','900'));ctx.globalAlpha=1;}
 }
 function dimAll(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();}
 function wrapC(s,y,w,size,col){ctx.font='700 '+size+'px '+FONT;const words=s.split(' ');let line='',yy=y; // centred lines
@@ -1622,9 +1622,9 @@ function drawResults(){
   const N=totalN();txt(g.win?'ROAD CLEARED':'THE COLUMN FELL',W/2,110,30,g.win?'#ffd166':'#ff6b6b','center','900');
   txt(g.win?N+' came home':'to '+(g.deathBy||'the road'),W/2,152,20,'#fff','center','800');
   let y=180;
-  if(!g.win){const L=lossInfo();if(L.top){txt('Most soldiers lost to '+L.top+': '+L.n,W/2,y,14,'#ffb3b3','center','800');y+=24;}
+  if(!g.win){const L=lossInfo(),bb=g.boss;if(bb&&!bb.dead&&bb.maxhp&&(g.phase==='boss'||g.phase==='bossIn')){txt(bb.name+' had '+Math.max(1,Math.ceil(bb.hp/bb.maxhp*100))+'% health left',W/2,y,14,'#e8ecf2','center','800');y+=24;}if(L.top){txt('Most soldiers lost to '+L.top+': '+L.n,W/2,y,14,'#ffb3b3','center','800');y+=24;}
     y=wrapC('TRY: '+L.tip,y,320,14,'#ffd166')+26;} // what hurt you most, and one thing to try next time
-  if(g.breachOn){txt('BREACH at its fullest: '+Math.min(TUNE.breachMax,Math.round(g.breachPeak))+' / '+TUNE.breachMax,W/2,y,13,'#ff8a8a','center','800');y+=30;}else y+=30;
+  if(g.breachOn){txt('BREACH at its fullest: '+Math.min(bMax(),Math.round(g.breachPeak))+' / '+bMax(),W/2,y,13,'#ff8a8a','center','800');y+=30;}else y+=30;
   const rows=ALLK.filter(k=>g.K[k]||g.lost[k]).length+g.promosMade.length,rs=rows>6?24:30; // tighter rows when the list is long
   txt('WHO CAME HOME',W/2,y,13,'#8a93a6','center','800');y+=rs;
   for(const k of ALLK){const K=KINDS[k],n=g.K[k],l=g.lost[k];if(!n&&!l)continue;shape(K.shape,70,y,7,K.col);txt(kname(k),88,y,15,'#e8ecf2','left','800');txt(String(n),260,y,16,'#fff','right','900');txt(l?'lost '+l:'',330,y,12,'#ff8a8a','right','700');y+=rs;}
